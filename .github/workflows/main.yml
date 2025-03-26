@@ -6,10 +6,6 @@ on:
   pull_request:
     branches: [ '**' ]
   workflow_dispatch:
-    inputs:
-      run-tests:
-        description: 'Manually trigger testing'
-        required: false
 
 jobs:
   test:
