@@ -33,7 +33,7 @@ jobs:
       working-directory: ${{ github.workspace }}
 
     - name: Save test report as artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-pages-artifact@v3
       with:
         name: test-report
         path: report.html
