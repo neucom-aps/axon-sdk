@@ -10,7 +10,6 @@ on:
       run-tests:
         description: 'Manually trigger testing'
         required: false
-        default: 'true'
 
 jobs:
   test:
