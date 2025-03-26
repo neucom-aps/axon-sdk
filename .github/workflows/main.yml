@@ -34,4 +34,4 @@ jobs:
 
     - name: Run tests
       run: |
-        pytest stick-emulator/stick-emulator/test_imn.py
+        pytest test_imn.py
