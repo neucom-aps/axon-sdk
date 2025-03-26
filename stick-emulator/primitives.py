@@ -1,12 +1,10 @@
-import numpy as np
-import matplotlib.pyplot as plt
 from abc import ABC, abstractmethod
 from collections import defaultdict
 import heapq
 
 
 class AbstractNeuron:
-    def __init__(self, Vt=10.0, Vreset=0.0, tm=100.0, tf=20.0):
+    def __init__(self, Vt, tm, tf, Vreset=0):
         """
         Initialize the neuron with given parameters.
 
@@ -27,7 +25,7 @@ class AbstractNeuron:
         self.gf = 0.0
         self.gate = 0
 
-    def update(self, dt):
+    def update(self, dt) -> bool:
         """
         Update the state of the neuron by one timestep.
 
@@ -44,12 +42,8 @@ class AbstractNeuron:
         if self.gate:
             self.gf -= dt * (self.gf / self.tf)
 
-        # Check for spike condition
+        # Check for spike condition (reset happens explicitly later)
         if self.V >= self.Vt:
-            self.V = self.Vreset
-            self.ge = 0.0
-            self.gf = 0.0
-            self.gate = 0
             return True
         return False
 
@@ -71,10 +65,11 @@ class AbstractNeuron:
             self.gate = 1 if weight > 0 else 0
         else:
             raise ValueError("Unknown synapse type.")
-        
+
+
 class ExplicitNeuron(AbstractNeuron):
-    def __init__(self, neuron_id, Vt=10, Vreset=0, tm=100, tf=20):
-        super().__init__(Vt, Vreset, tm, tf)
+    def __init__(self, neuron_id, Vt, tm, tf, Vreset=0):
+        super().__init__(Vt, tm, tf, Vreset)
         self.id = neuron_id
         self.spike_times = []
 
@@ -96,8 +91,9 @@ class DataEncoder:
         """
         self.Tmin = Tmin
         self.Tcod = Tcod
+        self.Tmax = Tmin + Tcod
 
-    def encode_value(self, value):
+    def encode_value(self, value) -> tuple[float, float]:
         """
         Encode a value into spike times.
 
@@ -107,23 +103,50 @@ class DataEncoder:
         Returns:
         tuple: Two spike times representing the encoded value.
         """
+        assert value >= 0 and value <= 1
         interval = self.Tmin + value * self.Tcod
         return (0, interval)
     
+    def decode_interval(self, spiking_interval) -> float:
+        """
+        Decode a spikes interval into a value
+
+        Parameters:
+        spiking_interval (float): The value to encode, expected between 0 and 1.
+
+        Returns:
+        float: The decoded value
+        """
+        value = (spiking_interval - self.Tmin) / self.Tcod
+        return value
+    
+
 class AbstractSpikingNetwork(ABC):
     def __init__(self):
         self.neurons = {}
-        self.connections = defaultdict(dict)
+        self.synapses = []
 
     def add_neuron(self, neuron_id, neuron):
         self.neurons[neuron_id] = neuron
 
-    def connect_neurons(self, pre_neuron_id, post_neuron_id, synapse_type, weight_delay_tuple):
-        self.connections[pre_neuron_id][post_neuron_id] = (synapse_type, weight_delay_tuple)
+    def connect_neurons(self, pre_neuron_id, post_neuron_id, synapse_type, weight, delay):
+        synapse = Synapse(
+            self.neurons[pre_neuron_id],
+            self.neurons[post_neuron_id],
+            synapse_type,
+            weight,
+            delay
+        )
+        self.synapses.append(synapse)
+
+    def synapses_from(self, neuron_id):
+        is_neuron_id = lambda synapse: synapse.pre_neuron.id is neuron_id
+        return list(filter(is_neuron_id, self.synapses))
 
     @abstractmethod
     def simulate(self, simulation_time, dt):
         pass
+
 
 class Synapse:
     def __init__(self, pre_neuron, post_neuron, synapse_type, weight, delay):
