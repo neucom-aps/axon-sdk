@@ -27,6 +27,13 @@ jobs:
         pip install pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-    - name: Run tests
+    - name: Run tests and generate report
       run: |
-        pytest -v stick-emulator/test_imn.py
+        pytest -v stick-emulator/test_imn.py --html=report.html
+      working-directory: ${{ github.workspace }}
+
+    - name: Save test report as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: test-report
+        path: report.html
