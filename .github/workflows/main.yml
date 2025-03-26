@@ -9,7 +9,7 @@ on:
     inputs:
       run-tests:
         description: 'Manually trigger testing'
-        required: true
+        required: false
         default: 'true'
 
 jobs:
@@ -34,4 +34,4 @@ jobs:
 
     - name: Run tests
       run: |
-        pytest stick-emulator/test_imn.py
+        pytest -v stick-emulator/test_imn.py
