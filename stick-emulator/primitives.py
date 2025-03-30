@@ -1,6 +1,9 @@
 from abc import ABC, abstractmethod
 from collections import defaultdict
 import heapq
+from helpers import flatten_nested_list
+
+from typing import Optional
 
 
 class AbstractNeuron:
@@ -68,10 +71,10 @@ class AbstractNeuron:
 
 
 class ExplicitNeuron(AbstractNeuron):
-    def __init__(self, neuron_id, Vt, tm, tf, Vreset=0):
+    def __init__(self, Vt:float, tm:float, tf:float, Vreset:float=0, neuron_id:Optional[str]=None):
         super().__init__(Vt, tm, tf, Vreset)
         self.id = neuron_id
-        self.spike_times = []
+        self.spike_times:list[float] = []
 
     def reset(self):
         self.V = self.Vreset
@@ -121,6 +124,31 @@ class DataEncoder:
         return value
     
 
+class SpikingNetworkModule():
+    def __init__(self) -> None:
+        self._neurons:list[ExplicitNeuron] = []
+        self._subnetworks:list[SpikingNetworkModule] = []
+
+    @property
+    def neurons(self) -> list[ExplicitNeuron]:
+        total_neurons = []
+        total_neurons.extend([n.id if n.id else n for n in self._neurons])
+        sub_neurons = flatten_nested_list([subnet.neurons for subnet in self._subnetworks])
+        total_neurons.extend(sub_neurons)
+        return total_neurons
+
+    @neurons.setter
+    def neurons(self, new_neurons:list[ExplicitNeuron]) -> None:
+        self._neurons = new_neurons
+
+    def add_neuron(self, neuron:ExplicitNeuron) -> None:
+        self._neurons.append(neuron)
+
+    def add_subnetwork(self, subnet:'SpikingNetworkModule') -> None:
+        self._subnetworks.append(subnet)
+
+
+
 class AbstractSpikingNetwork(ABC):
     def __init__(self):
         self.neurons = {}
@@ -148,8 +176,10 @@ class AbstractSpikingNetwork(ABC):
         pass
 
 
+
+
 class Synapse:
-    def __init__(self, pre_neuron, post_neuron, synapse_type, weight, delay):
+    def __init__(self, pre_neuron:ExplicitNeuron, post_neuron:ExplicitNeuron, weight:float, delay:float, synapse_type:str):
         self.pre_neuron = pre_neuron
         self.post_neuron = post_neuron
         self.type = synapse_type
