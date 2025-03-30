@@ -21,7 +21,7 @@ class InvertingMemoryNetwork(AbstractSpikingNetwork):
         
         neurons = ['input', 'first', 'last', 'acc', 'recall', 'output']
         for neuron_id in neurons:
-            self.add_neuron(neuron_id, ExplicitNeuron(neuron_id, Vt, tm, tf))
+            self.add_neuron(neuron_id, ExplicitNeuron(neuron_id=neuron_id, Vt=Vt, tm=tm, tf=tf))
 
         self.connect_neurons('input', 'first', 'V', we, Tsyn)
         self.connect_neurons('input', 'last', 'V', 0.5 * we, Tsyn)
