@@ -50,6 +50,29 @@ class AbstractNeuron:
             return True
         return False
 
+    def update_and_spike(self, dt) -> bool:
+        """
+        Update the state of the neuron by one timestep.
+
+        Parameters:
+        dt (float): The simulation timestep (ms).
+
+        Returns:
+        bool: True if the neuron spikes, False otherwise.
+        """
+        spike = False
+        # Update membrane potential based on the differential equations provided
+        self.V += dt * (self.ge + self.gate * self.gf) / self.tm
+
+        # Update gf dynamics if gated
+        if self.gate:
+            self.gf -= dt * (self.gf / self.tf)
+
+        # Check for spike condition (reset happens explicitly later)
+        if self.V >= self.Vt:
+            spike = True
+        return (self.V, spike)
+
     def receive_synaptic_event(self, synapse_type, weight):
         """
         Update neuron state based on incoming synaptic event.
@@ -75,6 +98,7 @@ class ExplicitNeuron(AbstractNeuron):
         super().__init__(Vt, tm, tf, Vreset)
         self.id = neuron_id
         self.spike_times:list[float] = []
+        self.out_synapses:list[Synapse] = []
 
     def reset(self):
         self.V = self.Vreset
@@ -96,7 +120,7 @@ class DataEncoder:
         self.Tcod = Tcod
         self.Tmax = Tmin + Tcod
 
-    def encode_value(self, value) -> tuple[float, float]:
+    def encode_value(self, value:float) -> tuple[float, float]:
         """
         Encode a value into spike times.
 
@@ -110,7 +134,7 @@ class DataEncoder:
         interval = self.Tmin + value * self.Tcod
         return (0, interval)
     
-    def decode_interval(self, spiking_interval) -> float:
+    def decode_interval(self, spiking_interval:float) -> float:
         """
         Decode a spikes interval into a value
 
@@ -132,7 +156,7 @@ class SpikingNetworkModule():
     @property
     def neurons(self) -> list[ExplicitNeuron]:
         total_neurons = []
-        total_neurons.extend([n.id if n.id else n for n in self._neurons])
+        total_neurons.extend(self._neurons)
         sub_neurons = flatten_nested_list([subnet.neurons for subnet in self._subnetworks])
         total_neurons.extend(sub_neurons)
         return total_neurons
@@ -141,12 +165,20 @@ class SpikingNetworkModule():
     def neurons(self, new_neurons:list[ExplicitNeuron]) -> None:
         self._neurons = new_neurons
 
-    def add_neuron(self, neuron:ExplicitNeuron) -> None:
-        self._neurons.append(neuron)
+    def add_neurons(self, neurons:ExplicitNeuron|list[ExplicitNeuron]) -> None:
+        if isinstance(neurons, ExplicitNeuron):
+            self._neurons.append(neurons)
+        elif isinstance(neurons, list) and all(isinstance(n, ExplicitNeuron) for n in neurons):
+            self._neurons.extend(neurons)
+        else:
+            raise TypeError("All elements in the list must be of type ExplicitNeuron")
 
     def add_subnetwork(self, subnet:'SpikingNetworkModule') -> None:
         self._subnetworks.append(subnet)
 
+    def connect_neurons(self, pre_neuron:ExplicitNeuron, post_neuron:ExplicitNeuron, synapse_type:str, weight:float, delay:float):
+        synapse = Synapse(pre_neuron=pre_neuron, post_neuron=post_neuron, synapse_type=synapse_type, weight=weight, delay=delay)
+        pre_neuron.out_synapses.append(synapse)
 
 
 class AbstractSpikingNetwork(ABC):
@@ -185,6 +217,31 @@ class Synapse:
         self.type = synapse_type
         self.weight = weight
         self.delay = delay
+
+
+class SpikeEvent:
+    def __init__(self, time:float, affected_neuron:ExplicitNeuron, synapse_type:str, weight:float):
+        self.time = time
+        self.affected_neuron = affected_neuron
+        self.synapse_type = synapse_type
+        self.weight = weight
+
+    def __lt__(self, other):  # Needed to use it in a heap
+        return self.time < other.time
+
+class SpikeEventQueue:
+    def __init__(self):
+        self.events:list[SpikeEvent] = []
+
+    def add_event(self, time:float, neuron:ExplicitNeuron, synapse_type:str, weight:float):
+        event = SpikeEvent(time=time, affected_neuron=neuron, synapse_type=synapse_type, weight=weight)
+        heapq.heappush(self.events, event)
+
+    def pop_events(self, current_time) -> list[SpikeEvent]:
+        events = []
+        while self.events and self.events[0].time <= current_time:
+            events.append(heapq.heappop(self.events))
+        return events
 
 
 class EventQueue:
