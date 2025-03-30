@@ -1,6 +1,6 @@
 import pytest
 
-from ..primitives import SpikingNetworkModule, ExplicitNeuron
+from primitives import SpikingNetworkModule, ExplicitNeuron
 
 
 def test_basic_module():

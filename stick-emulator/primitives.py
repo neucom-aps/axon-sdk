@@ -159,11 +159,11 @@ class AbstractSpikingNetwork(ABC):
 
     def connect_neurons(self, pre_neuron_id, post_neuron_id, synapse_type, weight, delay):
         synapse = Synapse(
-            self.neurons[pre_neuron_id],
-            self.neurons[post_neuron_id],
-            synapse_type,
-            weight,
-            delay
+            pre_neuron=self.neurons[pre_neuron_id],
+            post_neuron=self.neurons[post_neuron_id],
+            synapse_type=synapse_type,
+            weight=weight,
+            delay=delay
         )
         self.synapses.append(synapse)
 
