@@ -110,8 +110,8 @@ if __name__ == "__main__":
     # ============================
     # Decode output
     # ============================
-    pos_spikes = sim.spike_log.get(net.output_pos.id, [])
-    neg_spikes = sim.spike_log.get(net.output_neg.id, [])
+    pos_spikes = sim.spike_log.get(net.output_pos.uid, [])
+    neg_spikes = sim.spike_log.get(net.output_neg.uid, [])
 
     def try_decode(spikes):
         if len(spikes) >= 2:

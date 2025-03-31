@@ -50,7 +50,7 @@ if __name__ == "__main__":
     sim.apply_input_spike(imn.recall, t=200)
     sim.simulate(simulation_time=300)
 
-    output_spikes = sim.spike_log[imn.output.id]
+    output_spikes = sim.spike_log[imn.output.uid]
     out_val = encoder.decode_interval(output_spikes[1] - output_spikes[0])
     print(f'Input val: {val}')
     print(f'Inverted val (1-val): {out_val}')
