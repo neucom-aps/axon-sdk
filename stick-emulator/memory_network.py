@@ -83,7 +83,7 @@ if __name__ == '__main__':
     sim.simulate(simulation_time=200)
 
     # Retrieve and decode output
-    output_spikes = sim.spike_log.get(memnet.output.id, [])
+    output_spikes = sim.spike_log.get(memnet.output.uid, [])
     if len(output_spikes) >= 2:
         out_val = encoder.decode_interval(output_spikes[1] - output_spikes[0])
         print(f'✅ Input value: {val:.3f}')
