@@ -36,10 +36,10 @@ class MemoryNetwork(SpikingNetworkModule):
         self.connect_neurons(first, acc, 'ge', wacc, Tsyn)
 
         # Last → acc2 (negative to delay output)
-        self.connect_neurons(last, acc2, 'ge', -wacc, Tsyn)
+        self.connect_neurons(last, acc2, 'ge', wacc, Tsyn)
 
         # acc → acc2
-        self.connect_neurons(acc, acc2, 'ge', wacc, Tsyn)
+        self.connect_neurons(acc, acc2, 'ge', -wacc, Tsyn)
 
         # Recall → acc2
         self.connect_neurons(recall, acc2, 'ge', wacc, Tsyn)
@@ -65,22 +65,22 @@ class MemoryNetwork(SpikingNetworkModule):
 
 if __name__ == '__main__':
     from simulator import Simulator
-    val = 0.1  # test input value
+    val = 1  # test input value
     encoder = DataEncoder(Tcod=100)
     memnet = MemoryNetwork(encoder)
 
     # Set up simulator
-    sim = Simulator(net=memnet, encoder=encoder, dt=0.001)
+    sim = Simulator(net=memnet, encoder=encoder, dt=0.01)
 
     # Apply encoded input to 'input' neuron at t=0
     sim.apply_input_value(value=val, neuron=memnet.input, t0=0)
 
     # Apply recall spike at t=200ms
-    sim.apply_input_spike(neuron=memnet.recall, t=100)
+    sim.apply_input_spike(neuron=memnet.recall, t=0)
 
 
     # Run simulation for enough time to capture output
-    sim.simulate(simulation_time=700)
+    sim.simulate(simulation_time=200)
 
     # Retrieve and decode output
     output_spikes = sim.spike_log.get(memnet.output.id, [])
