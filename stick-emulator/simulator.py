@@ -2,7 +2,7 @@ from primitives import SpikingNetworkModule, DataEncoder, SpikeEventQueue, Spike
 
 
 class Simulator:
-    def __init__(self, net:SpikingNetworkModule, encoder:DataEncoder, dt:float=0.01) -> None:
+    def __init__(self, net:SpikingNetworkModule, encoder:DataEncoder, dt:float=0.001) -> None:
         self.net = net
         self.event_queue = SpikeEventQueue()
         self.spike_log:dict[str, list[float]] = {}
