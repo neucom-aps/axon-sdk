@@ -100,18 +100,9 @@ class ExplicitNeuron(AbstractNeuron):
         self.id = neuron_id
         self.spike_times:list[float] = []
         self.out_synapses:list[Synapse] = []
-        
-        if not neuron_id:
-            vowel = ['a', 'e', 'i', 'o', 'u']
-            consonant = [
-                'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 
-                'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z'
-            ]
-            choose = lambda x: random.choice(x)
-            neuron_id = f"{choose(consonant) + choose(vowel) + choose(consonant) + choose(vowel)} (random name)"
-            self.id = neuron_id
+    
         self.id = neuron_id
-        self.uid = uuid.uuid4()
+
 
     def reset(self):
         self.V = self.Vreset
