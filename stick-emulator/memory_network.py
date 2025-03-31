@@ -1,7 +1,7 @@
 from primitives import SpikingNetworkModule, DataEncoder, ExplicitNeuron
 
 class MemoryNetwork(SpikingNetworkModule):
-    def __init__(self, encoder: DataEncoder) -> None:
+    def __init__(self, encoder: DataEncoder, prefix: str) -> None:
         super().__init__()
 
         Vt = 10.0
@@ -16,14 +16,14 @@ class MemoryNetwork(SpikingNetworkModule):
         wacc = Vt * tm / encoder.Tmax
 
         # Create Neurons
-        input = ExplicitNeuron(Vt=Vt, tm=tm, tf=tf, neuron_id='input')
-        first = ExplicitNeuron(Vt=Vt, tm=tm, tf=tf, neuron_id='first')
-        last = ExplicitNeuron(Vt=Vt, tm=tm, tf=tf, neuron_id='last')
-        acc = ExplicitNeuron(Vt=Vt, tm=tm, tf=tf, neuron_id='acc')
-        acc2 = ExplicitNeuron(Vt=Vt, tm=tm, tf=tf, neuron_id='acc2')
-        recall = ExplicitNeuron(Vt=Vt, tm=tm, tf=tf, neuron_id='recall')
-        ready = ExplicitNeuron(Vt=Vt, tm=tm, tf=tf, neuron_id='ready')
-        output = ExplicitNeuron(Vt=Vt, tm=tm, tf=tf, neuron_id='output')
+        input = ExplicitNeuron(Vt=Vt, tm=tm, tf=tf, neuron_id='input' + prefix)
+        first = ExplicitNeuron(Vt=Vt, tm=tm, tf=tf, neuron_id='first' + prefix)
+        last = ExplicitNeuron(Vt=Vt, tm=tm, tf=tf, neuron_id='last' + prefix)
+        acc = ExplicitNeuron(Vt=Vt, tm=tm, tf=tf, neuron_id='acc' + prefix)
+        acc2 = ExplicitNeuron(Vt=Vt, tm=tm, tf=tf, neuron_id='acc2' + prefix)
+        recall = ExplicitNeuron(Vt=Vt, tm=tm, tf=tf, neuron_id='recall' + prefix )
+        ready = ExplicitNeuron(Vt=Vt, tm=tm, tf=tf, neuron_id='ready' + prefix)
+        output = ExplicitNeuron(Vt=Vt, tm=tm, tf=tf, neuron_id='output' + prefix)
 
         # Connections from input
         self.connect_neurons(input, first, 'V', we, Tsyn)
@@ -51,7 +51,7 @@ class MemoryNetwork(SpikingNetworkModule):
         self.connect_neurons(acc2, output, 'V', we, Tsyn)
 
         # Ready → acc2
-        self.connect_neurons(ready, acc2, 'V', we, Tsyn)
+        self.connect_neurons(acc, ready, 'V', we, Tsyn)
 
         # Register neurons
         self.add_neurons([input, first, last, acc, acc2, recall, ready, output])
@@ -67,7 +67,7 @@ if __name__ == '__main__':
     from simulator import Simulator
     val = 1  # test input value
     encoder = DataEncoder(Tcod=100)
-    memnet = MemoryNetwork(encoder)
+    memnet = MemoryNetwork(encoder, '1')
 
     # Set up simulator
     sim = Simulator(net=memnet, encoder=encoder, dt=0.01)
@@ -83,7 +83,8 @@ if __name__ == '__main__':
     sim.simulate(simulation_time=200)
 
     # Retrieve and decode output
-    output_spikes = sim.spike_log.get(memnet.output.uid, [])
+    output_spikes = sim.spike_log.get(memnet.output.id, [])
+    print(sim.spike_log)
     if len(output_spikes) >= 2:
         out_val = encoder.decode_interval(output_spikes[1] - output_spikes[0])
         print(f'✅ Input value: {val:.3f}')
