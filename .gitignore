@@ -1,2 +1,4 @@
 __pycache__/
 .DS_Store
+.python-version
+stick_emulator.egg-info/
