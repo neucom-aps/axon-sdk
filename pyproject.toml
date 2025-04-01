@@ -3,15 +3,20 @@ name = "stick-emulator"
 version = "0.0.1"
 description = "Spike Timing Interval Computation Kernel Simulation Environment"
 readme = "README.md"
-requires-python =">=3.9"
-license = {text = "Apache-2.0"}
+requires-python = ">=3.9"
+license = { text = "Apache-2.0" }
 authors = [
-    {name = "Dmitri Lyalikov", email = "dmitri@existential-ai.com"},
+    { name = "Dmitri Lyalikov", email = "dmitri@existential-ai.com" },
+    { name = "Francesco Sheiban", email = "fs@existential-ai.com" },
+    { name = "Inigo Lara", email = "inigo@existential-ai.com" },
 ]
-dependencies = ["numpy", "matplotlib", "abc", "heapq"]
+dependencies = ["numpy", "matplotlib"]
 [project.optional-dependencies]
 test = ["pre-commit", "pytest-cov", "ruff", "optax", "mypy"]
 
 [tool.setuptools]
-packages = ["stick-emulator"]
-
+packages = [
+    "stick_emulator",
+    "stick_emulator.primitives",
+    "stick_emulator.networks",
+]
