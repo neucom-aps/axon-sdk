@@ -73,7 +73,7 @@ class MemoryNetwork(SpikingNetworkModule):
 
 
 if __name__ == "__main__":
-    from stick_emulator.simulator import Simulator
+    from stick_emulator import Simulator
 
     val = 0.789  # test input value
     encoder = DataEncoder(Tcod=100)
