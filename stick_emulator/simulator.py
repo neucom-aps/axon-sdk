@@ -69,7 +69,6 @@ class Simulator:
                         )
 
     def log_spike(self, neuron: ExplicitNeuron, t: float) -> None:
-<<<<<<< HEAD
         if neuron.id in self.spike_log:
             self.spike_log[neuron.id].append(t)
         else:
@@ -80,18 +79,6 @@ class Simulator:
             self.voltage_log[neuron.id].append(V)
         else:
             self.voltage_log[neuron.id] = [V]
-=======
-        if neuron.uid in self.spike_log:
-            self.spike_log[neuron.uid].append(t)
-        else:
-            self.spike_log[neuron.uid] = [t]
-
-    def log_voltage(self, neuron: ExplicitNeuron, V: float) -> None:
-        if neuron.uid in self.voltage_log:
-            self.voltage_log[neuron.uid].append(V)
-        else:
-            self.voltage_log[neuron.uid] = [V]
->>>>>>> 77c57fee7690484bebf3aa51ef5278843ac2c26b
 
     def visualize_dynamics(self):
         print("vis")
