@@ -1,13 +1,12 @@
 import pytest
-
-from primitives import SpikingNetworkModule, ExplicitNeuron
+from stick_emulator.primitives import SpikingNetworkModule, ExplicitNeuron
 
 
 def test_basic_module():
     class MockModule(SpikingNetworkModule):
         def __init__(self):
             super().__init__()
-            neuron = ExplicitNeuron(Vt=0, tm=0, tf=0, neuron_id='neuron1')
+            neuron = ExplicitNeuron(Vt=0, tm=0, tf=0, neuron_id="neuron1")
             self.add_neurons(neuron)
 
     module = MockModule()
@@ -20,14 +19,14 @@ def test_deep_module():
     class MockModule(SpikingNetworkModule):
         def __init__(self):
             super().__init__()
-            neuron = ExplicitNeuron(Vt=0, tm=0, tf=0, neuron_id='neuron1')
+            neuron = ExplicitNeuron(Vt=0, tm=0, tf=0, neuron_id="neuron1")
             self.add_neurons(neuron)
 
     class WrapModule(SpikingNetworkModule):
         def __init__(self):
             super().__init__()
             mock_module = MockModule()
-            neuron = ExplicitNeuron(Vt=0, tm=0, tf=0, neuron_id='neuron2')
+            neuron = ExplicitNeuron(Vt=0, tm=0, tf=0, neuron_id="neuron2")
             self.add_neurons(neuron)
             self.add_subnetwork(mock_module)
 
@@ -41,14 +40,14 @@ def test_deeper_module():
     class MockModule(SpikingNetworkModule):
         def __init__(self):
             super().__init__()
-            neuron = ExplicitNeuron(Vt=0, tm=0, tf=0, neuron_id='neuron1')
+            neuron = ExplicitNeuron(Vt=0, tm=0, tf=0, neuron_id="neuron1")
             self.add_neurons(neuron)
 
     class Wrap1Module(SpikingNetworkModule):
         def __init__(self):
             super().__init__()
             mock_module = MockModule()
-            neuron = ExplicitNeuron(Vt=0, tm=0, tf=0, neuron_id='neuron2')
+            neuron = ExplicitNeuron(Vt=0, tm=0, tf=0, neuron_id="neuron2")
 
             self.add_neurons(neuron)
             self.add_subnetwork(mock_module)
@@ -57,7 +56,7 @@ def test_deeper_module():
         def __init__(self):
             super().__init__()
             wrap_module = Wrap1Module()
-            neuron = ExplicitNeuron(Vt=0, tm=0, tf=0, neuron_id='neuron3')
+            neuron = ExplicitNeuron(Vt=0, tm=0, tf=0, neuron_id="neuron3")
 
             self.add_neurons(neuron)
             self.add_subnetwork(wrap_module)
@@ -66,6 +65,3 @@ def test_deeper_module():
 
     assert len(module.neurons) == 3, "module.neurons should contain 3 neurons"
     assert isinstance(module.neurons, list), "module.neurons should be a list"
-    
-
-
