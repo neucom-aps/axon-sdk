@@ -19,19 +19,15 @@ class ConstantNetwork(SpikingNetworkModule):
         f_x = (value * self.encoder.Tcod) + encoder.Tmin
 
         # Create constant neuron
-        self.recall_neuron = ExplicitNeuron(
-            Vt=Vt, tm=tm, tf=tf, Vreset=0.0, neuron_id="recall"
+        self.recall_neuron = self.add_neuron(
+            Vt=Vt, tm=tm, tf=tf, Vreset=0.0, neuron_name="recall"
         )
-        self.output_neuron = ExplicitNeuron(
-            Vt=Vt, tm=tm, tf=tf, Vreset=0.0, neuron_id="output"
+        self.output_neuron = self.add_neuron(
+            Vt=Vt, tm=tm, tf=tf, Vreset=0.0, neuron_name="output"
         )
-        self.add_neurons(self.recall_neuron)
-        self.add_neurons(self.output_neuron)
 
         # Connect constant neuron to itself with a delay
-        self.connect_neurons(
-            self.recall_neuron, self.output_neuron, "V", we, Tsyn
-        )
+        self.connect_neurons(self.recall_neuron, self.output_neuron, "V", we, Tsyn)
         self.connect_neurons(
             self.recall_neuron, self.output_neuron, "V", we, Tsyn + f_x
         )
@@ -47,6 +43,6 @@ if __name__ == "__main__":
     sim = Simulator(constant_network, encoder)
     sim.apply_input_spike(constant_network.recall_neuron, t=0)
     sim.simulate(simulation_time=100)
-    output_spikes = sim.spike_log[constant_network.output_neuron.id]
+    output_spikes = sim.spike_log[constant_network.output_neuron.uid]
     print(f"Input value: {value}")
     print(f"Output spikes: {output_spikes}")

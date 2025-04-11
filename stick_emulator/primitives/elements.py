@@ -2,8 +2,11 @@ from .helpers import flatten_nested_list
 
 from typing import Optional
 
+
 class AbstractNeuron:
-    def __init__(self, Vt, tm, tf, Vreset=0.0):
+    _instance_count = 0
+
+    def __init__(self, Vt, tm, tf, Vreset=0.0, neuron_name: Optional[str] = None):
         """
         Initialize the neuron with given parameters.
 
@@ -23,6 +26,13 @@ class AbstractNeuron:
         self.ge = 0.0
         self.gf = 0.0
         self.gate = 0
+
+        self._uid = f"{neuron_name + '_' if neuron_name else ''}(n{AbstractNeuron._instance_count})"
+        AbstractNeuron._instance_count += 1
+
+    @property
+    def uid(self) -> str:
+        return self._uid
 
     def update(self, dt) -> bool:
         """
@@ -96,14 +106,11 @@ class ExplicitNeuron(AbstractNeuron):
         tm: float,
         tf: float,
         Vreset: float = 0.0,
-        neuron_id: Optional[str] = None,
+        neuron_name: Optional[str] = None,
     ):
-        super().__init__(Vt, tm, tf, Vreset)
-        self.id = neuron_id
+        super().__init__(Vt, tm, tf, Vreset, neuron_name)
         self.spike_times: list[float] = []
         self.out_synapses: list[Synapse] = []
-    
-        self.id = neuron_id
 
     def reset(self):
         self.V = self.Vreset

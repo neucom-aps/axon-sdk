@@ -20,12 +20,12 @@ class InvertingMemoryNetwork(SpikingNetworkModule):
         Tmin = encoder.Tmin
         Tneu = 0.01
 
-        input = ExplicitNeuron(Vt=Vt, tm=tm, tf=tf, neuron_id="input")
-        first = ExplicitNeuron(Vt=Vt, tm=tm, tf=tf, neuron_id="first")
-        last = ExplicitNeuron(Vt=Vt, tm=tm, tf=tf, neuron_id="last")
-        acc = ExplicitNeuron(Vt=Vt, tm=tm, tf=tf, neuron_id="acc")
-        recall = ExplicitNeuron(Vt=Vt, tm=tm, tf=tf, neuron_id="recall")
-        output = ExplicitNeuron(Vt=Vt, tm=tm, tf=tf, neuron_id="output")
+        input = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="input")
+        first = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="first")
+        last = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="last")
+        acc = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="acc")
+        recall = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="recall")
+        output = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="output")
 
         self.connect_neurons(input, first, "V", we, Tsyn)
         self.connect_neurons(input, last, "V", 0.5 * we, Tsyn)
@@ -35,8 +35,6 @@ class InvertingMemoryNetwork(SpikingNetworkModule):
         self.connect_neurons(recall, acc, "ge", wacc, Tsyn)
         self.connect_neurons(acc, output, "V", we, Tsyn)
         self.connect_neurons(recall, output, "V", we, 2 * Tsyn + Tneu)
-
-        self.add_neurons([input, first, last, acc, recall, output])
 
         self.input = input
         self.output = output

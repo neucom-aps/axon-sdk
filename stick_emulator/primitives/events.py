@@ -49,10 +49,8 @@ class EventQueue:
     def __init__(self):
         self.events = []
 
-    def add_event(self, event_time, neuron_id, synapse_type, weight):
-        heapq.heappush(
-            self.events, (event_time, neuron_id, synapse_type, weight)
-        )
+    def add_event(self, event_time, neuron_uid, synapse_type, weight):
+        heapq.heappush(self.events, (event_time, neuron_uid, synapse_type, weight))
 
     def pop_events(self, current_time):
         events = []

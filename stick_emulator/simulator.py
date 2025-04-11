@@ -40,16 +40,16 @@ class Simulator:
                         self.event_queue.add_event(time=t+synapse.delay, neuron=synapse.post_neuron, synapse_type=synapse.type, weight=synapse.weight)
 
     def log_spike(self, neuron: ExplicitNeuron, t: float) -> None:
-        if neuron.id in self.spike_log:
-            self.spike_log[neuron.id].append(t)
+        if neuron.uid in self.spike_log:
+            self.spike_log[neuron.uid].append(t)
         else:
-            self.spike_log[neuron.id] = [t]
+            self.spike_log[neuron.uid] = [t]
 
     def log_voltage(self, neuron: ExplicitNeuron, V: float) -> None:
-        if neuron.id in self.voltage_log:
-            self.voltage_log[neuron.id].append(V)
+        if neuron.uid in self.voltage_log:
+            self.voltage_log[neuron.uid].append(V)
         else:
-            self.voltage_log[neuron.id] = [V]
+            self.voltage_log[neuron.uid] = [V]
 
     def visualize_dynamics(self):
         print('vis')
