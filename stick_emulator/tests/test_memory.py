@@ -16,7 +16,7 @@ def encode_and_recall(input_value, encoder):
     sim.apply_input_spike(net.recall, t=200)
     sim.simulate(simulation_time=800)
 
-    output_spike_log = sim.spike_log[net.output.uid]
+    output_spike_log = sim.spike_log[net.output.id]
     LOGGER.info(f"Output spike log: {output_spike_log}")
     return output_spike_log
 
