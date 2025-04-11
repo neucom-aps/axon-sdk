@@ -17,9 +17,9 @@ def encode_and_recall(input_value, is_positive, encoder):
     sim.simulate(simulation_time=800)
 
     output_spikes = (
-        sim.spike_log.get(net.output_pos.uid, [])
+        sim.spike_log.get(net.output_pos.id, [])
         if is_positive
-        else sim.spike_log.get(net.output_neg.uid, [])
+        else sim.spike_log.get(net.output_neg.id, [])
     )
     return output_spikes
 
