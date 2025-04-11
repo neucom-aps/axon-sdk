@@ -23,55 +23,31 @@ class MultiplierNetwork(SpikingNetworkModule):
         gmult = (Vt * tm) / tf
 
         # Neurons
-        self.input1 = ExplicitNeuron(Vt, tm, tf, neuron_id=prefix + "input1")
-        self.input2 = ExplicitNeuron(Vt, tm, tf, neuron_id=prefix + "input2")
-        self.first1 = ExplicitNeuron(Vt, tm, tf, neuron_id=prefix + "first1")
-        self.last1 = ExplicitNeuron(Vt, tm, tf, neuron_id=prefix + "last1")
-        self.acc_log1 = ExplicitNeuron(
-            Vt, tm, tf, neuron_id=prefix + "acc_log1"
-        )
+        self.input1 = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "input1")
+        self.input2 = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "input2")
+        self.first1 = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "first1")
+        self.last1 = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "last1")
+        self.acc_log1 = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "acc_log1")
 
-        self.first2 = ExplicitNeuron(Vt, tm, tf, neuron_id=prefix + "first2")
-        self.last2 = ExplicitNeuron(Vt, tm, tf, neuron_id=prefix + "last2")
-        self.acc_log2 = ExplicitNeuron(
-            Vt, tm, tf, neuron_id=prefix + "acc_log2"
-        )
+        self.first2 = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "first2")
+        self.last2 = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "last2")
+        self.acc_log2 = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "acc_log2")
 
-        self.sync = ExplicitNeuron(Vt, tm, tf, neuron_id=prefix + "sync")
-        self.acc_exp = ExplicitNeuron(Vt, tm, tf, neuron_id=prefix + "acc_exp")
-        self.output = ExplicitNeuron(Vt, tm, tf, neuron_id=prefix + "output")
-
-        self.add_neurons(
-            [
-                self.input1,
-                self.input2,
-                self.first1,
-                self.last1,
-                self.acc_log1,
-                self.first2,
-                self.last2,
-                self.acc_log2,
-                self.sync,
-                self.acc_exp,
-                self.output,
-            ]
-        )
+        self.sync = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "sync")
+        self.acc_exp = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "acc_exp")
+        self.output = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "output")
 
         self.connect_neurons(self.input1, self.first1, "V", we, Tsyn)
         self.connect_neurons(self.input1, self.last1, "V", 0.5 * we, Tsyn)
         self.connect_neurons(self.first1, self.first1, "V", wi, Tsyn)
-        self.connect_neurons(
-            self.first1, self.acc_log1, "ge", wacc, Tsyn + Tmin
-        )
+        self.connect_neurons(self.first1, self.acc_log1, "ge", wacc, Tsyn + Tmin)
         self.connect_neurons(self.last1, self.acc_log1, "ge", -wacc, Tsyn)
         self.connect_neurons(self.last1, self.sync, "V", 0.5 * we, Tsyn)
 
         self.connect_neurons(self.input2, self.first2, "V", we, Tsyn)
         self.connect_neurons(self.input2, self.last2, "V", 0.5 * we, Tsyn)
         self.connect_neurons(self.first2, self.first2, "V", wi, Tsyn)
-        self.connect_neurons(
-            self.first2, self.acc_log2, "ge", wacc, Tsyn + Tmin
-        )
+        self.connect_neurons(self.first2, self.acc_log2, "ge", wacc, Tsyn + Tmin)
         self.connect_neurons(self.last2, self.acc_log2, "ge", -wacc, Tsyn)
         self.connect_neurons(self.last2, self.sync, "V", 0.5 * we, Tsyn)
 
@@ -109,7 +85,7 @@ if __name__ == "__main__":
     # Simulate long enough to see output
     sim.simulate(simulation_time=400)
 
-    spikes = sim.spike_log.get(net.output.id, [])
+    spikes = sim.spike_log.get(net.output.uid, [])
 
     if len(spikes) >= 2:
         interval = spikes[1] - spikes[0]

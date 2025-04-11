@@ -17,9 +17,9 @@ def encode_and_recall(input_value, is_positive, encoder):
     sim.simulate(simulation_time=800)
 
     output_spikes = (
-        sim.spike_log.get(net.output_pos.id, [])
+        sim.spike_log.get(net.output_pos.uid, [])
         if is_positive
-        else sim.spike_log.get(net.output_neg.id, [])
+        else sim.spike_log.get(net.output_neg.uid, [])
     )
     return output_spikes
 
@@ -65,11 +65,11 @@ def test_signed_memory_spike_times(input_value, expected_interval):
     ), f"Expected decoded value {expected_value_neg}, got {decoded_value_neg}"
 
 
-def test_no_spikes_for_invalid_input():
+def test_no_spikes_for_inval_input():
     encoder = DataEncoder()
     net = SignedMemoryNetwork(encoder)
     with pytest.raises(Exception):
-        net.apply_input_spike(1.5)  # invalid (>1.0)
+        net.apply_input_spike(1.5)  # inval (>1.0)
 
 
 @pytest.mark.parametrize(

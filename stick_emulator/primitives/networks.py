@@ -1,5 +1,6 @@
-from abc import ABC, abstractmethod
 from .elements import Synapse, ExplicitNeuron
+
+from typing import Optional
 
 
 def flatten_nested_list(nested_list: list) -> list:
@@ -13,9 +14,17 @@ def flatten_nested_list(nested_list: list) -> list:
 
 
 class SpikingNetworkModule:
-    def __init__(self) -> None:
+    _instace_count = 0
+
+    def __init__(self, module_name: Optional[str] = None) -> None:
         self._neurons: list[ExplicitNeuron] = []
         self._subnetworks: list[SpikingNetworkModule] = []
+        self._uid = f"{module_name + '_' if module_name else ''}(m{SpikingNetworkModule._instace_count})"
+        SpikingNetworkModule._instace_count += 1
+
+    @property
+    def uid(self) -> str:
+        return self._uid
 
     @property
     def neurons(self) -> list[ExplicitNeuron]:
@@ -27,23 +36,20 @@ class SpikingNetworkModule:
         total_neurons.extend(sub_neurons)
         return total_neurons
 
-    @neurons.setter
-    def neurons(self, new_neurons: list[ExplicitNeuron]) -> None:
-        self._neurons = new_neurons
-
-    def add_neurons(
-        self, neurons: ExplicitNeuron | list[ExplicitNeuron]
-    ) -> None:
-        if isinstance(neurons, ExplicitNeuron):
-            self._neurons.append(neurons)
-        elif isinstance(neurons, list) and all(
-            isinstance(n, ExplicitNeuron) for n in neurons
-        ):
-            self._neurons.extend(neurons)
-        else:
-            raise TypeError(
-                "All elements in the list must be of type ExplicitNeuron"
-            )
+    def add_neuron(
+        self,
+        Vt: float,
+        tm: float,
+        tf: float,
+        Vreset: float = 0.0,
+        neuron_name: Optional[str] = None,
+    ) -> ExplicitNeuron:
+        extended_neuron_name = self._uid + "_" + f"{neuron_name if neuron_name else ''}"
+        new_neuron = ExplicitNeuron(
+            Vt=Vt, tm=tm, tf=tf, Vreset=Vreset, neuron_name=extended_neuron_name
+        )
+        self._neurons.append(new_neuron)
+        return new_neuron
 
     def add_subnetwork(self, subnet: "SpikingNetworkModule") -> None:
         self._subnetworks.append(subnet)
@@ -64,32 +70,3 @@ class SpikingNetworkModule:
             delay=delay,
         )
         pre_neuron.out_synapses.append(synapse)
-
-
-class AbstractSpikingNetwork(ABC):
-    def __init__(self):
-        self.neurons = {}
-        self.synapses = []
-
-    def add_neuron(self, neuron_id, neuron):
-        self.neurons[neuron_id] = neuron
-
-    def connect_neurons(
-        self, pre_neuron_id, post_neuron_id, synapse_type, weight, delay
-    ):
-        synapse = Synapse(
-            pre_neuron=self.neurons[pre_neuron_id],
-            post_neuron=self.neurons[post_neuron_id],
-            synapse_type=synapse_type,
-            weight=weight,
-            delay=delay,
-        )
-        self.synapses.append(synapse)
-
-    def synapses_from(self, neuron_id):
-        is_neuron_id = lambda synapse: synapse.pre_neuron.id is neuron_id
-        return list(filter(is_neuron_id, self.synapses))
-
-    @abstractmethod
-    def simulate(self, simulation_time, dt):
-        pass
