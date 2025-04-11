@@ -2,9 +2,8 @@ from .helpers import flatten_nested_list
 
 from typing import Optional
 
-
 class AbstractNeuron:
-    def __init__(self, Vt, tm, tf, Vreset=0):
+    def __init__(self, Vt, tm, tf, Vreset=0.0):
         """
         Initialize the neuron with given parameters.
 
@@ -47,7 +46,7 @@ class AbstractNeuron:
             return True
         return False
 
-    def update_and_spike(self, dt) -> bool:
+    def update_and_spike(self, dt) -> tuple[float, bool]:
         """
         Update the state of the neuron by one timestep.
 
@@ -78,34 +77,40 @@ class AbstractNeuron:
         synapse_type (str): Type of synapse ('V', 'ge', 'gf', 'gate').
         weight (float): Synaptic weight to modify neuron state.
         """
-        if synapse_type == 'V':
+        if synapse_type == "V":
             self.V += weight
-        elif synapse_type == 'ge':
+        elif synapse_type == "ge":
             self.ge += weight
-        elif synapse_type == 'gf':
+        elif synapse_type == "gf":
             self.gf += weight
-        elif synapse_type == 'gate':
+        elif synapse_type == "gate":
             self.gate = 1 if weight > 0 else 0
         else:
             raise ValueError("Unknown synapse type.")
 
 
 class ExplicitNeuron(AbstractNeuron):
-    def __init__(self, Vt:float, tm:float, tf:float, Vreset:float=0, neuron_id:Optional[str]=None):
+    def __init__(
+        self,
+        Vt: float,
+        tm: float,
+        tf: float,
+        Vreset: float = 0.0,
+        neuron_id: Optional[str] = None,
+    ):
         super().__init__(Vt, tm, tf, Vreset)
         self.id = neuron_id
-        self.spike_times:list[float] = []
-        self.out_synapses:list[Synapse] = []
+        self.spike_times: list[float] = []
+        self.out_synapses: list[Synapse] = []
     
         self.id = neuron_id
-
 
     def reset(self):
         self.V = self.Vreset
         self.ge = 0
         self.gf = 0
         self.gate = 0
-        
+
 
 class Synapse:
     def __init__(
