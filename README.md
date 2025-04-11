@@ -1,2 +1,7 @@
 # stick-emulator
- Python STICK Emulator and Simulator 
+
+To use:
+```
+cd stick-emulator
+pip install -e .
+```
