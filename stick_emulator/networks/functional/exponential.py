@@ -24,15 +24,11 @@ class ExponentialNetwork(SpikingNetworkModule):
         wacc = Vt * tm / encoder.Tcod  # To ensure V = Vt at Tcod
 
         # Neurons
-        self.input = ExplicitNeuron(Vt, tm, tf, neuron_id=prefix + "_input")
-        self.first = ExplicitNeuron(Vt, tm, tf, neuron_id=prefix + "_first")
-        self.last = ExplicitNeuron(Vt, tm, tf, neuron_id=prefix + "_last")
-        self.acc = ExplicitNeuron(Vt, tm, tf, neuron_id=prefix + "_acc")
-        self.output = ExplicitNeuron(Vt, tm, tf, neuron_id=prefix + "_output")
-
-        self.add_neurons(
-            [self.input, self.first, self.last, self.acc, self.output]
-        )
+        self.input = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "_input")
+        self.first = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "_first")
+        self.last = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "_last")
+        self.acc = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "_acc")
+        self.output = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "_output")
 
         # Connections from input neuron
         self.connect_neurons(self.input, self.first, "V", we, Tsyn)
@@ -78,16 +74,16 @@ if __name__ == "__main__":
     from stick_emulator import Simulator
 
     encoder = DataEncoder(Tmin=10.0, Tcod=100.0)
-    net = ExpNetwork(encoder)
+    net = ExponentialNetwork(encoder)
 
     value = 0.2
     sim = Simulator(net, encoder, dt=0.01)
     sim.apply_input_value(value, neuron=net.input, t0=10)
     sim.simulate(300)
 
-    output_spikes = sim.spike_log.get(net.output.id, [])
-    acc_spikes = sim.spike_log.get(net.acc.id, [])
-    last_spike = sim.spike_log.get(net.last.id, [None])[-1]
+    output_spikes = sim.spike_log.get(net.output.uid, [])
+    acc_spikes = sim.spike_log.get(net.acc.uid, [])
+    last_spike = sim.spike_log.get(net.last.uid, [None])[-1]
     print(output_spikes)
     print(f"Input value: {value}")
     print(f"Expected exp delay: {expected_exp_output_delay(value):.3f} ms")

@@ -22,34 +22,19 @@ class SubtractorNetwork(SpikingNetworkModule):
         wi = -Vt
 
         # Create all neurons
-        self.input1 = ExplicitNeuron(Vt, tm, tf, neuron_id="input1")
-        self.input2 = ExplicitNeuron(Vt, tm, tf, neuron_id="input2")
+        self.input1 = self.add_neuron(Vt, tm, tf, neuron_name="input1")
+        self.input2 = self.add_neuron(Vt, tm, tf, neuron_name="input2")
 
-        self.sync1 = ExplicitNeuron(Vt, tm, tf, neuron_id="sync1")
-        self.sync2 = ExplicitNeuron(Vt, tm, tf, neuron_id="sync2")
+        self.sync1 = self.add_neuron(Vt, tm, tf, neuron_name="sync1")
+        self.sync2 = self.add_neuron(Vt, tm, tf, neuron_name="sync2")
 
-        self.inb1 = ExplicitNeuron(Vt, tm, tf, neuron_id="inb1")
-        self.inb2 = ExplicitNeuron(Vt, tm, tf, neuron_id="inb2")
+        self.inb1 = self.add_neuron(Vt, tm, tf, neuron_name="inb1")
+        self.inb2 = self.add_neuron(Vt, tm, tf, neuron_name="inb2")
 
-        self.output_plus = ExplicitNeuron(Vt, tm, tf, neuron_id="output_plus")
-        self.output_minus = ExplicitNeuron(Vt, tm, tf, neuron_id="output_minus")
+        self.output_plus = self.add_neuron(Vt, tm, tf, neuron_name="output_plus")
+        self.output_minus = self.add_neuron(Vt, tm, tf, neuron_name="output_minus")
 
-        self.zero = ExplicitNeuron(Vt, tm, tf, neuron_id="zero")
-
-        # Add all neurons
-        self.add_neurons(
-            [
-                self.input1,
-                self.input2,
-                self.sync1,
-                self.sync2,
-                self.inb1,
-                self.inb2,
-                self.output_plus,
-                self.output_minus,
-                self.zero,
-            ]
-        )
+        self.zero = self.add_neuron(Vt, tm, tf, neuron_name="zero")
 
         # --- Main black synapse pathway ---
         # Inputs to syncs
@@ -71,9 +56,7 @@ class SubtractorNetwork(SpikingNetworkModule):
             self.sync2, self.output_minus, "V", we, Tmin + (3 * Tsyn + 2 * Tneu)
         )
 
-        self.connect_neurons(
-            self.sync2, self.output_plus, "V", we, 3 * Tsyn + 2 * Tneu
-        )
+        self.connect_neurons(self.sync2, self.output_plus, "V", we, 3 * Tsyn + 2 * Tneu)
         self.connect_neurons(
             self.sync1, self.output_minus, "V", we, 3 * Tsyn + 2 * Tneu
         )
@@ -129,24 +112,20 @@ if __name__ == "__main__":
     sim.simulate(simulation_time=300)
 
     # --- Output Decoding ---
-    spikes_plus = sim.spike_log.get(net.output.id, [])
-    spikes_minus = sim.spike_log.get(net.output_alt.id, [])
+    spikes_plus = sim.spike_log.get(net.output.uid, [])
+    spikes_minus = sim.spike_log.get(net.output_alt.uid, [])
     # print(spikes_plus)
     # print(spikes_minus)
     if len(spikes_plus) >= 2:
         interval = spikes_plus[1] - spikes_plus[0]
         decoded = decode_interval_to_value(interval, encoder)
         print(f"✅ Output: x1 - x2 = {x1 - x2:.3f}")
-        print(
-            f"✅ output+ interval = {interval:.3f} ms → decoded = {decoded:.3f}"
-        )
+        print(f"✅ output+ interval = {interval:.3f} ms → decoded = {decoded:.3f}")
     elif len(spikes_minus) >= 2:
         interval = spikes_minus[1] - spikes_minus[0]
         decoded = decode_interval_to_value(interval, encoder)
         print(f"✅ Output: x1 - x2 = {x1 - x2:.3f}")
-        print(
-            f"✅ output- interval = {interval:.3f} ms → decoded = -{decoded:.3f}"
-        )
+        print(f"✅ output- interval = {interval:.3f} ms → decoded = -{decoded:.3f}")
     elif len(spikes_plus) == 1 and len(spikes_minus) == 0:
         print(f"✅ Output: Equal inputs detected (x1 = x2 = {x1})")
         print(f"✅ Single spike on output+ (zero case) → zero difference")

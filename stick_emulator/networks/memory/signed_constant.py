@@ -7,9 +7,7 @@ import math
 
 
 class SignedConstantNetwork(SpikingNetworkModule):
-    def __init__(
-        self, encoder: DataEncoder, value: float, prefix: str = ""
-    ) -> None:
+    def __init__(self, encoder: DataEncoder, value: float, prefix: str = "") -> None:
         super().__init__()
         self.encoder = encoder
         self.value = value
@@ -22,31 +20,24 @@ class SignedConstantNetwork(SpikingNetworkModule):
         f_x = (math.fabs(value) * self.encoder.Tcod) + encoder.Tmin
 
         # Create constant neuron
-        self.recall = ExplicitNeuron(
-            Vt=Vt, tm=tm, tf=tf, Vreset=0.0, neuron_id=prefix + "recall"
+        self.recall = self.add_neuron(
+            Vt=Vt, tm=tm, tf=tf, Vreset=0.0, neuron_name=prefix + "recall"
         )
-        self.output_plus = ExplicitNeuron(
-            Vt=Vt, tm=tm, tf=tf, Vreset=0.0, neuron_id=prefix + "output_plus"
+        self.output_plus = self.add_neuron(
+            Vt=Vt, tm=tm, tf=tf, Vreset=0.0, neuron_name=prefix + "output_plus"
         )
-        self.output_minus = ExplicitNeuron(
-            Vt=Vt, tm=tm, tf=tf, Vreset=0.0, neuron_id=prefix + "output_minus"
+        self.output_minus = self.add_neuron(
+            Vt=Vt, tm=tm, tf=tf, Vreset=0.0, neuron_name=prefix + "output_minus"
         )
-        self.add_neurons(self.recall)
-        self.add_neurons(self.output_plus)
-        self.add_neurons(self.output_minus)
 
         # Connect constant neuron to itself with a delay
 
         if value >= 0:
             self.connect_neurons(self.recall, self.output_plus, "V", we, Tsyn)
-            self.connect_neurons(
-                self.recall, self.output_plus, "V", we, Tsyn + f_x
-            )
+            self.connect_neurons(self.recall, self.output_plus, "V", we, Tsyn + f_x)
         else:
             self.connect_neurons(self.recall, self.output_minus, "V", we, Tsyn)
-            self.connect_neurons(
-                self.recall, self.output_minus, "V", we, Tsyn + f_x
-            )
+            self.connect_neurons(self.recall, self.output_minus, "V", we, Tsyn + f_x)
 
 
 if __name__ == "__main__":
@@ -59,6 +50,6 @@ if __name__ == "__main__":
     sim = Simulator(constant_network, encoder)
     sim.apply_input_spike(constant_network.recall, t=0)
     sim.simulate(simulation_time=120)
-    output_spikes = sim.spike_log[constant_network.output_minus.id]
+    output_spikes = sim.spike_log[constant_network.output_minus.uid]
     print(f"Input value: {value}")
     print(f"Output spikes: {output_spikes}")

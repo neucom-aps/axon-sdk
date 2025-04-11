@@ -16,7 +16,7 @@ def encode_and_recall(input_value, encoder):
     sim.apply_input_spike(net.recall, t=200)
     sim.simulate(simulation_time=800)
 
-    output_spike_log = sim.spike_log[net.output.id]
+    output_spike_log = sim.spike_log[net.output.uid]
     LOGGER.info(f"Output spike log: {output_spike_log}")
     return output_spike_log
 
@@ -68,9 +68,7 @@ def test_custom_encoder_parameters(Tmin, Tcod, input_value, expected_interval):
     print(output_spikes)
 
     expected_value = custom_encoder.decode_interval(expected_interval)
-    decoded_value = custom_encoder.decode_interval(
-        output_spikes[1] - output_spikes[0]
-    )
+    decoded_value = custom_encoder.decode_interval(output_spikes[1] - output_spikes[0])
 
     assert (
         len(output_spikes) == 2

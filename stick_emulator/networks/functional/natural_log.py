@@ -23,24 +23,12 @@ class LogNetwork(SpikingNetworkModule):
         wacc = (Vt * tm) / encoder.Tcod
 
         # Neurons
-        self.input = ExplicitNeuron(
-            Vt=Vt, tm=tm, tf=tf, neuron_id=prefix + "_input"
-        )
-        self.first = ExplicitNeuron(
-            Vt=Vt, tm=tm, tf=tf, neuron_id=prefix + "_first"
-        )
-        self.last = ExplicitNeuron(
-            Vt=Vt, tm=tm, tf=tf, neuron_id=prefix + "_last"
-        )
-        self.acc = ExplicitNeuron(
-            Vt=Vt, tm=tm, tf=tf, neuron_id=prefix + "_acc"
-        )
-        self.output = ExplicitNeuron(
-            Vt=Vt, tm=tm, tf=tf, neuron_id=prefix + "_output"
-        )
-
-        self.add_neurons(
-            [self.input, self.first, self.last, self.acc, self.output]
+        self.input = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "_input")
+        self.first = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "_first")
+        self.last = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "_last")
+        self.acc = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "_acc")
+        self.output = self.add_neuron(
+            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "_output"
         )
 
         # Input triggers
@@ -87,24 +75,18 @@ if __name__ == "__main__":
     sim.apply_input_value(val, neuron=lognet.input, t0=10)
     sim.simulate(300)
 
-    output_spikes = sim.spike_log.get(lognet.output.id, [])
-    acc_spikes = sim.spike_log.get(lognet.acc.id, [])
-    last_spike_time = sim.spike_log.get(lognet.last.id, [None])[-1]
+    output_spikes = sim.spike_log.get(lognet.output.uid, [])
+    acc_spikes = sim.spike_log.get(lognet.acc.uid, [])
+    last_spike_time = sim.spike_log.get(lognet.last.uid, [None])[-1]
 
     print(f"Input value: {val}")
-    print(
-        f"Expected delay (log({val})): {expected_log_output_delay(val):.3f} ms"
-    )
+    print(f"Expected delay (log({val})): {expected_log_output_delay(val):.3f} ms")
 
     if len(output_spikes) >= 2:
         interval = output_spikes[1] - output_spikes[0]
         print(f"✅ Output spike interval: {interval:.3f} ms")
     elif len(output_spikes) == 1:
-        delay = (
-            output_spikes[0] - last_spike_time
-            if last_spike_time
-            else float("nan")
-        )
+        delay = output_spikes[0] - last_spike_time if last_spike_time else float("nan")
         print(
             f"✅ Output spike at: {output_spikes[0]:.3f} ms (delay from 'last': {delay:.3f} ms)"
         )

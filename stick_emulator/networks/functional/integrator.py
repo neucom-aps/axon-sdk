@@ -33,30 +33,26 @@ class IntegratorNetwork(SpikingNetworkModule):
         gmult = (Vt * tm) / tf
         wacc = (Vt * tm) / encoder.Tcod
 
-        self.init = ExplicitNeuron(Vt=Vt, tm=tm, tf=tf, neuron_id="init")
+        self.init = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="init")
 
-        self.input_plus = ExplicitNeuron(
-            Vt=Vt, tm=tm, tf=tf, neuron_id=prefix + "input_plus"
+        self.input_plus = self.add_neuron(
+            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "input_plus"
         )
-        self.input_minus = ExplicitNeuron(
-            Vt=Vt, tm=tm, tf=tf, neuron_id=prefix + "input_minus"
+        self.input_minus = self.add_neuron(
+            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "input_minus"
         )
-        self.start = ExplicitNeuron(
-            Vt=Vt, tm=tm, tf=tf, neuron_id=prefix + "start"
+        self.start = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "start")
+        self.output_plus = self.add_neuron(
+            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "output_plus"
         )
-        self.output_plus = ExplicitNeuron(
-            Vt=Vt, tm=tm, tf=tf, neuron_id=prefix + "output_plus"
+        self.output_minus = self.add_neuron(
+            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "output_minus"
         )
-        self.output_minus = ExplicitNeuron(
-            Vt=Vt, tm=tm, tf=tf, neuron_id=prefix + "output_minus"
-        )
-        self.new_input = ExplicitNeuron(
-            Vt=Vt, tm=tm, tf=tf, neuron_id=prefix + "new_input"
+        self.new_input = self.add_neuron(
+            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "new_input"
         )
 
-        self.constant_network = SignedConstantNetwork(
-            encoder, constant, prefix + "sc"
-        )
+        self.constant_network = SignedConstantNetwork(encoder, constant, prefix + "sc")
         self.lin_comb = LinearCombinatorNetwork(
             encoder, 2, coeffs, prefix=prefix + "lin_comb"
         )
@@ -64,9 +60,7 @@ class IntegratorNetwork(SpikingNetworkModule):
         self.add_subnetwork(self.constant_network)
         self.add_subnetwork(self.lin_comb)
 
-        self.connect_neurons(
-            self.init, self.constant_network.recall, "V", we, Tsyn
-        )
+        self.connect_neurons(self.init, self.constant_network.recall, "V", we, Tsyn)
 
         self.connect_neurons(
             self.input_plus, self.lin_comb.input_neurons[2], "V", we, Tsyn
@@ -75,9 +69,7 @@ class IntegratorNetwork(SpikingNetworkModule):
             self.input_minus, self.lin_comb.input_neurons[3], "V", we, Tsyn
         )
 
-        self.connect_neurons(
-            self.start, self.lin_comb.input_neurons[2], "V", we, Tsyn
-        )
+        self.connect_neurons(self.start, self.lin_comb.input_neurons[2], "V", we, Tsyn)
         self.connect_neurons(
             self.start, self.lin_comb.input_neurons[2], "V", we, Tsyn + Tmin
         )
@@ -112,9 +104,7 @@ class IntegratorNetwork(SpikingNetworkModule):
             Tsyn,
         )
 
-        self.connect_neurons(
-            self.lin_comb.output_plus, self.output_plus, "V", we, Tsyn
-        )
+        self.connect_neurons(self.lin_comb.output_plus, self.output_plus, "V", we, Tsyn)
         self.connect_neurons(
             self.lin_comb.output_minus, self.output_minus, "V", we, Tsyn
         )
@@ -152,8 +142,8 @@ if __name__ == "__main__":
     sim.simulate(800)
 
     # Decode final output
-    output_plus = sim.spike_log.get(net.output_plus.id, [])
-    output_minus = sim.spike_log.get(net.output_minus.id, [])
+    output_plus = sim.spike_log.get(net.output_plus.uid, [])
+    output_minus = sim.spike_log.get(net.output_minus.uid, [])
 
     if len(output_plus) >= 2:
         interval = output_plus[1] - output_plus[0]

@@ -20,10 +20,7 @@ class SynchronizerNetwork(SpikingNetworkModule):
         Tsyn = 1.0
 
         # Create sync neuron
-        self.sync = ExplicitNeuron(
-            Vt=Vt, tm=tm, tf=tf, Vreset=0.0, neuron_id="sync"
-        )
-        self.add_neurons(self.sync)
+        self.sync = self.add_neuron(Vt=Vt, tm=tm, tf=tf, Vreset=0.0, neuron_name="sync")
 
         self.input_neurons = []
         self.output_neurons = []
@@ -31,13 +28,12 @@ class SynchronizerNetwork(SpikingNetworkModule):
 
         for i in range(N):
             # Input and output interface neurons
-            input_neuron = ExplicitNeuron(
-                Vt=Vt, tm=tm, tf=tf, Vreset=0.0, neuron_id=f"input_{i}"
+            input_neuron = self.add_neuron(
+                Vt=Vt, tm=tm, tf=tf, Vreset=0.0, neuron_name=f"input_{i}"
             )
-            output_neuron = ExplicitNeuron(
-                Vt=Vt, tm=tm, tf=tf, Vreset=0.0, neuron_id=f"output_{i}"
+            output_neuron = self.add_neuron(
+                Vt=Vt, tm=tm, tf=tf, Vreset=0.0, neuron_name=f"output_{i}"
             )
-            self.add_neurons([input_neuron, output_neuron])
             self.input_neurons.append(input_neuron)
             self.output_neurons.append(output_neuron)
 
@@ -53,9 +49,7 @@ class SynchronizerNetwork(SpikingNetworkModule):
             self.connect_neurons(memory.output, output_neuron, "V", we, Tsyn)
 
             # Connect memory.ready to sync
-            self.connect_neurons(
-                memory.ready, self.sync, "V", (we / N) + 0.0001, Tsyn
-            )
+            self.connect_neurons(memory.ready, self.sync, "V", (we / N) + 0.0001, Tsyn)
 
             # Connect sync to memory.recall
             self.connect_neurons(self.sync, memory.recall, "V", we, Tsyn)
