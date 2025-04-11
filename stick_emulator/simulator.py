@@ -2,15 +2,15 @@ from stick_emulator.primitives import SpikingNetworkModule, DataEncoder, SpikeEv
 
 
 class Simulator:
-    def __init__(self, net:SpikingNetworkModule, encoder:DataEncoder, dt:float=0.001) -> None:
+    def __init__(self, net:SpikingNetworkModule, encoder:DataEncoder, dt: float = 0.001) -> None:
         self.net = net
         self.event_queue = SpikeEventQueue()
-        self.spike_log:dict[str, list[float]] = {}
-        self.voltage_log:dict[ExplicitNeuron, list[float]] = {}
+        self.spike_log: dict[str, list[float]] = {}
+        self.voltage_log: dict[ExplicitNeuron, list[float]] = {}
         self.encoder = encoder
         self.dt = dt
 
-    def apply_input_value(self, value:float, neuron:ExplicitNeuron, t0:float=0):
+    def apply_input_value(self, value:float, neuron: ExplicitNeuron, t0: float = 0):
         assert value >= 0.0 and value <= 1.0
         spike_interval = self.encoder.encode_value(value)
         for t in spike_interval:
@@ -18,7 +18,7 @@ class Simulator:
             for synapse in neuron.out_synapses:
                 self.event_queue.add_event(time=t0+synapse.delay+t, neuron=synapse.post_neuron, synapse_type=synapse.type, weight=synapse.weight)
 
-    def apply_input_spike(self, neuron:ExplicitNeuron, t:float):
+    def apply_input_spike(self, neuron:ExplicitNeuron, t: float):
         self.log_spike(neuron, t)
         for synapse in neuron.out_synapses:
             self.event_queue.add_event(time=synapse.delay+t, neuron=synapse.post_neuron, synapse_type=synapse.type, weight=synapse.weight)
@@ -39,13 +39,13 @@ class Simulator:
                     for synapse in neuron.out_synapses:
                         self.event_queue.add_event(time=t+synapse.delay, neuron=synapse.post_neuron, synapse_type=synapse.type, weight=synapse.weight)
 
-    def log_spike(self, neuron:ExplicitNeuron, t:float) -> None:
+    def log_spike(self, neuron: ExplicitNeuron, t: float) -> None:
         if neuron.id in self.spike_log:
             self.spike_log[neuron.id].append(t)
         else:
             self.spike_log[neuron.id] = [t]
 
-    def log_voltage(self, neuron:ExplicitNeuron, V:float) -> None:
+    def log_voltage(self, neuron: ExplicitNeuron, V: float) -> None:
         if neuron.id in self.voltage_log:
             self.voltage_log[neuron.id].append(V)
         else:
