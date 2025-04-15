@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STICK Topology Visualization</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            height: 100vh; /* Full height of the viewport */
+        }
+        h1 {
+            margin: 0; /* Remove default margin */
+            padding: 20px; /* Add some padding for spacing */
+            background-color: #f0f0f0; /* Optional: background color for the title */
+            border-bottom: 1px solid #ccc; /* Optional: border below the title */
+        }
+        #graph {
+            width: 100%; /* Full width */
+            height: calc(100vh - 60px); /* Full height minus the title height */
+            overflow: hidden; /* Prevent overflow */
+        }
+    </style>
+</head>
+<body>
+    <h1>STICK Topology Visualization</h1>
+    <div id="graph"></div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.3.0/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dagre/0.8.5/dagre.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dagre-d3/0.6.4/dagre-d3.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
