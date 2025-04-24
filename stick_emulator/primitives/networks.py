@@ -1,6 +1,6 @@
 from .elements import Synapse, ExplicitNeuron
 
-from typing import Optional
+from typing import Optional, Self
 
 
 def flatten_nested_list(nested_list: list) -> list:
@@ -35,6 +35,32 @@ class SpikingNetworkModule:
         )
         total_neurons.extend(sub_neurons)
         return total_neurons
+
+    def recurse_neurons_with_module_uid(self) -> list[dict[ExplicitNeuron, str]]:
+        total_neurons_with_module = []
+        total_neurons_with_module = [
+            {neuron: self.uid} for neuron in self.top_module_neurons
+        ]
+        sub_neurons = flatten_nested_list(
+            [subnet.recurse_neurons_with_module_uid() for subnet in self._subnetworks]
+        )
+        total_neurons_with_module.extend(sub_neurons)
+        return total_neurons_with_module
+
+    @property
+    def neurons_with_module_uid(self) -> dict[ExplicitNeuron, str]:
+        dicts = self.recurse_neurons_with_module_uid()
+        combined = {}
+        for d in dicts:
+            combined.update(d)
+        return combined
+
+    @property
+    def top_module_neurons(self) -> list[ExplicitNeuron]:
+        """
+        Returns neurons belonging to current module, without taking submodules into account
+        """
+        return self._neurons
 
     def add_neuron(
         self,
