@@ -61,7 +61,7 @@ fetch('/graph_data')
             .style("font-size", "12px")
             .text(d => data.edges.find(edge => edge.source === d.v && edge.target === d.w).label);
 
-        // Style group label
+        // Style for group label
         data.groups.forEach(group => {
             const groupNode = g.node(group.id);
             inner.append("text")
