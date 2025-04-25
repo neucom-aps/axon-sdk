@@ -5,7 +5,6 @@ from stick_emulator.primitives import (
     DataEncoder,
 )
 from stick_emulator.networks import SubtractorNetwork, SynchronizerNetwork
-from stick_emulator import Simulator
 import math
 
 
