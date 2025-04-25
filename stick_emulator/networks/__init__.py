@@ -14,3 +14,4 @@ from .functional.linear_combinator import LinearCombinatorNetwork
 from .functional.exponential import ExponentialNetwork
 from .functional.natural_log import LogNetwork
 from .functional.multiplier import MultiplierNetwork
+from .functional.signed_multiplier import SignedMultiplierNetwork
