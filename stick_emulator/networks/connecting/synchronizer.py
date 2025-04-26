@@ -20,7 +20,9 @@ class SynchronizerNetwork(SpikingNetworkModule):
         Tsyn = 1.0
 
         # Create sync neuron
-        self.sync = self.add_neuron(Vt=Vt, tm=tm, tf=tf, Vreset=0.0, neuron_name="sync")
+        self.sync = self.add_neuron(
+            Vt=Vt, tm=tm, tf=tf, Vreset=0.0, neuron_name="sync"
+        )
 
         self.input_neurons = []
         self.output_neurons = []
@@ -49,7 +51,9 @@ class SynchronizerNetwork(SpikingNetworkModule):
             self.connect_neurons(memory.output, output_neuron, "V", we, Tsyn)
 
             # Connect memory.ready to sync
-            self.connect_neurons(memory.ready, self.sync, "V", (we / N) + 0.0001, Tsyn)
+            self.connect_neurons(
+                memory.ready, self.sync, "V", (we / N) + 0.0001, Tsyn
+            )
 
             # Connect sync to memory.recall
             self.connect_neurons(self.sync, memory.recall, "V", we, Tsyn)
@@ -76,8 +80,7 @@ if __name__ == "__main__":
 
     # Collect and decode outputs
     for i, out_neuron in enumerate(syncnet.output_neurons):
-        print(out_neuron.id)
-        spikes = sim.spike_log.get(out_neuron.id, [])
+        spikes = sim.spike_log.get(out_neuron.uid, [])
         if len(spikes) >= 2:
             interval = spikes[1] - spikes[0]
             decoded = encoder.decode_interval(interval)
