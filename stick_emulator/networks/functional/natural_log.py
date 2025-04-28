@@ -4,6 +4,9 @@ from stick_emulator.primitives import (
     ExplicitNeuron,
 )
 
+# Defining constant value here
+T_F = 50.0
+
 
 class LogNetwork(SpikingNetworkModule):
     def __init__(self, encoder: DataEncoder, prefix: str = ""):
@@ -13,7 +16,7 @@ class LogNetwork(SpikingNetworkModule):
         # Constants
         Vt = 10.0
         tm = 100.0
-        tf = 20.0  ## Increasing this makes Log more accurate
+        tf = T_F  ## Increasing this makes Log more accurate
         Tsyn = 1.0
         Tmin = encoder.Tmin
 
@@ -23,10 +26,18 @@ class LogNetwork(SpikingNetworkModule):
         wacc = (Vt * tm) / encoder.Tcod
 
         # Neurons
-        self.input = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "_input")
-        self.first = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "_first")
-        self.last = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "_last")
-        self.acc = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "_acc")
+        self.input = self.add_neuron(
+            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "_input"
+        )
+        self.first = self.add_neuron(
+            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "_first"
+        )
+        self.last = self.add_neuron(
+            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "_last"
+        )
+        self.acc = self.add_neuron(
+            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "_acc"
+        )
         self.output = self.add_neuron(
             Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "_output"
         )
@@ -41,6 +52,7 @@ class LogNetwork(SpikingNetworkModule):
         # Encoding into acc from first and last
         self.connect_neurons(self.first, self.acc, "ge", wacc, Tsyn + Tmin)
         self.connect_neurons(self.last, self.acc, "gate", 1.0, Tsyn)
+        self.connect_neurons(self.last, self.acc, "ge", -wacc, Tsyn)
         self.connect_neurons(self.last, self.acc, "gf", gmult, Tsyn)
 
         # Output driven by acc spike
@@ -51,10 +63,9 @@ class LogNetwork(SpikingNetworkModule):
         return self.output.spike_times
 
 
-import math
+def expected_log_output_delay(x, Tmin=10.0, Tcod=100.0, tf=T_F):
+    import math
 
-
-def expected_log_output_delay(x, Tmin=10.0, Tcod=100.0, tf=20.0):
     Tin = Tmin + x * Tcod
     try:
         delay = tf * math.log(Tcod / (Tin - Tmin))
@@ -64,13 +75,18 @@ def expected_log_output_delay(x, Tmin=10.0, Tcod=100.0, tf=20.0):
         return float("nan")
 
 
+def decode_logarithm(output_interval, Tmin=10.0, tf=T_F):
+    return (Tmin - output_interval) / tf
+
+
 if __name__ == "__main__":
+    import math
     from stick_emulator import Simulator
 
     encoder = DataEncoder(Tmin=10.0, Tcod=100.0)
     lognet = LogNetwork(encoder)
 
-    val = 0.6
+    val = 0.389
     sim = Simulator(lognet, encoder, dt=0.01)
     sim.apply_input_value(val, neuron=lognet.input, t0=10)
     sim.simulate(300)
@@ -79,16 +95,27 @@ if __name__ == "__main__":
     acc_spikes = sim.spike_log.get(lognet.acc.uid, [])
     last_spike_time = sim.spike_log.get(lognet.last.uid, [None])[-1]
 
-    print(f"Input value: {val}")
-    print(f"Expected delay (log({val})): {expected_log_output_delay(val):.3f} ms")
+    print(f"Input value: {val}, log result: {math.log(val)}")
+    print(
+        f"Expected delay (log({val})): {expected_log_output_delay(val):.3f} ms"
+    )
 
     if len(output_spikes) >= 2:
         interval = output_spikes[1] - output_spikes[0]
-        print(f"✅ Output spike interval: {interval:.3f} ms")
+        actual_value = decode_logarithm(interval)
+        print(
+            f"✅ Output spike interval: {interval:.3f} ms, corresponding to {actual_value}"
+        )
     elif len(output_spikes) == 1:
-        delay = output_spikes[0] - last_spike_time if last_spike_time else float("nan")
+        delay = (
+            output_spikes[0] - last_spike_time
+            if last_spike_time
+            else float("nan")
+        )
         print(
             f"✅ Output spike at: {output_spikes[0]:.3f} ms (delay from 'last': {delay:.3f} ms)"
         )
     else:
         print("❌ No output spike detected.")
+
+    sim.plot_chronogram()
