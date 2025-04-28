@@ -5,8 +5,7 @@ from stick_emulator.primitives import (
     ExplicitNeuron,
 )
 
-from stick_emulator.visualization import vis_topology
-
+from stick_emulator.visualization import vis_topology, Chronogram
 import os
 
 
@@ -21,7 +20,9 @@ class Simulator:
         self.encoder = encoder
         self.dt = dt
 
-    def apply_input_value(self, value: float, neuron: ExplicitNeuron, t0: float = 0):
+    def apply_input_value(
+        self, value: float, neuron: ExplicitNeuron, t0: float = 0
+    ):
         assert value >= 0.0 and value <= 1.0
         spike_interval = self.encoder.encode_value(value)
         for t in spike_interval:
@@ -45,7 +46,9 @@ class Simulator:
             )
 
     def simulate(self, simulation_time: float):
-        self.timesteps = [i * self.dt for i in range(1, int(simulation_time / self.dt))]
+        self.timesteps = [
+            i * self.dt for i in range(1, int(simulation_time / self.dt))
+        ]
         for t in self.timesteps:
             events = self.event_queue.pop_events(t)
             for event in events:
@@ -84,3 +87,22 @@ class Simulator:
 
     def launch_visualization(self):
         vis_topology(self.net)
+
+    def plot_chronogram(self):
+        voltage_log_with_id = {}
+        spike_log_with_id = {}
+        it = 0
+        for neuron in self.net.neurons:
+            new_id = f"{it:02}_" + neuron.uid
+            voltage_log_with_id[new_id] = self.voltage_log[neuron.uid]
+            spike_log_with_id[new_id] = self.spike_log[neuron.uid]
+            it += 1
+
+        chrono = Chronogram(
+            self.timesteps,
+            spike_log_with_id,
+            voltage_log_with_id,
+            Vt=10,
+            dt=self.dt,
+        )
+        chrono.show()
