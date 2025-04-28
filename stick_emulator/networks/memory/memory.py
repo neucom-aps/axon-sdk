@@ -21,14 +21,24 @@ class MemoryNetwork(SpikingNetworkModule):
         wacc = Vt * tm / encoder.Tmax
 
         # Create Neurons
-        input = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="input" + suffix)
-        first = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="first" + suffix)
+        input = self.add_neuron(
+            Vt=Vt, tm=tm, tf=tf, neuron_name="input" + suffix
+        )
+        first = self.add_neuron(
+            Vt=Vt, tm=tm, tf=tf, neuron_name="first" + suffix
+        )
         last = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="last" + suffix)
         acc = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="acc" + suffix)
         acc2 = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="acc2" + suffix)
-        recall = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="recall" + suffix)
-        ready = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="ready" + suffix)
-        output = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="output" + suffix)
+        recall = self.add_neuron(
+            Vt=Vt, tm=tm, tf=tf, neuron_name="recall" + suffix
+        )
+        ready = self.add_neuron(
+            Vt=Vt, tm=tm, tf=tf, neuron_name="ready" + suffix
+        )
+        output = self.add_neuron(
+            Vt=Vt, tm=tm, tf=tf, neuron_name="output" + suffix
+        )
 
         # Connections from input
         self.connect_neurons(input, first, "V", we, Tsyn)
@@ -82,7 +92,7 @@ if __name__ == "__main__":
     sim.apply_input_spike(neuron=memnet.recall, t=200)
 
     # Run simulation for enough time to capture output
-    sim.simulate(simulation_time=300)
+    sim.simulate(simulation_time=350)
 
     # Retrieve and decode output
     output_spikes = sim.spike_log.get(memnet.output.uid, [])
@@ -93,3 +103,5 @@ if __name__ == "__main__":
         print(f"✅ Interval: {output_spikes[1] - output_spikes[0]:.3f} ms")
     else:
         print(f"❌ Output spike missing or incomplete: {output_spikes}")
+
+    sim.plot_chronogram()
