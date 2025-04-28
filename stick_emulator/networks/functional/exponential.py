@@ -5,6 +5,8 @@ from stick_emulator.primitives import (
 )
 import math
 
+T_F = 50.0
+
 
 class ExponentialNetwork(SpikingNetworkModule):
     def __init__(self, encoder: DataEncoder, prefix: str = "") -> None:
@@ -14,7 +16,7 @@ class ExponentialNetwork(SpikingNetworkModule):
         # Parameters
         Vt = 10.0
         tm = 100.0
-        tf = 20.0
+        tf = T_F
         Tsyn = 1.0
         Tmin = encoder.Tmin
 
@@ -28,7 +30,9 @@ class ExponentialNetwork(SpikingNetworkModule):
         self.first = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "_first")
         self.last = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "_last")
         self.acc = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "_acc")
-        self.output = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "_output")
+        self.output = self.add_neuron(
+            Vt, tm, tf, neuron_name=prefix + "_output"
+        )
 
         # Connections from input neuron
         self.connect_neurons(self.input, self.first, "V", we, Tsyn)
@@ -55,10 +59,7 @@ class ExponentialNetwork(SpikingNetworkModule):
         return self.output.spike_times
 
 
-# === Helper function to compute expected delay ===
-
-
-def expected_exp_output_delay(x, Tmin=10.0, Tcod=100.0, tf=20.0):
+def expected_exp_output_delay(x, Tmin=10.0, Tcod=100.0, tf=T_F):
     Tcod_val = x * Tcod
     try:
         delay = Tcod * math.exp(-Tcod_val / tf)
@@ -68,7 +69,9 @@ def expected_exp_output_delay(x, Tmin=10.0, Tcod=100.0, tf=20.0):
         return float("nan")
 
 
-# === Main test code ===
+def decode_exponential(output_interval, Tmin=10.0, Tcod=100.0, tf=T_F):
+    return ((output_interval - Tmin) / Tcod) ** (-tf / Tcod)
+
 
 if __name__ == "__main__":
     from stick_emulator import Simulator
@@ -76,7 +79,7 @@ if __name__ == "__main__":
     encoder = DataEncoder(Tmin=10.0, Tcod=100.0)
     net = ExponentialNetwork(encoder)
 
-    value = 0.2
+    value = 0.5
     sim = Simulator(net, encoder, dt=0.01)
     sim.apply_input_value(value, neuron=net.input, t0=10)
     sim.simulate(300)
@@ -84,6 +87,6 @@ if __name__ == "__main__":
     output_spikes = sim.spike_log.get(net.output.uid, [])
     acc_spikes = sim.spike_log.get(net.acc.uid, [])
     last_spike = sim.spike_log.get(net.last.uid, [None])[-1]
-    print(output_spikes)
+    print(output_spikes[1] - output_spikes[0])
     print(f"Input value: {value}")
     print(f"Expected exp delay: {expected_exp_output_delay(value):.3f} ms")
