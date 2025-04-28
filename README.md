@@ -43,7 +43,16 @@ sim.simulate(300)
 
 3. Run your network
 ```bash
-python script.py
+python simulate.py
 ```
 
-> **Note:** Launch topology visualization with `VIS=1 python script.py`.
+## Network visualization
+Topology visualization is available to help inspect and debug your network.
+
+```bash
+VIS=1 python simulate.py
+```
+
+> **Note**
+If a module contains submodules, only the neurons (and synapses) of the submodule that interact with the neurons in the main module are displayed.
+
