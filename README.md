@@ -53,6 +53,6 @@ Topology visualization is available to help inspect and debug your network.
 VIS=1 python simulate.py
 ```
 
-> **Note**
-If a module contains submodules, only the neurons (and synapses) of the submodule that interact with the neurons in the main module are displayed.
+> **Note:**
+> If a module contains submodules, only the neurons (and synapses) of the submodule that interact with the neurons in the main module are displayed.
 
