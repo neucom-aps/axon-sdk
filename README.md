@@ -6,6 +6,7 @@ Python package to emulate the networks implemented in [STICK](https://arxiv.org/
 ```
 cd stick-emulator
 pip install -e .
+pip install -r requirements.txt
 ```
 
 ## Example of use
@@ -47,7 +48,11 @@ python simulate.py
 ```
 
 ## Network visualization
-Visualization tools are available to inspect the network topology and the spiking chronogram. They can be triggered with `VIS=1` without modifying the source code.
+Visualizations are available to help inspect and debug your network:
+- Topology visualization
+- Spike dynamics chronogram
+
+To trigger the visualizations, call your code with the environment variable `VIS=1`.
 
 ```bash
 VIS=1 python simulate.py
