@@ -6,6 +6,7 @@ Python package to emulate the networks implemented in [STICK](https://arxiv.org/
 ```
 cd stick-emulator
 pip install -e .
+pip install -r requirements.txt
 ```
 
 ## Example of use
