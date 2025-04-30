@@ -82,7 +82,6 @@ class Simulator:
             self.voltage_log[neuron.uid] = [V]
 
     def launch_visualization(self):
-        print("Launching visualization...")
         vis_topology(self.net)
         plot_chronogram(
             timesteps=self.timesteps,

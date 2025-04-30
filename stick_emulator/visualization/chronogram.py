@@ -8,6 +8,8 @@ def plot_chronogram(
     voltage_log: dict[str, list[float]],
     spike_log: dict[str, list[float]],
 ):
+    print("Launching chronogram visualization...")
+    print("=========================================")
     n = len(voltage_log.keys())
     _, ax = plt.subplots(nrows=n, ncols=1, sharex=True, figsize=(10, 5))
     colors = iter(cm.rainbow(np.linspace(0, 1, n)))
@@ -33,3 +35,4 @@ def plot_chronogram(
                 ax[i].scatter(spike, 0, s=20, c=c)
 
     plt.show()
+    print("=========================================")
