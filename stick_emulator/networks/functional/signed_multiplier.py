@@ -1,7 +1,6 @@
 from stick_emulator.primitives import (
     SpikingNetworkModule,
     DataEncoder,
-    ExplicitNeuron,
 )
 from stick_emulator.networks import MultiplierNetwork
 
