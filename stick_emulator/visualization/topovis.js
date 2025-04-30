@@ -1,7 +1,7 @@
 fetch('/graph_data')
     .then(response => response.json())
     .then(data => {
-        var g = new dagre.graphlib.Graph({ compound: true });
+        var g = new dagre.graphlib.Graph({ compound: true,  multigraph: true });
         g.setGraph({ rankdir: "LR" });
         g.setDefaultEdgeLabel(function() { return {}; });
 
@@ -10,7 +10,7 @@ fetch('/graph_data')
         });
 
         data.edges.forEach(edge => {
-            g.setEdge(edge.source, edge.target, { label: edge.label, color: edge.color });
+            g.setEdge(edge.source, edge.target, { label: edge.label, color: edge.color, curve: d3.curveBasis }, edge.uid);
         });
 
         if (data.groups && data.groups.length > 0) {
@@ -50,7 +50,8 @@ fetch('/graph_data')
 
         // Style edges
         inner.selectAll("g.edgePath path")
-            .style("stroke", d => data.edges.find(edge => edge.source === d.v && edge.target === d.w).color)
+            .style("stroke", d => data.edges.find(edge => edge.uid === d.name).color)
+            // .style("stroke", "#f0f0f0")
             .style("stroke-width", 2)
             .style("stroke-opacity", 0.5)
             .style("fill", "none");
@@ -59,7 +60,7 @@ fetch('/graph_data')
         inner.selectAll("g.edgeLabel text")
             .style("fill", "#333")
             .style("font-size", "12px")
-            .text(d => data.edges.find(edge => edge.source === d.v && edge.target === d.w).label);
+            .text(d => data.edges.find(edge => edge.uid === d.name).label);
 
         // Style for group label
         data.groups.forEach(group => {

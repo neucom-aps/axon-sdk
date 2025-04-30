@@ -120,6 +120,7 @@ class ExplicitNeuron(AbstractNeuron):
 
 
 class Synapse:
+    _instance_count = 0
     def __init__(
         self,
         pre_neuron: ExplicitNeuron,
@@ -133,3 +134,10 @@ class Synapse:
         self.type = synapse_type
         self.weight = weight
         self.delay = delay
+
+        self._uid = f"synapse_{Synapse._instance_count}"
+        Synapse._instance_count += 1
+
+    @property
+    def uid(self) -> str:
+        return self._uid
