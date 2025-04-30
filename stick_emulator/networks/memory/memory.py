@@ -102,5 +102,3 @@ if __name__ == "__main__":
         print(f"✅ Interval: {output_spikes[1] - output_spikes[0]:.3f} ms")
     else:
         print(f"❌ Output spike missing or incomplete: {output_spikes}")
-
-    sim.plot_chronogram()
