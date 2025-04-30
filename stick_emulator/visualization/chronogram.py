@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import cm
-import numpy as np
 
 
 def plot_chronogram(
@@ -12,7 +11,8 @@ def plot_chronogram(
     print("=========================================")
     n = len(voltage_log.keys())
     _, ax = plt.subplots(nrows=n, ncols=1, sharex=True, figsize=(10, 5))
-    colors = iter(cm.rainbow(np.linspace(0, 1, n)))
+    values = [i / (n - 1) for i in range(n)]  # linearly spaced values between 0 and 1
+    colors = iter(cm.rainbow(values))
 
     for i, item in enumerate(voltage_log.keys()):
         c = next(colors)

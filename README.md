@@ -8,7 +8,7 @@ cd stick-emulator
 pip install -e .
 ```
 
-## Use
+## Example of use
 
 1. Define your network
 
