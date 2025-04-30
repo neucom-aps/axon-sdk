@@ -4,9 +4,7 @@ from stick_emulator.primitives import (
     ExplicitNeuron,
     Synapse,
 )
-from stick_emulator.networks import (
-    SynchronizerNetwork
-)
+from stick_emulator.networks import SynchronizerNetwork
 
 from stick_emulator.visualization.server import start_server
 
@@ -51,7 +49,9 @@ def get_synapses_to_display(net: SpikingNetworkModule) -> list[Synapse]:
         for syn in neuron.out_synapses:
             selected_synapses.append(syn)
 
-    neurons_connecting_top_module_neurons = pre_synapse_neurons(net, top_mod_neurons)
+    neurons_connecting_top_module_neurons = list(
+        set(pre_synapse_neurons(net, top_mod_neurons)) - set(top_mod_neurons)
+    )
     for neuron in neurons_connecting_top_module_neurons:
         for syn in neuron.out_synapses:
             if syn.post_neuron in top_mod_neurons:
@@ -66,7 +66,7 @@ def get_groups_to_display(
     """
     Shows groups for each module that contains neurons which are connected to the top module neurons
     """
-    
+
     grouped_neurons: dict[ExplicitNeuron, str] = net.neurons_with_module_uid
     top_mod_neurons = net.top_module_neurons
     first_mod_neurons_to_display = list(
@@ -125,6 +125,7 @@ def format_edges(synapses: list[Synapse]) -> list[dict[str, str]]:
         item["target"] = syn.post_neuron.uid
         item["label"] = f"({syn.weight:.3f}; {syn.delay:.3f})"
         item["color"] = color_for_synapse(syn.type)
+        item["uid"] = syn.uid
         edges.append(item)
     return edges
 
@@ -153,6 +154,7 @@ def format_groups(groups: list[tuple[ExplicitNeuron, str]]) -> list[dict[str, st
         formatted_groups.append(formatted_group)
 
     return formatted_groups
+
 
 if __name__ == "__main__":
     encoder = DataEncoder()

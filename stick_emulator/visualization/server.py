@@ -4,6 +4,8 @@ import socketserver
 import webbrowser
 import socket
 import os
+import time
+import threading
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):
@@ -51,6 +53,26 @@ def start_server_on_port(graph_data, port):
 
 
 def start_server(graph_data):
+    """
+    The server will only stay open for a fixed amount of time, enough to load the visualization.
+    Afterwards, the simulator execution will continue.
+    To achieve so, the server is run on a different thread with a timeout.
+    """
+    print("===========================")
+    print("Launching visualization...")
     port = find_available_port(initial_port=8000)
     open_browser(port)
-    start_server_on_port(graph_data, port)
+    server_thread = threading.Thread(
+        target=start_server_on_port, args=(graph_data, port)
+    )
+    server_thread.daemon = (
+        True  # This allows the program to exit even if the thread is running
+    )
+    server_thread.start()
+    time.sleep(1)
+    server_thread.join(timeout=1)
+    print("Stopping server and continuing program execution...")
+    print(
+        "[Refreshing the visualization tab will not work since the server is stopped]"
+    )
+    print("===========================")
