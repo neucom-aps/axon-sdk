@@ -58,8 +58,8 @@ def start_server(graph_data):
     Afterwards, the simulator execution will continue.
     To achieve so, the server is run on a different thread with a timeout.
     """
-    print("===========================")
-    print("Launching visualization...")
+    print("Launching topology visualization...")
+    print("=========================================")
     port = find_available_port(initial_port=8000)
     open_browser(port)
     server_thread = threading.Thread(
@@ -75,4 +75,4 @@ def start_server(graph_data):
     print(
         "[Refreshing the visualization tab will not work since the server is stopped]"
     )
-    print("===========================")
+    print("=========================================")
