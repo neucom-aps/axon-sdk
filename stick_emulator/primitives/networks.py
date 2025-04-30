@@ -19,7 +19,10 @@ class SpikingNetworkModule:
     def __init__(self, module_name: Optional[str] = None) -> None:
         self._neurons: list[ExplicitNeuron] = []
         self._subnetworks: list[SpikingNetworkModule] = []
-        self._uid = f"{module_name + '_' if module_name else ''}(m{SpikingNetworkModule._instace_count})"
+        if module_name:
+            self._uid = f"(m{SpikingNetworkModule._instace_count})_{module_name}"
+        else:
+            self._uid = f"(m{SpikingNetworkModule._instace_count})"
         SpikingNetworkModule._instace_count += 1
 
     @property
@@ -70,9 +73,8 @@ class SpikingNetworkModule:
         Vreset: float = 0.0,
         neuron_name: Optional[str] = None,
     ) -> ExplicitNeuron:
-        extended_neuron_name = self._uid + "_" + f"{neuron_name if neuron_name else ''}"
         new_neuron = ExplicitNeuron(
-            Vt=Vt, tm=tm, tf=tf, Vreset=Vreset, neuron_name=extended_neuron_name
+            Vt=Vt, tm=tm, tf=tf, Vreset=Vreset, neuron_name=neuron_name, parent_mod_id=SpikingNetworkModule._instace_count
         )
         self._neurons.append(new_neuron)
         return new_neuron

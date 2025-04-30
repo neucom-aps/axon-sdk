@@ -26,19 +26,19 @@ class LogNetwork(SpikingNetworkModule):
 
         # Neurons
         self.input = self.add_neuron(
-            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "_input"
+            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "input"
         )
         self.first = self.add_neuron(
-            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "_first"
+            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "first"
         )
         self.last = self.add_neuron(
-            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "_last"
+            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "last"
         )
         self.acc = self.add_neuron(
-            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "_acc"
+            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "acc"
         )
         self.output = self.add_neuron(
-            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "_output"
+            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "output"
         )
 
         # Input triggers
@@ -116,5 +116,3 @@ if __name__ == "__main__":
         )
     else:
         print("❌ No output spike detected.")
-
-    sim.plot_chronogram()

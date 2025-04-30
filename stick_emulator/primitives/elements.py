@@ -6,7 +6,15 @@ from typing import Optional
 class AbstractNeuron:
     _instance_count = 0
 
-    def __init__(self, Vt, tm, tf, Vreset=0.0, neuron_name: Optional[str] = None):
+    def __init__(
+        self,
+        Vt,
+        tm,
+        tf,
+        Vreset=0.0,
+        neuron_name: Optional[str] = None,
+        parent_mod_id: Optional[str] = None,
+    ):
         """
         Initialize the neuron with given parameters.
 
@@ -27,7 +35,13 @@ class AbstractNeuron:
         self.gf = 0.0
         self.gate = 0
 
-        self._uid = f"{neuron_name + '_' if neuron_name else ''}(n{AbstractNeuron._instance_count})"
+        if not parent_mod_id:
+            self._uid = f"(n{AbstractNeuron._instance_count})_{neuron_name}"
+        else:
+            self._uid = (
+                f"(m{parent_mod_id},n{AbstractNeuron._instance_count})_{neuron_name}"
+            )
+
         AbstractNeuron._instance_count += 1
 
     @property
@@ -107,8 +121,9 @@ class ExplicitNeuron(AbstractNeuron):
         tf: float,
         Vreset: float = 0.0,
         neuron_name: Optional[str] = None,
+        parent_mod_id: Optional[str] = None,
     ):
-        super().__init__(Vt, tm, tf, Vreset, neuron_name)
+        super().__init__(Vt, tm, tf, Vreset, neuron_name, parent_mod_id)
         self.spike_times: list[float] = []
         self.out_synapses: list[Synapse] = []
 
