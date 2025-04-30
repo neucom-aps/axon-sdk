@@ -1,6 +1,5 @@
 from stick_emulator.primitives import (
     SpikingNetworkModule,
-    ExplicitNeuron,
     DataEncoder,
 )
 

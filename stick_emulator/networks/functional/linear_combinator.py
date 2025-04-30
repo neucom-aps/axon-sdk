@@ -1,11 +1,9 @@
 from stick_emulator.primitives import (
     ExplicitNeuron,
-    EventQueue,
     SpikingNetworkModule,
     DataEncoder,
 )
 from stick_emulator.networks import SubtractorNetwork, SynchronizerNetwork
-import math
 
 
 class LinearCombinatorNetwork(SpikingNetworkModule):
