@@ -73,8 +73,8 @@ if __name__ == "__main__":
     encoder = DataEncoder(Tmin=10.0, Tcod=100.0)
     net = MultiplierNetwork(encoder)
 
-    val1 = 0.00
-    val2 = 0.00
+    val1 = 0.1
+    val2 = 0.5
     true_product = val1 * val2
 
     sim = Simulator(net, encoder, dt=0.01)
