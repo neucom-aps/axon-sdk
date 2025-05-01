@@ -4,7 +4,6 @@ from stick_emulator.primitives import (
     ExplicitNeuron,
     Synapse,
 )
-from stick_emulator.networks import SynchronizerNetwork
 
 from stick_emulator.visualization.server import start_server
 
