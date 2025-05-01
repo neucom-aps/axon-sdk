@@ -35,12 +35,12 @@ class AbstractNeuron:
         self.gf = 0.0
         self.gate = 0
 
-        if not parent_mod_id:
-            self._uid = f"(n{AbstractNeuron._instance_count})_{neuron_name}"
-        else:
+        if parent_mod_id is not None:
             self._uid = (
                 f"(m{parent_mod_id},n{AbstractNeuron._instance_count})_{neuron_name}"
             )
+        else:
+            self._uid = f"(n{AbstractNeuron._instance_count})_{neuron_name}"
 
         AbstractNeuron._instance_count += 1
 
@@ -108,7 +108,7 @@ class AbstractNeuron:
         elif synapse_type == "gf":
             self.gf += weight
         elif synapse_type == "gate":
-            self.gate = 1 if weight > 0 else 0
+            self.gate += weight
         else:
             raise ValueError("Unknown synapse type.")
 
@@ -136,6 +136,7 @@ class ExplicitNeuron(AbstractNeuron):
 
 class Synapse:
     _instance_count = 0
+
     def __init__(
         self,
         pre_neuron: ExplicitNeuron,
