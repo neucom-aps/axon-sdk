@@ -3,11 +3,12 @@ from stick_emulator.primitives import (
     DataEncoder,
 )
 from stick_emulator.networks import MultiplierNetwork
+from typing import Optional
 
 
 class SignedMultiplierNetwork(SpikingNetworkModule):
-    def __init__(self, encoder: DataEncoder, prefix: str = "") -> None:
-        super().__init__()
+    def __init__(self, encoder: DataEncoder, module_name: Optional[str] = None) -> None:
+        super().__init__(module_name)
         self.encoder = encoder
 
         # Parameters
@@ -21,33 +22,33 @@ class SignedMultiplierNetwork(SpikingNetworkModule):
         wi = -Vt
 
         # Create multiplier network
-        self.mn = MultiplierNetwork(encoder, prefix=prefix)
+        self.mn = MultiplierNetwork(encoder, module_name='mul_net')
         self.add_subnetwork(self.mn)
 
         self.input1_plus = self.add_neuron(
-            Vt, tm, tf, neuron_name=prefix + "input1_plus"
+            Vt, tm, tf, neuron_name="input1_plus"
         )
         self.input1_minus = self.add_neuron(
-            Vt, tm, tf, neuron_name=prefix + "input1_minus"
+            Vt, tm, tf, neuron_name="input1_minus"
         )
         self.input2_plus = self.add_neuron(
-            Vt, tm, tf, neuron_name=prefix + "input2_plus"
+            Vt, tm, tf, neuron_name="input2_plus"
         )
         self.input2_minus = self.add_neuron(
-            Vt, tm, tf, neuron_name=prefix + "input2_minus"
+            Vt, tm, tf, neuron_name="input2_minus"
         )
 
         self.output_plus = self.add_neuron(
-            Vt, tm, tf, neuron_name=prefix + "output_plus"
+            Vt, tm, tf, neuron_name="output_plus"
         )
         self.output_minus = self.add_neuron(
-            Vt, tm, tf, neuron_name=prefix + "output_minus"
+            Vt, tm, tf, neuron_name="output_minus"
         )
 
-        self.sign1 = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "sign1")
-        self.sign2 = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "sign2")
-        self.sign3 = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "sign3")
-        self.sign4 = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "sign4")
+        self.sign1 = self.add_neuron(Vt, tm, tf, neuron_name="sign1")
+        self.sign2 = self.add_neuron(Vt, tm, tf, neuron_name="sign2")
+        self.sign3 = self.add_neuron(Vt, tm, tf, neuron_name="sign3")
+        self.sign4 = self.add_neuron(Vt, tm, tf, neuron_name="sign4")
 
         self.connect_neurons(self.input1_plus, self.mn.input1, "V", we, Tsyn)
         self.connect_neurons(self.input1_minus, self.mn.input1, "V", wi, Tsyn)

@@ -2,11 +2,12 @@ from stick_emulator.primitives import (
     SpikingNetworkModule,
     DataEncoder,
 )
+from typing import Optional
 
 
 class ConstantNetwork(SpikingNetworkModule):
-    def __init__(self, encoder: DataEncoder, value: float) -> None:
-        super().__init__()
+    def __init__(self, encoder: DataEncoder, value: float, module_name: Optional[str] = None) -> None:
+        super().__init__(module_name)
         self.encoder = encoder
         self.value = value
 
