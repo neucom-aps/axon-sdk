@@ -3,34 +3,39 @@ from stick_emulator.networks import LogNetwork
 from stick_emulator.primitives import DataEncoder
 from stick_emulator import Simulator
 
-T_F = 50.0
 
-"""
-NOTE: test values computed using
-
-def expected_log_output_delay(x, Tmin=10.0, Tcod=100.0, tf=T_F):
+def expected_log_output_delay(x: float, encoder: DataEncoder, tf: float):
     import math
 
-    Tin = Tmin + x * Tcod
+    Tin = encoder.Tmin + x * encoder.Tcod
     try:
-        delay = tf * math.log(Tcod / (Tin - Tmin))
-        Tout = Tmin + delay
+        delay = tf * math.log(encoder.Tcod / (Tin - encoder.Tmin))
+        Tout = encoder.Tmin + delay
         return Tout
     except ValueError:
         return float("nan")
 
-"""
+
+def decode_logarithm(output_interval: list[float], encoder: DataEncoder, tf: float):
+    return (encoder.Tmin - output_interval) / tf
 
 
 @pytest.mark.parametrize(
-    "input_value, expected_output",
+    "input_value",
     [
-        (0.1, 125.12925464970229),  # Expected delay for log(0.1)
-        (0.5, 44.657359027997266),  # Expected delay for log(0.5)
-        (0.9, 15.268025782891318),  # Expected delay for log(0.9)
+        (0.1),
+        (0.2),
+        (0.5),
+        (0.9),
+        (1.0),
+        (0.12),
+        (0.54),
+        (0.63),
+        (0.87),
+        (0.99)
     ],
 )
-def test_log_output_delay(input_value, expected_output):
+def test_log_output_delay(input_value: float):
     encoder = DataEncoder(Tmin=10.0, Tcod=100.0)
     net = LogNetwork(encoder)
 
@@ -40,52 +45,60 @@ def test_log_output_delay(input_value, expected_output):
 
     output_spikes = sim.spike_log.get(net.output.uid, [])
 
-    assert len(output_spikes) == 2
-    output_interval = output_spikes[1] - output_spikes[0]
+    assert len(output_spikes) == 2, f"Expected 2 output spikes, got {len(output_spikes)}"
+    output_delay = output_spikes[1] - output_spikes[0]
 
-    expected_output_value = encoder.decode_interval(expected_output)
-    decoded_value = encoder.decode_interval(output_interval)
+    expected_output_delay = expected_log_output_delay(input_value, encoder, net.tf)
+    assert expected_output_delay == pytest.approx(output_delay, abs=1e-1)
 
-    assert pytest.approx(decoded_value, abs=1e-2) == expected_output_value
+    expected_output_value = decode_logarithm(expected_output_delay, encoder, net.tf)
+    decoded_value = decode_logarithm(output_delay, encoder, net.tf)
+
+    assert expected_output_value == pytest.approx(decoded_value, abs=1e-3), f"Expected decoded value {expected_output_value}, got {decoded_value}"
 
 
 @pytest.mark.parametrize(
-    "Tmin, Tcod, input_value, expected_output",
+    "Tmin, Tcod",
     [
-        (
-            5,
-            50,
-            0.25,
-            74.31471805599453,
-        ),  # Expected delay for log(0.25) with custom encoder parameters
-        (
-            20,
-            200,
-            0.1,
-            135.1292546497023,
-        ),  # Expected delay for log(0.1) with custom encoder parameters
-        (
-            10,
-            500,
-            0.9,
-            15.268025782891318,
-        ),  # Expected delay for log(0.9) with custom encoder parameters
+        (5, 50,),
+        (20, 200),
+        (10, 200),
+        (20, 300),
     ],
 )
-def test_custom_encoder_parameters(Tmin, Tcod, input_value, expected_output):
-    custom_encoder = DataEncoder(Tmin=Tmin, Tcod=Tcod)
-    net = LogNetwork(custom_encoder)
+@pytest.mark.parametrize(
+    "input_value",
+    [
+        (0.1),
+        (0.2),
+        (0.5),
+        (0.9),
+        (1.0),
+        (0.12),
+        (0.54),
+        (0.63),
+        (0.87),
+        (0.99)
+    ],
+)
+def test_custom_encoder_parameters(Tmin, Tcod, input_value):
+    encoder = DataEncoder(Tmin=Tmin, Tcod=Tcod)
+    net = LogNetwork(encoder)
 
-    sim = Simulator(net, custom_encoder, dt=0.01)
+    sim = Simulator(net, encoder, dt=0.01)
     sim.apply_input_value(input_value, neuron=net.input, t0=0)
-    sim.simulate(600)
+    sim.simulate(400)
 
     output_spikes = sim.spike_log.get(net.output.uid, [])
 
-    assert len(output_spikes) == 2
-    output_interval = output_spikes[1] - output_spikes[0]
+    assert len(output_spikes) == 2, f"Expected 2 output spikes, got {len(output_spikes)}"
+    output_delay = output_spikes[1] - output_spikes[0]
 
-    expected_output_value = custom_encoder.decode_interval(expected_output)
-    decoded_value = custom_encoder.decode_interval(output_interval)
+    expected_output_delay = expected_log_output_delay(input_value, encoder, net.tf)
+    assert expected_output_delay == pytest.approx(output_delay, abs=1e-1)
 
-    assert pytest.approx(decoded_value, abs=1e-2) == expected_output_value
+    expected_output_value = decode_logarithm(expected_output_delay, encoder, net.tf)
+    decoded_value = decode_logarithm(output_delay, encoder, net.tf)
+
+    assert expected_output_value == pytest.approx(decoded_value, abs=1e-3), f"Expected decoded value {expected_output_value}, got {decoded_value}"
+
