@@ -52,6 +52,9 @@ Topology visualization is available to help inspect and debug your network.
 ```bash
 VIS=1 python simulate.py
 ```
+> Example: Visualizing a multiplier network:
+<img width="1430" alt="Screenshot 2025-05-01 at 16 39 11" src="https://github.com/user-attachments/assets/cf9e18c5-d496-4f9b-979d-15f02ba230dd" />
+<img width="1078" alt="Screenshot 2025-05-01 at 16 40 23" src="https://github.com/user-attachments/assets/192040a4-021b-488f-8c8f-fca75e039a08" />
 
 > **Note:**
 > If a module contains submodules, only the neurons (and synapses) of the submodule that interact with the neurons in the main module are displayed.
