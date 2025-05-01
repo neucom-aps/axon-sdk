@@ -10,7 +10,7 @@ T_F = 50.0
 
 class LogNetwork(SpikingNetworkModule):
     def __init__(self, encoder: DataEncoder, module_name: Optional[str] = None):
-        super().__init__()
+        super().__init__(module_name)
         self.encoder = encoder
 
         # Constants
