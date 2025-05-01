@@ -9,7 +9,7 @@ from typing import Optional
 
 class ExponentialNetwork(SpikingNetworkModule):
     def __init__(self, encoder: DataEncoder, module_name: Optional[str] = None) -> None:
-        super().__init__()
+        super().__init__(module_name)
         self.encoder = encoder
 
         # Parameters
