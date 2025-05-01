@@ -1,16 +1,16 @@
 from stick_emulator.primitives import (
     SpikingNetworkModule,
     DataEncoder,
-    ExplicitNeuron,
 )
 from stick_emulator.networks import MemoryNetwork
 
+from typing import Optional
+
 
 class SynchronizerNetwork(SpikingNetworkModule):
-    def __init__(self, encoder: DataEncoder, N: int):
-        super().__init__()
+    def __init__(self, encoder: DataEncoder, N: int, module_name: Optional[str] = None):
+        super().__init__(module_name)
         self.encoder = encoder
-        self.N = N
 
         Vt = 10.0
         tm = 100.0
@@ -40,7 +40,7 @@ class SynchronizerNetwork(SpikingNetworkModule):
             self.output_neurons.append(output_neuron)
 
             # Memory network block
-            memory = MemoryNetwork(encoder, "-" + str(i))
+            memory = MemoryNetwork(encoder, module_name=f"mem_{i}")
             self.add_subnetwork(memory)
             self.memory_blocks.append(memory)
 
@@ -61,31 +61,41 @@ class SynchronizerNetwork(SpikingNetworkModule):
 
 if __name__ == "__main__":
     from stick_emulator import Simulator
+    import random
 
     encoder = DataEncoder()
-    N = 10  # Number of synchronized inputs
-    values = [0.5 for i in range(N)]  # N values between 0–1
+    N = 4  # Number of synchronized inputs
+    values = [random.random() for i in range(N)]  # N values between 0–1
+    t0s = [random.random() * 20 for i in range(N)]  # N different starting points
 
-    # Initialize network and simulator
     syncnet = SynchronizerNetwork(encoder, N=N)
     sim = Simulator(net=syncnet, encoder=encoder, dt=0.01)
-
-    # Apply inputs using simulator-provided method
-    t0 = 10  # Time to begin encoding spikes
+    
     for i, val in enumerate(values):
-        sim.apply_input_value(value=val, neuron=syncnet.input_neurons[i], t0=t0)
+        sim.apply_input_value(value=val, neuron=syncnet.input_neurons[i], t0=t0s[i])
 
-    # Run simulation
-    sim.simulate(simulation_time=200)
+    sim.simulate(simulation_time=300)
 
-    # Collect and decode outputs
+    for i, in_neuron in enumerate(syncnet.input_neurons):
+        spikes = sim.spike_log.get(in_neuron.uid, [])
+        if len(spikes) >= 2:
+            interval = spikes[1] - spikes[0]
+            decoded = encoder.decode_interval(interval)
+            print(
+                f"✅ Input[{i}] | Spike1 time: {spikes[0]:.3f} | Decoded value {decoded:.4f}"
+            )
+        else:
+            print(f"❌ Output[{i}] missing second spike: {spikes}")
+
+    print("\n")
+
     for i, out_neuron in enumerate(syncnet.output_neurons):
         spikes = sim.spike_log.get(out_neuron.uid, [])
         if len(spikes) >= 2:
             interval = spikes[1] - spikes[0]
             decoded = encoder.decode_interval(interval)
             print(
-                f"✅ Output[{i}] | Interval: {interval:.3f} ms | Decoded: {decoded:.3f}"
+                f"✅ Output[{i}] | Spike1 time: {spikes[0]:.3f} | Decoded value {decoded:.4f}"
             )
         else:
             print(f"❌ Output[{i}] missing second spike: {spikes}")

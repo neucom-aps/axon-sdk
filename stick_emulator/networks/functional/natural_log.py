@@ -2,13 +2,14 @@ from stick_emulator.primitives import (
     SpikingNetworkModule,
     DataEncoder,
 )
+from typing import Optional
 
 # Defining constant value here
 T_F = 50.0
 
 
 class LogNetwork(SpikingNetworkModule):
-    def __init__(self, encoder: DataEncoder, prefix: str = ""):
+    def __init__(self, encoder: DataEncoder, module_name: Optional[str] = None):
         super().__init__()
         self.encoder = encoder
 
@@ -22,23 +23,15 @@ class LogNetwork(SpikingNetworkModule):
         we = Vt
         wi = -Vt
         gmult = (Vt * tm) / tf
-        wacc = (Vt * tm) / encoder.Tcod
+        wacc_bar = (Vt * tm) / encoder.Tcod
 
         # Neurons
-        self.input = self.add_neuron(
-            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "input"
-        )
-        self.first = self.add_neuron(
-            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "first"
-        )
-        self.last = self.add_neuron(
-            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "last"
-        )
-        self.acc = self.add_neuron(
-            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "acc"
-        )
+        self.input = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="input")
+        self.first = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="first")
+        self.last = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="last")
+        self.acc = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="acc")
         self.output = self.add_neuron(
-            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "output"
+            Vt=Vt, tm=tm, tf=tf, neuron_name="output"
         )
 
         # Input triggers
@@ -49,17 +42,14 @@ class LogNetwork(SpikingNetworkModule):
         self.connect_neurons(self.first, self.first, "V", wi, Tsyn)
 
         # Encoding into acc from first and last
-        self.connect_neurons(self.first, self.acc, "ge", wacc, Tsyn + Tmin)
+        self.connect_neurons(self.first, self.acc, "ge", wacc_bar, Tsyn + Tmin)
         self.connect_neurons(self.last, self.acc, "gate", 1.0, Tsyn)
-        self.connect_neurons(self.last, self.acc, "ge", -wacc, Tsyn)
+        self.connect_neurons(self.last, self.acc, "ge", -wacc_bar, Tsyn)
         self.connect_neurons(self.last, self.acc, "gf", gmult, Tsyn)
 
         # Output driven by acc spike
         self.connect_neurons(self.acc, self.output, "V", we, Tsyn + Tmin)
         self.connect_neurons(self.last, self.output, "V", we, 2 * Tsyn)
-
-    def get_output_spikes(self):
-        return self.output.spike_times
 
 
 def expected_log_output_delay(x, Tmin=10.0, Tcod=100.0, tf=T_F):
@@ -83,7 +73,7 @@ if __name__ == "__main__":
     from stick_emulator import Simulator
 
     encoder = DataEncoder(Tmin=10.0, Tcod=100.0)
-    lognet = LogNetwork(encoder)
+    lognet = LogNetwork(encoder, module_name='lognet')
 
     val = 0.389
     sim = Simulator(lognet, encoder, dt=0.01)
@@ -95,9 +85,7 @@ if __name__ == "__main__":
     last_spike_time = sim.spike_log.get(lognet.last.uid, [None])[-1]
 
     print(f"Input value: {val}, log result: {math.log(val)}")
-    print(
-        f"Expected delay (log({val})): {expected_log_output_delay(val):.3f} ms"
-    )
+    print(f"Expected delay (log({val})): {expected_log_output_delay(val):.3f} ms")
 
     if len(output_spikes) >= 2:
         interval = output_spikes[1] - output_spikes[0]
@@ -106,11 +94,7 @@ if __name__ == "__main__":
             f"✅ Output spike interval: {interval:.3f} ms, corresponding to {actual_value}"
         )
     elif len(output_spikes) == 1:
-        delay = (
-            output_spikes[0] - last_spike_time
-            if last_spike_time
-            else float("nan")
-        )
+        delay = output_spikes[0] - last_spike_time if last_spike_time else float("nan")
         print(
             f"✅ Output spike at: {output_spikes[0]:.3f} ms (delay from 'last': {delay:.3f} ms)"
         )
