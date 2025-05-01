@@ -47,7 +47,7 @@ python simulate.py
 ```
 
 ## Network visualization
-Topology visualization is available to help inspect and debug your network.
+Visualization tools are available to inspect the network topology and the spiking chronogram. They can be triggered with `VIS=1` without modifying the source code.
 
 ```bash
 VIS=1 python simulate.py
