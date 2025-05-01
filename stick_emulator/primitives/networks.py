@@ -14,16 +14,18 @@ def flatten_nested_list(nested_list: list) -> list:
 
 
 class SpikingNetworkModule:
-    _instace_count = 0
+    _global_instance_count = 0
 
     def __init__(self, module_name: Optional[str] = None) -> None:
         self._neurons: list[ExplicitNeuron] = []
         self._subnetworks: list[SpikingNetworkModule] = []
+        self._instance_count = SpikingNetworkModule._global_instance_count
         if module_name:
-            self._uid = f"(m{SpikingNetworkModule._instace_count})_{module_name}"
+            self._uid = f"(m{self.instance_count})_{module_name}"
         else:
-            self._uid = f"(m{SpikingNetworkModule._instace_count})"
-        SpikingNetworkModule._instace_count += 1
+            self._uid = f"(m{self.instance_count})"
+
+        SpikingNetworkModule._global_instance_count += 1
 
     @property
     def uid(self) -> str:
@@ -38,6 +40,10 @@ class SpikingNetworkModule:
         )
         total_neurons.extend(sub_neurons)
         return total_neurons
+
+    @property
+    def instance_count(self) -> int:
+        return self._instance_count
 
     def recurse_neurons_with_module_uid(self) -> list[dict[ExplicitNeuron, str]]:
         total_neurons_with_module = []
@@ -74,7 +80,12 @@ class SpikingNetworkModule:
         neuron_name: Optional[str] = None,
     ) -> ExplicitNeuron:
         new_neuron = ExplicitNeuron(
-            Vt=Vt, tm=tm, tf=tf, Vreset=Vreset, neuron_name=neuron_name, parent_mod_id=SpikingNetworkModule._instace_count
+            Vt=Vt,
+            tm=tm,
+            tf=tf,
+            Vreset=Vreset,
+            neuron_name=neuron_name,
+            parent_mod_id=self.instance_count,
         )
         self._neurons.append(new_neuron)
         return new_neuron
