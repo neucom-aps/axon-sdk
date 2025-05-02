@@ -48,11 +48,7 @@ python simulate.py
 ```
 
 ## Network visualization
-Visualizations are available to help inspect and debug your network:
-- Topology visualization
-- Spike dynamics chronogram
-
-To trigger the visualizations, call your code with the environment variable `VIS=1`.
+Visualization tools are available to inspect the network topology and the spiking chronogram. They can be triggered with `VIS=1` without modifying the source code.
 
 ```bash
 VIS=1 python simulate.py
@@ -60,3 +56,8 @@ VIS=1 python simulate.py
 
 > **Note on topology visualization:**
 > If a module contains submodules, submodules are displayed as boxes whose content is hidden. The top module neurons are shown together with the submodule neurons which are directly connected to the top module ones.
+
+**Example:** Visualizing a multiplier network
+
+<img width="1430" alt="Screenshot 2025-05-01 at 16 39 11" src="https://github.com/user-attachments/assets/cf9e18c5-d496-4f9b-979d-15f02ba230dd" />
+<img width="1078" alt="Screenshot 2025-05-01 at 16 40 23" src="https://github.com/user-attachments/assets/192040a4-021b-488f-8c8f-fca75e039a08" />
