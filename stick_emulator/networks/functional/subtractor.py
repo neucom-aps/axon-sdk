@@ -1,13 +1,12 @@
 from stick_emulator.primitives import (
     SpikingNetworkModule,
-    ExplicitNeuron,
     DataEncoder,
 )
 
 
 class SubtractorNetwork(SpikingNetworkModule):
-    def __init__(self, encoder: DataEncoder):
-        super().__init__()
+    def __init__(self, encoder: DataEncoder, module_name=None):
+        super().__init__(module_name)
         self.encoder = encoder
 
         # Parameters
@@ -90,21 +89,15 @@ class SubtractorNetwork(SpikingNetworkModule):
         self.output_alt = self.output_minus
 
 
-def decode_interval_to_value(interval, encoder: DataEncoder):
-    # Assuming subtractor output interval is like memory: Tmin + value * Tcod
-    return (interval - encoder.Tmin) / encoder.Tcod
-
-
 if __name__ == "__main__":
     from stick_emulator import Simulator
 
     encoder = DataEncoder(Tmin=10.0, Tcod=100.0)
-    net = SubtractorNetwork(encoder)
+    net = SubtractorNetwork(encoder, module_name='sub')
     sim = Simulator(net, encoder, dt=0.01)
 
-    # 👇 Input values to subtract: x1 - x2
-    x1 = 0.8
-    x2 = 0.6
+    x1 = 0.73
+    x2 = 0.62
 
     sim.apply_input_value(value=x1, neuron=net.input1, t0=0)
     sim.apply_input_value(value=x2, neuron=net.input2, t0=0)
@@ -114,25 +107,16 @@ if __name__ == "__main__":
     # --- Output Decoding ---
     spikes_plus = sim.spike_log.get(net.output.uid, [])
     spikes_minus = sim.spike_log.get(net.output_alt.uid, [])
-    # print(spikes_plus)
-    # print(spikes_minus)
+
     if len(spikes_plus) >= 2:
         interval = spikes_plus[1] - spikes_plus[0]
-        decoded = decode_interval_to_value(interval, encoder)
-        print(f"✅ Output: x1 - x2 = {x1 - x2:.3f}")
-        print(f"✅ output+ interval = {interval:.3f} ms → decoded = {decoded:.3f}")
+        decoded = encoder.decode_interval(interval)
+        print(f"Expected: {x1 - x2:.3f}; output: x1 - x2 = {decoded}")
+        print(f"(Neuron 'output+' spiked)")
     elif len(spikes_minus) >= 2:
         interval = spikes_minus[1] - spikes_minus[0]
-        decoded = decode_interval_to_value(interval, encoder)
-        print(f"✅ Output: x1 - x2 = {x1 - x2:.3f}")
-        print(f"✅ output- interval = {interval:.3f} ms → decoded = -{decoded:.3f}")
-    elif len(spikes_plus) == 1 and len(spikes_minus) == 0:
-        print(f"✅ Output: Equal inputs detected (x1 = x2 = {x1})")
-        print(f"✅ Single spike on output+ (zero case) → zero difference")
+        decoded = encoder.decode_interval(interval)
+        print(f"Expected: {x1 - x2}; output: x1 - x2 = {decoded}")
+        print(f"(Neuron 'output+' spiked)")
     else:
-        print("❌ No valid output spikes detected")
-
-    # Debug: print spike log
-    # print("\nSpike log:")
-    # for nid, times in sim.spike_log.items():
-    #    print(f"{nid}: {times}")
+        print("No valid output spikes detected")

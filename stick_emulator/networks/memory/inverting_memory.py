@@ -1,13 +1,14 @@
 from stick_emulator.primitives import (
     SpikingNetworkModule,
     DataEncoder,
-    ExplicitNeuron,
 )
+
+from typing import Optional
 
 
 class InvertingMemoryNetwork(SpikingNetworkModule):
-    def __init__(self, encoder: DataEncoder) -> None:
-        super().__init__()
+    def __init__(self, encoder: DataEncoder, module_name: Optional[str] = None) -> None:
+        super().__init__(module_name)
 
         Vt = 10.0
         tm = 100.0
@@ -46,7 +47,7 @@ if __name__ == "__main__":
 
     val = 0.6
     encoder = DataEncoder()
-    imn = InvertingMemoryNetwork(encoder)
+    imn = InvertingMemoryNetwork(encoder, module_name='invmem')
     sim = Simulator(imn, encoder)
     sim.apply_input_value(value=val, neuron=imn.input, t0=0)
     sim.apply_input_spike(imn.recall, t=200)

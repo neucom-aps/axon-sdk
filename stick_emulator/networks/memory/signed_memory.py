@@ -1,14 +1,14 @@
 from stick_emulator.primitives import (
     SpikingNetworkModule,
     DataEncoder,
-    ExplicitNeuron,
 )
 from stick_emulator.networks import MemoryNetwork
+from typing import Optional
 
 
 class SignedMemoryNetwork(SpikingNetworkModule):
-    def __init__(self, encoder: DataEncoder) -> None:
-        super().__init__()
+    def __init__(self, encoder: DataEncoder, module_name: Optional[str] = None) -> None:
+        super().__init__(module_name)
 
         Vt = 10.0
         tm = 100.0

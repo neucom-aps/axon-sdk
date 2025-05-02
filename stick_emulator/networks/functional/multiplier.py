@@ -1,13 +1,14 @@
 from stick_emulator.primitives import (
     SpikingNetworkModule,
-    ExplicitNeuron,
     DataEncoder,
 )
 
+from typing import Optional
+
 
 class MultiplierNetwork(SpikingNetworkModule):
-    def __init__(self, encoder: DataEncoder, prefix: str = "") -> None:
-        super().__init__()
+    def __init__(self, encoder: DataEncoder, module_name: Optional[str] = None) -> None:
+        super().__init__(module_name)
         self.encoder = encoder
 
         # Constants
@@ -23,19 +24,19 @@ class MultiplierNetwork(SpikingNetworkModule):
         gmult = (Vt * tm) / tf
 
         # Neurons
-        self.input1 = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "input1")
-        self.input2 = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "input2")
-        self.first1 = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "first1")
-        self.last1 = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "last1")
-        self.acc_log1 = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "acc_log1")
+        self.input1 = self.add_neuron(Vt, tm, tf, neuron_name="input1")
+        self.input2 = self.add_neuron(Vt, tm, tf, neuron_name="input2")
+        self.first1 = self.add_neuron(Vt, tm, tf, neuron_name="first1")
+        self.last1 = self.add_neuron(Vt, tm, tf, neuron_name="last1")
+        self.acc_log1 = self.add_neuron(Vt, tm, tf, neuron_name="acc_log1")
 
-        self.first2 = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "first2")
-        self.last2 = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "last2")
-        self.acc_log2 = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "acc_log2")
+        self.first2 = self.add_neuron(Vt, tm, tf, neuron_name="first2")
+        self.last2 = self.add_neuron(Vt, tm, tf, neuron_name="last2")
+        self.acc_log2 = self.add_neuron(Vt, tm, tf, neuron_name="acc_log2")
 
-        self.sync = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "sync")
-        self.acc_exp = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "acc_exp")
-        self.output = self.add_neuron(Vt, tm, tf, neuron_name=prefix + "output")
+        self.sync = self.add_neuron(Vt, tm, tf, neuron_name="sync")
+        self.acc_exp = self.add_neuron(Vt, tm, tf, neuron_name="acc_exp")
+        self.output = self.add_neuron(Vt, tm, tf, neuron_name="output")
 
         self.connect_neurons(self.input1, self.first1, "V", we, Tsyn)
         self.connect_neurons(self.input1, self.last1, "V", 0.5 * we, Tsyn)
@@ -72,8 +73,8 @@ if __name__ == "__main__":
     encoder = DataEncoder(Tmin=10.0, Tcod=100.0)
     net = MultiplierNetwork(encoder)
 
-    val1 = 0.5
-    val2 = 0.01
+    val1 = 0.1
+    val2 = 0.5
     true_product = val1 * val2
 
     sim = Simulator(net, encoder, dt=0.01)

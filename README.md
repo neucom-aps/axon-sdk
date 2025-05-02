@@ -6,9 +6,10 @@ Python package to emulate the networks implemented in [STICK](https://arxiv.org/
 ```
 cd stick-emulator
 pip install -e .
+pip install -r requirements.txt
 ```
 
-## Use
+## Example of use
 
 1. Define your network
 
@@ -52,13 +53,11 @@ Visualization tools are available to inspect the network topology and the spikin
 ```bash
 VIS=1 python simulate.py
 ```
-> **Note:**
-> If a module contains submodules, only the neurons (and synapses) of the submodule that interact with the neurons in the main module are displayed.
+
+> **Note on topology visualization:**
+> If a module contains submodules, submodules are displayed as boxes whose content is hidden. The top module neurons are shown together with the submodule neurons which are directly connected to the top module ones.
 
 **Example:** Visualizing a multiplier network
 
 <img width="1430" alt="Screenshot 2025-05-01 at 16 39 11" src="https://github.com/user-attachments/assets/cf9e18c5-d496-4f9b-979d-15f02ba230dd" />
 <img width="1078" alt="Screenshot 2025-05-01 at 16 40 23" src="https://github.com/user-attachments/assets/192040a4-021b-488f-8c8f-fca75e039a08" />
-
-
-

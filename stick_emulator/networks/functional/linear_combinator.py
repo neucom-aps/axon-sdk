@@ -1,59 +1,55 @@
 from stick_emulator.primitives import (
-    ExplicitNeuron,
-    EventQueue,
     SpikingNetworkModule,
     DataEncoder,
 )
+from stick_emulator.simulator import Simulator
 from stick_emulator.networks import SubtractorNetwork, SynchronizerNetwork
-import math
+
+from typing import Optional
 
 
 class LinearCombinatorNetwork(SpikingNetworkModule):
-    def __init__(self, encoder: DataEncoder, N: int, coeff: list, prefix: str = ""):
-        super().__init__()
+    def __init__(
+        self,
+        encoder: DataEncoder,
+        N: int,
+        coeff: list[int],
+        module_name: Optional[str] = None,
+    ):
+        super().__init__(module_name)
         self.encoder = encoder
 
         # Constants
         Vt = 10.0
         tm = 100.0
-        tf = 20.0  ## Increasing this makes Log more accurate
+        tf = 20.0
         Tsyn = 1.0
         Tmin = encoder.Tmin
 
         we = Vt
         wi = -Vt
         gmult = (Vt * tm) / tf
-        wacc = (Vt * tm) / encoder.Tcod
+        wacc = (Vt * tm) / encoder.Tmax
 
-        self.acc1_plus = self.add_neuron(
-            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "_acc1_plus"
-        )
-        self.acc1_minus = self.add_neuron(
-            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "_acc1_minus"
-        )
-        self.acc2_plus = self.add_neuron(
-            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "_acc2_plus"
-        )
-        self.acc2_minus = self.add_neuron(
-            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "_acc2_minus"
-        )
+        self.acc1_plus = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="acc1_plus")
+        self.acc1_minus = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="acc1_minus")
+        self.acc2_plus = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="acc2_plus")
+        self.acc2_minus = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="acc2_minus")
         self.inter_minus = self.add_neuron(
-            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "_inter_minus"
+            Vt=Vt, tm=tm, tf=tf, neuron_name="inter_minus"
         )
-        self.inter_plus = self.add_neuron(
-            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "_inter_plus"
-        )
+        self.inter_plus = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="inter_plus")
         self.output_plus = self.add_neuron(
-            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "_output_plus"
+            Vt=Vt, tm=tm, tf=tf, neuron_name="output_plus"
         )
         self.output_minus = self.add_neuron(
-            Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "_output_minus"
+            Vt=Vt, tm=tm, tf=tf, neuron_name="output_minus"
         )
-        self.start = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "_start")
-        self.sync = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name=prefix + "_sync")
+        self.start = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="start")
+        self.sync = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="sync")
 
-        self.sync_network = SynchronizerNetwork(encoder, 2)
-        self.subtractor_network = SubtractorNetwork(encoder)
+        self.sync_network = SynchronizerNetwork(encoder, N=2, module_name="sync_net")
+        self.subtractor_network = SubtractorNetwork(encoder, module_name="sub_net")
 
         self.add_subnetwork(self.sync_network)
         self.add_subnetwork(self.subtractor_network)
@@ -117,35 +113,37 @@ class LinearCombinatorNetwork(SpikingNetworkModule):
         # Connect acc2- to inter- with V synapse and Tsyn + Tmin
         self.connect_neurons(self.acc2_minus, self.inter_minus, "V", we, Tsyn + Tmin)
 
-        self.input_neurons = []
+        self.input_plus = []
+        self.input_minus = []
 
         for i in range(N):
             # Get the coefficient as absolute value
-            a_i = coeff[i]
-            a_i = abs(a_i)
+            c_i = coeff[i]
+            a_i = abs(c_i)
+
             # Create input +/- neurons
-            input_plus = ExplicitNeuron(
+            input_plus = self.add_neuron(
                 Vt=Vt, tm=tm, tf=tf, neuron_name=f"input_plus_{i}"
             )
-            input_minus = ExplicitNeuron(
+            input_minus = self.add_neuron(
                 Vt=Vt, tm=tm, tf=tf, neuron_name=f"input_minus_{i}"
             )
             # Create first and last +/-
-            first_plus = ExplicitNeuron(
+            first_plus = self.add_neuron(
                 Vt=Vt, tm=tm, tf=tf, neuron_name=f"first_plus_{i}"
             )
-            first_minus = ExplicitNeuron(
+            first_minus = self.add_neuron(
                 Vt=Vt, tm=tm, tf=tf, neuron_name=f"first_minus_{i}"
             )
-            last_plus = ExplicitNeuron(
+            last_plus = self.add_neuron(
                 Vt=Vt, tm=tm, tf=tf, neuron_name=f"last_plus_{i}"
             )
-            last_minus = ExplicitNeuron(
+            last_minus = self.add_neuron(
                 Vt=Vt, tm=tm, tf=tf, neuron_name=f"last_minus_{i}"
             )
 
-            self.input_neurons.append(input_plus)
-            self.input_neurons.append(input_minus)
+            self.input_plus.append(input_plus)
+            self.input_minus.append(input_minus)
 
             # Connect we (V) to from input + to first +
             self.connect_neurons(input_plus, first_plus, "V", we, Tsyn)
@@ -162,17 +160,22 @@ class LinearCombinatorNetwork(SpikingNetworkModule):
             self.connect_neurons(last_plus, self.sync, "V", we / N, Tsyn)
             self.connect_neurons(last_minus, self.sync, "V", we / N, Tsyn)
 
+            if c_i > 0:
+                target_plus = self.acc1_plus
+                target_minus = self.acc1_minus
+            elif c_i < 0:
+                target_plus = self.acc1_minus
+                target_minus = self.acc1_plus
+
             # Connect first_plus with ge to acc1_plus where weight is |a_i|*wacc
-            self.connect_neurons(
-                first_plus, self.acc1_plus, "ge", a_i * wacc, Tsyn + Tmin
-            )
-            self.connect_neurons(last_plus, self.acc1_plus, "ge", -a_i * wacc, Tsyn)
+            self.connect_neurons(first_plus, target_plus, "ge", a_i * wacc, Tsyn + Tmin)
+            self.connect_neurons(last_plus, target_plus, "ge", -a_i * wacc, Tsyn)
 
             # Connect first_minus with ge to acc1_minus where weight is |a_i|*wacc
             self.connect_neurons(
-                first_minus, self.acc1_minus, "ge", a_i * wacc, Tsyn + Tmin
+                first_minus, target_minus, "ge", a_i * wacc, Tsyn + Tmin
             )
-            self.connect_neurons(last_minus, self.acc1_minus, "ge", -a_i * wacc, Tsyn)
+            self.connect_neurons(last_minus, target_minus, "ge", -a_i * wacc, Tsyn)
 
 
 def decode_spike_interval(spikes, encoder):
@@ -182,33 +185,25 @@ def decode_spike_interval(spikes, encoder):
     return encoder.decode_interval(interval)
 
 
-def run_test(coeffs, inputs, Tmin=10.0, Tcod=100.0):
-    encoder = DataEncoder(Tmin=Tmin, Tcod=Tcod)
+if __name__ == "__main__":
+    inputs = [0.5, 0.5]
+    coeffs = [1.0, 1.0]
+
+    encoder = DataEncoder(Tmin=10.0, Tcod=100.0)
     N = len(coeffs)
     net = LinearCombinatorNetwork(encoder, N=N, coeff=coeffs)
 
     sim = Simulator(net, encoder, dt=0.01)
 
-    # Apply inputs
-    """
-    for i, val in enumerate(inputs):
-        if val >= 0:
-            sim.apply_input_value(val, net.input_neurons[2 * i], t0=0)
+    for idx, inp_val in enumerate(inputs):
+        if inp_val >= 0:
+            sim.apply_input_value(abs(inp_val), net.input_plus[idx], t0=0)
         else:
-            sim.apply_input_value(-val, net.input_neurons[2 * i + 1], t0=0)
-            print(net.input_neurons[2 * i + 1])"
-    """
-    for i, val in enumerate(inputs):
-        product = coeffs[i] * inputs[i]
-        if product >= 0:
-            sim.apply_input_value(abs(inputs[i]), net.input_neurons[2 * i], t0=0)
-        else:
-            sim.apply_input_value(abs(inputs[i]), net.input_neurons[2 * i + 1], t0=0)
+            sim.apply_input_value(abs(inp_val), net.input_minus[idx], t0=0)
 
-    sim.simulate(500)
+    sim.simulate(450)
 
     print("\n==========================")
-    print(f"Test case: inputs={inputs}, coeffs={coeffs}")
     expected = sum(c * x for c, x in zip(coeffs, inputs))
     print(f"✅ Expected linear combination: {expected:.3f}")
 
@@ -240,19 +235,3 @@ def run_test(coeffs, inputs, Tmin=10.0, Tcod=100.0):
 
     print(f"🔍 Reconstructed value from spikes: {result:.3f}")
     print("==========================\n")
-    return result
-
-
-if __name__ == "__main__":
-    # Run a sweep of test cases
-    test_cases = [
-        ([-0.5, -0.5], [1.0, 1.0]),
-        ([0.5, -0.5], [0.5, 1.0]),
-        ([-1.0, -1.0], [-0.8, 0.3]),
-        ([-1.0, -0.25], [-0.6, -0.4]),
-        ([0.5, 0.5], [-0.7, -0.2]),
-        ([0.5, 0.5], [-0.7, -0.2]),
-    ]
-
-    for coeffs, inputs in test_cases:
-        run_test(coeffs, inputs)

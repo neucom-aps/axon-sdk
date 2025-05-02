@@ -5,8 +5,7 @@ from stick_emulator.primitives import (
     ExplicitNeuron,
 )
 
-from stick_emulator.visualization import vis_topology
-
+from stick_emulator.visualization import vis_topology, plot_chronogram
 import os
 
 
@@ -17,7 +16,7 @@ class Simulator:
         self.net = net
         self.event_queue = SpikeEventQueue()
         self.spike_log: dict[str, list[float]] = {}
-        self.voltage_log: dict[ExplicitNeuron, list[float]] = {}
+        self.voltage_log: dict[str, list[float]] = {}
         self.encoder = encoder
         self.dt = dt
 
@@ -84,3 +83,8 @@ class Simulator:
 
     def launch_visualization(self):
         vis_topology(self.net)
+        plot_chronogram(
+            timesteps=self.timesteps,
+            voltage_log=self.voltage_log,
+            spike_log=self.spike_log,
+        )

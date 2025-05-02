@@ -1,14 +1,14 @@
 from stick_emulator.primitives import (
     SpikingNetworkModule,
     DataEncoder,
-    ExplicitNeuron,
 )
 import math
+from typing import Optional
 
 
 class SignedConstantNetwork(SpikingNetworkModule):
-    def __init__(self, encoder: DataEncoder, value: float, prefix: str = "") -> None:
-        super().__init__()
+    def __init__(self, encoder: DataEncoder, value: float, module_name: Optional[str] = None) -> None:
+        super().__init__(module_name)
         self.encoder = encoder
         self.value = value
 
@@ -21,13 +21,13 @@ class SignedConstantNetwork(SpikingNetworkModule):
 
         # Create constant neuron
         self.recall = self.add_neuron(
-            Vt=Vt, tm=tm, tf=tf, Vreset=0.0, neuron_name=prefix + "recall"
+            Vt=Vt, tm=tm, tf=tf, Vreset=0.0, neuron_name="recall"
         )
         self.output_plus = self.add_neuron(
-            Vt=Vt, tm=tm, tf=tf, Vreset=0.0, neuron_name=prefix + "output_plus"
+            Vt=Vt, tm=tm, tf=tf, Vreset=0.0, neuron_name="output_plus"
         )
         self.output_minus = self.add_neuron(
-            Vt=Vt, tm=tm, tf=tf, Vreset=0.0, neuron_name=prefix + "output_minus"
+            Vt=Vt, tm=tm, tf=tf, Vreset=0.0, neuron_name="output_minus"
         )
 
         # Connect constant neuron to itself with a delay

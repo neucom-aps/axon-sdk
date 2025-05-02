@@ -4,7 +4,6 @@ from stick_emulator.primitives import (
     ExplicitNeuron,
     Synapse,
 )
-from stick_emulator.networks import SynchronizerNetwork
 
 from stick_emulator.visualization.server import start_server
 
@@ -154,9 +153,3 @@ def format_groups(groups: list[tuple[ExplicitNeuron, str]]) -> list[dict[str, st
         formatted_groups.append(formatted_group)
 
     return formatted_groups
-
-
-if __name__ == "__main__":
-    encoder = DataEncoder()
-    net = SynchronizerNetwork(encoder, N=2)
-    vis_topology(net)

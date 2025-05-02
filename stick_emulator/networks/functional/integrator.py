@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from stick_emulator.primitives import (
     SpikingNetworkModule,
-    ExplicitNeuron,
     DataEncoder,
 )
 from stick_emulator.networks import (

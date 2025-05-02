@@ -1,13 +1,14 @@
 from stick_emulator.primitives import (
     SpikingNetworkModule,
     DataEncoder,
-    ExplicitNeuron,
 )
+
+from typing import Optional
 
 
 class MemoryNetwork(SpikingNetworkModule):
-    def __init__(self, encoder: DataEncoder, suffix: str = "") -> None:
-        super().__init__()
+    def __init__(self, encoder: DataEncoder, module_name: Optional[str] = None) -> None:
+        super().__init__(module_name)
 
         Vt = 10.0
         tm = 100.0
@@ -21,14 +22,14 @@ class MemoryNetwork(SpikingNetworkModule):
         wacc = Vt * tm / encoder.Tmax
 
         # Create Neurons
-        input = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="input" + suffix)
-        first = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="first" + suffix)
-        last = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="last" + suffix)
-        acc = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="acc" + suffix)
-        acc2 = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="acc2" + suffix)
-        recall = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="recall" + suffix)
-        ready = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="ready" + suffix)
-        output = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="output" + suffix)
+        input = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="input")
+        first = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="first")
+        last = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="last")
+        acc = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="acc")
+        acc2 = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="acc2")
+        recall = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="recall")
+        ready = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="ready")
+        output = self.add_neuron(Vt=Vt, tm=tm, tf=tf, neuron_name="output")
 
         # Connections from input
         self.connect_neurons(input, first, "V", we, Tsyn)
@@ -70,7 +71,7 @@ if __name__ == "__main__":
 
     val = 0.789  # test input value
     encoder = DataEncoder(Tcod=100)
-    memnet = MemoryNetwork(encoder)
+    memnet = MemoryNetwork(encoder, module_name='memnet')
 
     # Set up simulator
     sim = Simulator(net=memnet, encoder=encoder, dt=0.01)
@@ -82,7 +83,7 @@ if __name__ == "__main__":
     sim.apply_input_spike(neuron=memnet.recall, t=200)
 
     # Run simulation for enough time to capture output
-    sim.simulate(simulation_time=300)
+    sim.simulate(simulation_time=350)
 
     # Retrieve and decode output
     output_spikes = sim.spike_log.get(memnet.output.uid, [])
