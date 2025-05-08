@@ -20,7 +20,7 @@ class MultiplierNetwork(SpikingNetworkModule):
 
         we = Vt
         wi = -Vt
-        wacc = (Vt * tm) / encoder.Tcod
+        wacc_bar = (Vt * tm) / encoder.Tcod
         gmult = (Vt * tm) / tf
 
         # Neurons
@@ -41,22 +41,22 @@ class MultiplierNetwork(SpikingNetworkModule):
         self.connect_neurons(self.input1, self.first1, "V", we, Tsyn)
         self.connect_neurons(self.input1, self.last1, "V", 0.5 * we, Tsyn)
         self.connect_neurons(self.first1, self.first1, "V", wi, Tsyn)
-        self.connect_neurons(self.first1, self.acc_log1, "ge", wacc, Tsyn + Tmin)
-        self.connect_neurons(self.last1, self.acc_log1, "ge", -wacc, Tsyn)
+        self.connect_neurons(self.first1, self.acc_log1, "ge", wacc_bar, Tsyn + Tmin)
+        self.connect_neurons(self.last1, self.acc_log1, "ge", -wacc_bar, Tsyn)
         self.connect_neurons(self.last1, self.sync, "V", 0.5 * we, Tsyn)
 
         self.connect_neurons(self.input2, self.first2, "V", we, Tsyn)
         self.connect_neurons(self.input2, self.last2, "V", 0.5 * we, Tsyn)
         self.connect_neurons(self.first2, self.first2, "V", wi, Tsyn)
-        self.connect_neurons(self.first2, self.acc_log2, "ge", wacc, Tsyn + Tmin)
-        self.connect_neurons(self.last2, self.acc_log2, "ge", -wacc, Tsyn)
+        self.connect_neurons(self.first2, self.acc_log2, "ge", wacc_bar, Tsyn + Tmin)
+        self.connect_neurons(self.last2, self.acc_log2, "ge", -wacc_bar, Tsyn)
         self.connect_neurons(self.last2, self.sync, "V", 0.5 * we, Tsyn)
 
         self.connect_neurons(self.acc_log1, self.acc_log2, "gf", gmult, Tsyn)
         self.connect_neurons(self.acc_log1, self.acc_log2, "gate", 1, Tsyn)
 
         self.connect_neurons(self.acc_log2, self.acc_exp, "gate", -1, Tsyn)
-        self.connect_neurons(self.acc_log2, self.acc_exp, "ge", wacc, Tsyn)
+        self.connect_neurons(self.acc_log2, self.acc_exp, "ge", wacc_bar, Tsyn)
         self.connect_neurons(self.acc_log2, self.output, "V", we, 2 * Tsyn)
 
         self.connect_neurons(self.sync, self.acc_log1, "gf", gmult, Tsyn)
