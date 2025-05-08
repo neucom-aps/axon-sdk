@@ -46,6 +46,42 @@ def test_memory_spike_times(input_value, expected_interval):
         decoded_value, abs=1e-2
     ), f"Expected decoded value {expected_value}, got {decoded_value}"
 
+@pytest.mark.parametrize(
+    "input_value",
+    [
+        (0.001),
+        (0.003),
+        (0.004),
+        (0.006),
+        (0.008),
+        (0.123),
+        (0.456),
+        (0.999),
+        (0.0001),
+        (0.0003),
+        (0.0007),
+        (0.0009),
+        (0.1234),
+        (0.2345),
+        (0.5678),
+        (0.7676),
+        (0.9999),
+
+    ],
+)
+def test_recall_extended_precision(input_value):
+    encoder = DataEncoder(Tmin=10.0, Tcod=100.0)
+    output_spikes = encode_and_recall(input_value, encoder)
+
+    assert (
+        len(output_spikes) == 2
+    ), f"Expected exactly two output spikes, got {len(output_spikes)}"
+
+    decoded_value = encoder.decode_interval(output_spikes[1] - output_spikes[0])
+    assert input_value == pytest.approx(
+        decoded_value, abs=1e-2
+    ), f"Expected decoded value {input_value}, got {decoded_value}"
+
 
 def test_no_spikes_for_invalid_input():
     encoder = DataEncoder()
