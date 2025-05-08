@@ -42,7 +42,9 @@ class MemoryNetwork(SpikingNetworkModule):
         self.connect_neurons(first, acc, "ge", wacc, Tsyn)
 
         # Last → acc2 (negative to delay output)
-        self.connect_neurons(last, acc2, "ge", wacc, Tsyn)
+        self.connect_neurons(
+            last, acc2, "ge", wacc, 2 * Tsyn
+        )  # missing Tsyn in the original memory net in STICK paper
 
         # acc → acc2
         self.connect_neurons(acc, acc2, "ge", -wacc, Tsyn)
@@ -51,7 +53,9 @@ class MemoryNetwork(SpikingNetworkModule):
         self.connect_neurons(recall, acc2, "ge", wacc, Tsyn)
 
         # Recall → output
-        self.connect_neurons(recall, output, "V", we, Tsyn)
+        self.connect_neurons(
+            recall, output, "V", we, 2 * Tsyn
+        )  # missing Tsyn in the original memory net in STICK paper
 
         # acc2 → output
         self.connect_neurons(acc2, output, "V", we, Tsyn)
@@ -69,9 +73,9 @@ class MemoryNetwork(SpikingNetworkModule):
 if __name__ == "__main__":
     from stick_emulator import Simulator
 
-    val = 0.789  # test input value
+    val = 0.1234 # test input value
     encoder = DataEncoder(Tcod=100)
-    memnet = MemoryNetwork(encoder, module_name='memnet')
+    memnet = MemoryNetwork(encoder, module_name="memnet")
 
     # Set up simulator
     sim = Simulator(net=memnet, encoder=encoder, dt=0.01)
@@ -89,8 +93,8 @@ if __name__ == "__main__":
     output_spikes = sim.spike_log.get(memnet.output.uid, [])
     if len(output_spikes) >= 2:
         out_val = encoder.decode_interval(output_spikes[1] - output_spikes[0])
-        print(f"✅ Input value: {val:.3f}")
-        print(f"✅ Recalled value: {out_val:.3f}")
-        print(f"✅ Interval: {output_spikes[1] - output_spikes[0]:.3f} ms")
+        print(f"✅ Input value: {val:.5f}")
+        print(f"✅ Recalled value: {out_val:.5f}")
+        print(f"✅ Interval: {output_spikes[1] - output_spikes[0]:.5f} ms")
     else:
         print(f"❌ Output spike missing or incomplete: {output_spikes}")
