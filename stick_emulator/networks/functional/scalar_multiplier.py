@@ -1,5 +1,4 @@
 from stick_emulator.primitives import SpikingNetworkModule, DataEncoder
-from stick_emulator import Simulator
 
 from typing import Optional
 
@@ -62,14 +61,16 @@ class ScalarMultiplierNetwork(SpikingNetworkModule):
 
 
 if __name__ == "__main__":
+    from stick_emulator import Simulator
+    
     factor = 100
-    val = 0.0001  ## make sure that val x scale < 1
+    val = 0.0042  ## make sure that val x scale < 1
     assert (
         val * factor < 1
     ), "val * scale must be smaller than 1.0, since that's the max. STICK range"
 
-    enc = DataEncoder()
-    rescaler_net = ScalarMultiplier(factor=factor, encoder=enc, module_name="rescaler")
+    enc = DataEncoder(Tcod=150)
+    rescaler_net = ScalarMultiplierNetwork(factor=factor, encoder=enc, module_name="rescaler")
     sim = Simulator(rescaler_net, enc)
 
     sim.apply_input_value(value=val, neuron=rescaler_net.input, t0=0)
@@ -80,4 +81,5 @@ if __name__ == "__main__":
     interval = output_spikes[1] - output_spikes[0]
 
     print(f"Input value: {val}")
-    print(f"Retrieved value: {enc.decode_interval(interval)}")
+    print(f"Scale: {factor}")
+    print(f"Retrieved value: {enc.decode_interval(interval):.4f}")
