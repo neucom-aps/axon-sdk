@@ -36,9 +36,7 @@ class AbstractNeuron:
         self.gate = 0
 
         if parent_mod_id is not None:
-            self._uid = (
-                f"(m{parent_mod_id},n{AbstractNeuron._instance_count})_{neuron_name}"
-            )
+            self._uid = f"(m{parent_mod_id},n{AbstractNeuron._instance_count})_{neuron_name}"
         else:
             self._uid = f"(n{AbstractNeuron._instance_count})_{neuron_name}"
 
@@ -47,28 +45,6 @@ class AbstractNeuron:
     @property
     def uid(self) -> str:
         return self._uid
-
-    def update(self, dt) -> bool:
-        """
-        Update the state of the neuron by one timestep.
-
-        Parameters:
-        dt (float): The simulation timestep (ms).
-
-        Returns:
-        bool: True if the neuron spikes, False otherwise.
-        """
-        # Update membrane potential based on the differential equations provided
-        self.V += dt * (self.ge + self.gate * self.gf) / self.tm
-
-        # Update gf dynamics if gated
-        if self.gate:
-            self.gf -= dt * (self.gf / self.tf)
-
-        # Check for spike condition (reset happens explicitly later)
-        if self.V >= self.Vt:
-            return True
-        return False
 
     def update_and_spike(self, dt) -> tuple[float, bool]:
         """
