@@ -108,15 +108,19 @@ if __name__ == "__main__":
     spikes_plus = sim.spike_log.get(net.output.uid, [])
     spikes_minus = sim.spike_log.get(net.output_alt.uid, [])
 
+    print(f"Input1  : {x1}")
+    print(f"Input2  : {x2}")
+    print(f"Expected: {x1 - x2}")
+
     if len(spikes_plus) >= 2:
         interval = spikes_plus[1] - spikes_plus[0]
         decoded = encoder.decode_interval(interval)
-        print(f"Expected: {x1 - x2:.3f}; output: x1 - x2 = {decoded}")
+        print(f"Output: x1 - x2 = {decoded}")
         print(f"(Neuron 'output+' spiked)")
     elif len(spikes_minus) >= 2:
         interval = spikes_minus[1] - spikes_minus[0]
         decoded = encoder.decode_interval(interval)
-        print(f"Expected: {x1 - x2}; output: x1 - x2 = {decoded}")
-        print(f"(Neuron 'output+' spiked)")
+        print(f"Output: x1 - x2 = -{decoded}")
+        print(f"(Neuron 'output-' spiked)")
     else:
         print("No valid output spikes detected")
