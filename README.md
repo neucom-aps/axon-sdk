@@ -10,6 +10,7 @@ pip install -r requirements.txt
 ```
 
 > Note: Installing the package with the following flag will allow interactive code completion in VSCode:
+> 
 > `pip install -e . --config-settings editable_mode=compat`
 
 ## Example of use
