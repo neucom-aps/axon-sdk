@@ -15,7 +15,7 @@ class SpikeEvent:
         self.synapse_type = synapse_type
         self.weight = weight
 
-    def __lt__(self, other):  # Needed to use it in a heap
+    def __lt__(self, other):
         return self.time < other.time
 
 
@@ -41,19 +41,5 @@ class SpikeEventQueue:
     def pop_events(self, current_time) -> list[SpikeEvent]:
         events = []
         while self.events and self.events[0].time <= current_time:
-            events.append(heapq.heappop(self.events))
-        return events
-
-
-class EventQueue:
-    def __init__(self):
-        self.events = []
-
-    def add_event(self, event_time, neuron_uid, synapse_type, weight):
-        heapq.heappush(self.events, (event_time, neuron_uid, synapse_type, weight))
-
-    def pop_events(self, current_time):
-        events = []
-        while self.events and self.events[0][0] <= current_time:
             events.append(heapq.heappop(self.events))
         return events
