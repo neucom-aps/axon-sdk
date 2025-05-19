@@ -9,8 +9,7 @@ pip install -e .
 pip install -r requirements.txt
 ```
 
-> Note: Use the following flag if you're using VSCode and you want it to see the package, installed in editable mode:
-> 
+> Note: Installing the package with the following flag will allow interactive code completion in VSCode:
 > `pip install -e . --config-settings editable_mode=compat`
 
 ## Example of use
