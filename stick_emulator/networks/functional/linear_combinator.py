@@ -163,7 +163,7 @@ class LinearCombinatorNetwork(SpikingNetworkModule):
             if c_i > 0:
                 target_plus = self.acc1_plus
                 target_minus = self.acc1_minus
-            elif c_i < 0:
+            else:
                 target_plus = self.acc1_minus
                 target_minus = self.acc1_plus
 
