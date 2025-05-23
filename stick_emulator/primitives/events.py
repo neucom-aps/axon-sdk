@@ -16,6 +16,7 @@ class SpikeEvent:
         self.weight = weight
 
     def __lt__(self, other):
+        # Needed since spike events will be used in a heap
         return self.time < other.time
 
 
