@@ -13,7 +13,7 @@ class LinearCombinatorNetwork(SpikingNetworkModule):
         self,
         encoder: DataEncoder,
         N: int,
-        coeff: list[int],
+        coeff: list[float],
         module_name: Optional[str] = None,
     ):
         super().__init__(module_name)
