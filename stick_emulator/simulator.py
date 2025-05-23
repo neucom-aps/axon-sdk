@@ -24,12 +24,8 @@ class Simulator:
         for neuron in self._cached_neurons:
             self.spike_log[neuron.uid] = []
             self.voltage_log[neuron.uid] = []
-        # Set to track neurons with non-zero ge, gf, or gate at the end of a timestep
-        self.active_state_neurons: set[ExplicitNeuron] = set()
 
-    def apply_input_value(
-        self, value: float, neuron: ExplicitNeuron, t0: float = 0
-    ):
+    def apply_input_value(self, value: float, neuron: ExplicitNeuron, t0: float = 0):
         assert value >= 0.0 and value <= 1.0
 
         spike_interval = self.encoder.encode_value(value)
@@ -57,6 +53,8 @@ class Simulator:
     def simulate(self, simulation_time: float):
         num_steps = int(simulation_time / self.dt)
         self.timesteps = [(i + 1) * self.dt for i in range(num_steps)]
+        # Set to track neurons with non-zero ge, gf, or gate at the end of a timestep
+        active_state_neurons: set[ExplicitNeuron] = set()
 
         for i, t in enumerate(self.timesteps):
             events = self.event_queue.pop_events(t)
@@ -70,9 +68,7 @@ class Simulator:
                 currently_affected_neurons.add(event.affected_neuron)
 
             # Collect all neurons that should be simulated
-            neurons_to_simulate = currently_affected_neurons.union(
-                self.active_state_neurons
-            )
+            neurons_to_simulate = currently_affected_neurons.union(active_state_neurons)
             # Prepare a set to hold the neurons turning active after this `dt`
             newly_active_state_neurons = set()
 
@@ -96,7 +92,7 @@ class Simulator:
                 if neuron.ge != 0.0 or neuron.gf != 0.0 or neuron.gate != 0:
                     newly_active_state_neurons.add(neuron)
 
-            self.active_state_neurons = newly_active_state_neurons
+            active_state_neurons = newly_active_state_neurons
 
         if os.getenv("VIS", "0") == "1":
             self.launch_visualization()

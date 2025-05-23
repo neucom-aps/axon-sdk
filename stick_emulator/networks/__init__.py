@@ -18,3 +18,4 @@ from .functional.signed_multiplier import SignedMultiplierNetwork
 from .functional.scalar_multiplier import ScalarMultiplierNetwork
 from .functional.divider import DivNetwork
 from .functional.adder import AdderNetwork
+from .functional.signflip import SignFlipperNetwork
