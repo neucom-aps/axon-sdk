@@ -76,9 +76,11 @@ def get_groups_to_display(
 def format_nodes(neurons: list[ExplicitNeuron]) -> list[dict[str, str]]:
     nodes = []
     for neuron in neurons:
+        uid = neuron.uid
+        add_info = neuron.additional_info
         item = {}
-        item["id"] = neuron.uid
-        item["label"] = neuron.uid
+        item["id"] = uid
+        item["label"] = uid + (f"\n {add_info}" if add_info else "")
         nodes.append(item)
 
     return nodes
