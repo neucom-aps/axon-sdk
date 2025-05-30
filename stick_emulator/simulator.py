@@ -5,6 +5,7 @@ from stick_emulator.primitives import (
     ExplicitNeuron,
 )
 from stick_emulator.visualization import vis_topology, plot_chronogram
+from .executionPlan import ExecutionPlan
 import os
 
 
@@ -94,11 +95,23 @@ class Simulator:
 
             active_state_neurons = newly_active_state_neurons
 
-        if os.getenv("VIS", "0") == "1":
-            self.launch_visualization()
+        # if os.getenv("VIS", "0") == "1":
+        self.launch_visualization()
+
+    def simulatePlan(self, executionPlan: ExecutionPlan, dt=0.001) -> None:
+        self.net = executionPlan.net
+        self.dt = dt
+        for trigger in executionPlan.input_triggers:
+            self.apply_input_value(trigger.normalized_value, trigger.trigger_neuron)
+        self.simulate(
+            executionPlan.timeout,
+        )
 
     def _log_spike_occurrence(self, neuron: ExplicitNeuron, t: float) -> None:
-        self.spike_log[neuron.uid].append(t)
+        if neuron.uid in self.spike_log:
+            self.spike_log[neuron.uid].append(t)
+        else:
+            self.spike_log[neuron.uid] = [t]
 
     def _log_voltage_value(
         self, neuron: ExplicitNeuron, V: float, timestep: float
