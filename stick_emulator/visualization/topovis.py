@@ -1,5 +1,4 @@
 from stick_emulator.primitives import (
-    DataEncoder,
     SpikingNetworkModule,
     ExplicitNeuron,
     Synapse,
@@ -8,90 +7,70 @@ from stick_emulator.primitives import (
 from stick_emulator.visualization.server import start_server
 
 
-def post_synapse_neurons(neurons: list[ExplicitNeuron]) -> list[ExplicitNeuron]:
-    post_neurons = []
-    for neuron in neurons:
-        for synapse in neuron.out_synapses:
-            post_neurons.append(synapse.post_neuron)
-    return post_neurons
-
-
-def pre_synapse_neurons(
-    net: SpikingNetworkModule, target_neurons: list[ExplicitNeuron]
-) -> list[ExplicitNeuron]:
+def generate_mapping_neuron_to_net(
+    net: SpikingNetworkModule,
+) -> dict[ExplicitNeuron, str]:
     """
-    Among the neurons in the net, returns the ones connecting with a neuron in the target neurons
+    Generates a dictionary that maps each neuron to a net uid.
+
+    Neurons in the top module will be assinged the uid of the top module;
+    Neurons in submodules of the top module will be assigned the uid of the first submodule.
+
+    IMP: neurons in submodules within submodules will NOT be given the uid of the
+    direct submodule that contains them BUT rather of the submodule of net that contains them.
     """
-    all_neurons = net.neurons
-    selected_neurons = []
-    for neuron in all_neurons:
-        for syn in neuron.out_synapses:
-            if syn.post_neuron in target_neurons:
-                selected_neurons.append(neuron)
+    mapping: dict[ExplicitNeuron, str] = {}
+    for n in net.top_module_neurons:
+        mapping[n] = net.uid
 
-    return selected_neurons
+    for subnet in net.subnetworks:
+        for n in subnet.neurons:
+            mapping[n] = subnet.uid
+
+    return mapping
 
 
-def get_neurons_to_display(net: SpikingNetworkModule):
-    neurons = list(
-        set(post_synapse_neurons(net.top_module_neurons))
-        | set(net.top_module_neurons)
-        | set(pre_synapse_neurons(net, net.top_module_neurons))
+def get_neurons_and_synapses_to_display(
+    net: SpikingNetworkModule,
+) -> tuple[list[ExplicitNeuron], list[Synapse]]:
+    neurons_to_display: set[ExplicitNeuron] = set()
+    synapses_to_display: set[Synapse] = set()
+    for neu in net.top_module_neurons:
+        for syn in neu.out_synapses:
+            neurons_to_display.add(syn.pre_neuron)
+            neurons_to_display.add(syn.post_neuron)
+            synapses_to_display.add(syn)
+
+    mapping_neuron_to_net = generate_mapping_neuron_to_net(net)
+    syn_changes_module = (
+        lambda n1, n2: mapping_neuron_to_net[n1] != mapping_neuron_to_net[n2]
     )
-    return neurons
+    # could iter instead on net.neurons - net.top_module_neurons, but not worth the changes
+    for neu in net.neurons:
 
+        for syn in neu.out_synapses:
+            if syn_changes_module(neu, syn.post_neuron):
+                neurons_to_display.add(neu)
+                neurons_to_display.add(syn.post_neuron)
+                synapses_to_display.add(syn)
 
-def get_synapses_to_display(net: SpikingNetworkModule) -> list[Synapse]:
-    selected_synapses = []
-    top_mod_neurons = net.top_module_neurons
-    for neuron in top_mod_neurons:
-        for syn in neuron.out_synapses:
-            selected_synapses.append(syn)
-
-    neurons_connecting_top_module_neurons = list(
-        set(pre_synapse_neurons(net, top_mod_neurons)) - set(top_mod_neurons)
-    )
-    for neuron in neurons_connecting_top_module_neurons:
-        for syn in neuron.out_synapses:
-            if syn.post_neuron in top_mod_neurons:
-                selected_synapses.append(syn)
-
-    return selected_synapses
+    return list(neurons_to_display), list(synapses_to_display)
 
 
 def get_groups_to_display(
-    net: SpikingNetworkModule,
+    net: SpikingNetworkModule, neurons_to_display: list[ExplicitNeuron]
 ) -> list[tuple[ExplicitNeuron, str]]:
     """
-    Shows groups for each module that contains neurons which are connected to the top module neurons
+    Submodules of net will be displayed as boxes in the visualization.
+    To do so, the displayed neurons are assigned uid of the module they belong to. Only neurons belonging
+    strictly to a submodule of net are assigned to a group (the top module neurons are not given a group)
     """
 
-    grouped_neurons: dict[ExplicitNeuron, str] = net.neurons_with_module_uid
-    top_mod_neurons = net.top_module_neurons
-    first_mod_neurons_to_display = list(
-        (set(post_synapse_neurons(top_mod_neurons)) - set(top_mod_neurons))
-        | (set(pre_synapse_neurons(net, top_mod_neurons)) - set(top_mod_neurons))
-    )
-    selected_groups = [
-        (neuron, grouped_neurons[neuron]) for neuron in first_mod_neurons_to_display
-    ]
-    return selected_groups
+    mapping_neu_to_module = generate_mapping_neuron_to_net(net)
+    selected_groups = [(n, mapping_neu_to_module[n]) for n in neurons_to_display]
+    fiter_top_mod_neurons = lambda group: group[1] != net.uid
 
-
-def vis_topology(net: SpikingNetworkModule) -> None:
-    neurons_to_display = get_neurons_to_display(net)
-    synapses_to_display = get_synapses_to_display(net)
-    groups_to_display = get_groups_to_display(net)
-    nodes = format_nodes(neurons_to_display)
-    edges = format_edges(synapses_to_display)
-    groups = format_groups(groups_to_display)
-
-    graph_data = {}
-    graph_data["nodes"] = nodes
-    graph_data["edges"] = edges
-    graph_data["groups"] = groups
-
-    start_server(graph_data)
+    return list(filter(fiter_top_mod_neurons, selected_groups))
 
 
 def format_nodes(neurons: list[ExplicitNeuron]) -> list[dict[str, str]]:
@@ -114,6 +93,8 @@ def color_for_synapse(synapse_type: str) -> str:
         return "#006400"
     if synapse_type == "gate":
         return "#0E1AFE"
+    else:
+        return "#000000"
 
 
 def format_edges(synapses: list[Synapse]) -> list[dict[str, str]]:
@@ -153,3 +134,19 @@ def format_groups(groups: list[tuple[ExplicitNeuron, str]]) -> list[dict[str, st
         formatted_groups.append(formatted_group)
 
     return formatted_groups
+
+
+def vis_topology(net: SpikingNetworkModule) -> None:
+    neurons_to_display, synapses_to_display = get_neurons_and_synapses_to_display(net)
+    groups_to_display = get_groups_to_display(net, neurons_to_display)
+
+    nodes = format_nodes(neurons_to_display)
+    edges = format_edges(synapses_to_display)
+    groups = format_groups(groups_to_display)
+
+    graph_data = {}
+    graph_data["nodes"] = nodes
+    graph_data["edges"] = edges
+    graph_data["groups"] = groups
+
+    start_server(graph_data)
