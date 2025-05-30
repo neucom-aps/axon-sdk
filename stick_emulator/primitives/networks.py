@@ -18,7 +18,7 @@ class SpikingNetworkModule:
 
     def __init__(self, module_name: Optional[str] = None) -> None:
         self._neurons: list[ExplicitNeuron] = []
-        self._subnetworks: list[SpikingNetworkModule] = []
+        self._subnetworks: list[Self] = []
         self._instance_count = SpikingNetworkModule._global_instance_count
         if module_name:
             self._uid = f"(m{self.instance_count})_{module_name}"
@@ -40,6 +40,10 @@ class SpikingNetworkModule:
         )
         total_neurons.extend(sub_neurons)
         return total_neurons
+
+    @property
+    def subnetworks(self) -> list[Self]:
+        return self._subnetworks
 
     @property
     def instance_count(self) -> int:
