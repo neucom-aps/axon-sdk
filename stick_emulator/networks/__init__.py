@@ -19,3 +19,4 @@ from .functional.scalar_multiplier import ScalarMultiplierNetwork
 from .functional.divider import DivNetwork
 from .functional.adder import AdderNetwork
 from .functional.signflip import SignFlipperNetwork
+from .functional.signed_multipler_norm import SignedMultiplierNormNetwork

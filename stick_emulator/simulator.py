@@ -120,8 +120,8 @@ class Simulator:
 
     def launch_visualization(self):
         vis_topology(self.net)
-        plot_chronogram(
-            timesteps=self.timesteps,
-            voltage_log=self.voltage_log,
-            spike_log=self.spike_log,
-        )
+        # plot_chronogram(
+        #     timesteps=self.timesteps,
+        #     voltage_log=self.voltage_log,
+        #     spike_log=self.spike_log,
+        # )
