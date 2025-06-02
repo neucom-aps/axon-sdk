@@ -8,11 +8,13 @@ from stick_emulator.compiler import (
     build_stick_net,
     get_output_reader,
     get_input_triggers,
-    ExecutionPlan
+    ExecutionPlan,
+    compile_computation,
 )
 
 
 if __name__ == "__main__":
+    # 1. Computation
     x = Scalar(2.0)
     y = Scalar(3.0)
     z = Scalar(4.0)
@@ -21,22 +23,16 @@ if __name__ == "__main__":
 
     # draw_comp_graph(out)
 
+    # 2. Compile
     norm = 100
-    ops, conn, output_plug = flatten(out)
+    execPlan = compile_computation(root=out, norm=norm, timeout=600)
 
-    net = build_stick_net(ops, conn, norm)
-    input_triggers = get_input_triggers(ops, norm)
-    output_reader = get_output_reader(output_plug, norm)
-
-    if (not output_reader) or len(input_triggers) == 0:
-        raise RuntimeError
-
-    execPlan = ExecutionPlan(net, input_triggers, output_reader, timeout=600)
-
+    # 3. Simulate
     enc = DataEncoder()
-    sim = Simulator(net, enc)
+    sim = Simulator(execPlan.net, enc)
     sim.simulatePlan(execPlan, dt=0.0005)
 
+    # 4. Readout
     spikes_plus = sim.spike_log.get(execPlan.output_reader.read_neuron_plus.uid, [])
     spikes_minus = sim.spike_log.get(execPlan.output_reader.read_neuron_minus.uid, [])
 

@@ -257,3 +257,22 @@ def get_output_reader(plug: Plug, norm: float) -> Optional[OutputReader]:
     if header := plug.neuron_header:
         output_reader = OutputReader(header, norm)
     return output_reader
+
+
+def compile_computation(root: Scalar, norm: float, timeout: float) -> ExecutionPlan:
+    assert (
+        norm <= 100
+    ), "Normalization factor > 100 but only tested to work well until 100; Be at your own risk"
+
+    ops, conn, output_plug = flatten(root)
+
+    net = build_stick_net(ops, conn, norm)
+    input_triggers = get_input_triggers(ops, norm)
+    output_reader = get_output_reader(output_plug, norm)
+
+    if (not output_reader) or len(input_triggers) == 0:
+        raise RuntimeError
+
+    execPlan = ExecutionPlan(net, input_triggers, output_reader, timeout=timeout)
+
+    return execPlan
