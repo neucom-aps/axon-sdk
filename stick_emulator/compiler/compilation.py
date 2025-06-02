@@ -177,9 +177,9 @@ def spawn_stick_module(
             out_header = NeuronHeader(plus=mod.outp_plus, minus=mod.outp_minus)
 
         case _:
-            mod = None
-            in_header = []
-            out_header = None
+            raise Exception(
+                f"op was not initialized correctly due to missing or non-supported optype. Op {op}"
+            )
 
     return mod, in_header, out_header
 
