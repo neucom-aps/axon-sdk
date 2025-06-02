@@ -60,7 +60,7 @@ class SynchronizerNetwork(SpikingNetworkModule):
 
 
 if __name__ == "__main__":
-    from stick_emulator import Simulator
+    from stick_emulator.simulator import Simulator
     import random
 
     encoder = DataEncoder()
