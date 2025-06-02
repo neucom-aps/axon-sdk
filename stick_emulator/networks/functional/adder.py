@@ -13,16 +13,16 @@ class AdderNetwork(LinearCombinatorNetwork):
         coeffs = [1.0, 1.0]
         super().__init__(encoder=encoder, N=2, coeff=coeffs, module_name=module_name)
 
-        self.inpu1_plus = self.input_plus[0]
-        self.inpu1_minus = self.input_minus[0]
-        self.inpu2_plus = self.input_plus[1]
-        self.inpu2_minus = self.input_minus[1]
+        self.input1_plus = self.input_plus[0]
+        self.input1_minus = self.input_minus[0]
+        self.input2_plus = self.input_plus[1]
+        self.input2_minus = self.input_minus[1]
 
 
 if __name__ == "__main__":
     from stick_emulator.simulator import Simulator
-    inp1 = -0.0001
-    inp2 = 0.4
+    inp1 = 0.2
+    inp2 = -0.4
 
     assert inp1 + inp2 <= 1.0, "inp1 + inp2 must be smaller than 1.0"
 
@@ -56,4 +56,4 @@ if __name__ == "__main__":
     else:
         assert len(minus_spikes) == 2, "Expected 2 - spikes since expected is > 0"
         interval = minus_spikes[1] - minus_spikes[0]
-        print(f"Decoded value: {encoder.decode_interval(interval)}")
+        print(f"Decoded value: -{encoder.decode_interval(interval)}")
