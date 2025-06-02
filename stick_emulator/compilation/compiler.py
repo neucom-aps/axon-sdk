@@ -4,7 +4,7 @@ from stick_emulator.networks import (
     AdderNetwork,
     SignFlipperNetwork,
 )
-from stick_emulator.compiler import Scalar, OpType, trace
+from .scalar import Scalar, OpType, trace
 
 from typing import Optional
 

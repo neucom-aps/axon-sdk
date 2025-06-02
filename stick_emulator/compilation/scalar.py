@@ -15,10 +15,10 @@ class OpType(Enum):
 
     def __str__(self):
         return self._label
-    
+
     def __repr__(self):
         return self._label
-    
+
 
 class Scalar:
     def __init__(self, data, prev=(), op=OpType.Load):
@@ -85,6 +85,7 @@ def trace(root) -> tuple[list[Scalar], list[tuple[Scalar, Scalar]]]:
 
     build(root)
     return nodes, edges
+
 
 def draw_comp_graph(root: Scalar, format="svg", rankdir="LR", outfile="graph"):
     """

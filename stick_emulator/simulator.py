@@ -5,7 +5,7 @@ from stick_emulator.primitives import (
     ExplicitNeuron,
 )
 from stick_emulator.visualization import vis_topology, plot_chronogram
-from stick_emulator.compiler import ExecutionPlan
+from .compilation.compiler import ExecutionPlan
 import os
 
 
