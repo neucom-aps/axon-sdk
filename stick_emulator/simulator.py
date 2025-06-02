@@ -5,7 +5,7 @@ from stick_emulator.primitives import (
     ExplicitNeuron,
 )
 from stick_emulator.visualization import vis_topology, plot_chronogram
-from .executionPlan import ExecutionPlan
+from stick_emulator.compiler import ExecutionPlan
 import os
 
 
@@ -95,8 +95,8 @@ class Simulator:
 
             active_state_neurons = newly_active_state_neurons
 
-        # if os.getenv("VIS", "0") == "1":
-        self.launch_visualization()
+        if os.getenv("VIS", "0") == "1":
+            self.launch_visualization()
 
     def simulatePlan(self, executionPlan: ExecutionPlan, dt=0.001) -> None:
         self.net = executionPlan.net
@@ -120,8 +120,8 @@ class Simulator:
 
     def launch_visualization(self):
         vis_topology(self.net)
-        # plot_chronogram(
-        #     timesteps=self.timesteps,
-        #     voltage_log=self.voltage_log,
-        #     spike_log=self.spike_log,
-        # )
+        plot_chronogram(
+            timesteps=self.timesteps,
+            voltage_log=self.voltage_log,
+            spike_log=self.spike_log,
+        )

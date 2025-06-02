@@ -1,0 +1,17 @@
+digraph {
+	graph [nodesep=0.1 rankdir=LR ranksep=0.4]
+	4347928976 [label="data: 5.0000
+" fontsize=10 height=0.1 shape=box style=filled width=0.1]
+	"4347928976+" [label="+" fontsize=10 height=0.1 width=0.1]
+	"4347928976+" -> 4347928976 [minlen=1]
+	4347847280 [label="data: 2.0000
+" fontsize=10 height=0.1 shape=box style=filled width=0.1]
+	"4347847280load" [label=load fontsize=10 height=0.1 width=0.1]
+	"4347847280load" -> 4347847280 [minlen=1]
+	4336678416 [label="data: 3.0000
+" fontsize=10 height=0.1 shape=box style=filled width=0.1]
+	"4336678416load" [label=load fontsize=10 height=0.1 width=0.1]
+	"4336678416load" -> 4336678416 [minlen=1]
+	4347847280 -> "4347928976+" [minlen=1]
+	4336678416 -> "4347928976+" [minlen=1]
+}
