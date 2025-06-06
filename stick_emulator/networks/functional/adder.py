@@ -31,14 +31,14 @@ if __name__ == "__main__":
     sim = Simulator(net, encoder, dt=0.01)
 
     if inp1 >= 0:
-        sim.apply_input_value(abs(inp1), net.inpu1_plus)
+        sim.apply_input_value(abs(inp1), net.input1_plus)
     else:
-        sim.apply_input_value(abs(inp1), net.inpu1_minus)
+        sim.apply_input_value(abs(inp1), net.input1_minus)
 
     if inp2 >= 0:
-        sim.apply_input_value(abs(inp2), net.inpu2_plus)
+        sim.apply_input_value(abs(inp2), net.input2_plus)
     else:
-        sim.apply_input_value(abs(inp2), net.inpu2_minus)
+        sim.apply_input_value(abs(inp2), net.input2_minus)
 
     sim.simulate(450)
 
