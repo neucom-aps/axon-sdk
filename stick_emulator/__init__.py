@@ -1,1 +1,1 @@
-from .simulator import Simulator
+from .simulator import Simulator, decode_output, count_spikes
