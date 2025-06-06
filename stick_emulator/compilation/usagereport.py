@@ -3,6 +3,7 @@ from stick_emulator.networks import (
     AdderNetwork,
     SignedMultiplierNormNetwork,
     SignFlipperNetwork,
+    DivNetwork
 )
 from .compiler import InjectorNetwork
 
@@ -36,6 +37,8 @@ def module_to_spikes(mod: SpikingNetworkModule) -> int:
         return 29
     elif isinstance(mod, AdderNetwork):
         return 58
+    elif isinstance(mod, DivNetwork):
+        return 31
     else:
         raise ValueError(f"Unknown number of spikes for module {mod}")
 
