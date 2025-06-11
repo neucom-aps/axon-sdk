@@ -3,6 +3,7 @@ from stick_emulator.networks import (
     SignedMultiplierNormNetwork,
     AdderNetwork,
     SignFlipperNetwork,
+    DivNetwork
 )
 from .scalar import Scalar, OpType, trace
 
@@ -167,6 +168,16 @@ def spawn_stick_module(
             in_header.append(NeuronHeader(plus=mod.input1_plus, minus=mod.input1_minus))
             in_header.append(NeuronHeader(plus=mod.input2_plus, minus=mod.input2_minus))
             out_header = NeuronHeader(plus=mod.output_plus, minus=mod.output_minus)
+
+        case OpType.Div:
+            ""
+            mod = DivNetwork(
+                encoder=encoder, module_name="div_mod"
+            )
+            in_header = []
+            in_header.append(NeuronHeader(plus=mod.input1, minus=mod.input1))
+            in_header.append(NeuronHeader(plus=mod.input2, minus=mod.input2))
+            out_header = NeuronHeader(plus=mod.output, minus=mod.output)
 
         case OpType.Neg:
             mod = SignFlipperNetwork(encoder=encoder, module_name="inv_mod")

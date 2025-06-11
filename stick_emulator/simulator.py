@@ -3,6 +3,7 @@ from stick_emulator.primitives import (
     DataEncoder,
     SpikeEventQueue,
     ExplicitNeuron,
+    Synapse,
 )
 from stick_emulator.visualization import vis_topology, plot_chronogram
 from stick_emulator.compilation import ExecutionPlan
@@ -21,11 +22,11 @@ class Simulator:
         self.encoder = encoder
         self.dt = dt
         self.timesteps: list[float] = []
-        # Cache the neurons in the network to avoid continouous list comprehension
-        self._cached_neurons: list[ExplicitNeuron] = self.net.neurons
         self.spike_log: dict[str, list[float]] = {}
         self.voltage_log: dict[str, list[tuple]] = {}
-        for neuron in self._cached_neurons:
+        self.synapse_log: dict[str, int] = {"V": 0, "ge": 0, "gf": 0, "gate": 0}
+
+        for neuron in self.net.neurons:
             self.spike_log[neuron.uid] = []
             self.voltage_log[neuron.uid] = []
 
@@ -42,30 +43,27 @@ class Simulator:
 
         return new_instance
 
-    def apply_input_value(self, value: float, neuron: ExplicitNeuron, t0: float = 0):
-        assert value >= 0.0 and value <= 1.0
-
-        spike_interval = self.encoder.encode_value(value)
-        for t_spike_in_interval in spike_interval:
-            event_time = t0 + t_spike_in_interval
-            self._log_spike_occurrence(neuron=neuron, t=event_time)
-            for synapse in neuron.out_synapses:
-                self.event_queue.add_event(
-                    time=event_time + synapse.delay,
-                    neuron=synapse.post_neuron,
-                    synapse_type=synapse.type,
-                    weight=synapse.weight,
-                )
-
-    def apply_input_spike(self, neuron: ExplicitNeuron, t: float):
-        self._log_spike_occurrence(neuron, t)
-        for synapse in neuron.out_synapses:
+    def _propagate_spike(self, from_neuron: ExplicitNeuron, t: float) -> None:
+        self._log_spike_occurrence(neuron=from_neuron, t=t)
+        for synapse in from_neuron.out_synapses:
+            self._log_synaptic_event(syntype=synapse.type)
             self.event_queue.add_event(
                 time=t + synapse.delay,
                 neuron=synapse.post_neuron,
                 synapse_type=synapse.type,
                 weight=synapse.weight,
             )
+
+    def apply_input_value(self, value: float, neuron: ExplicitNeuron, t0: float = 0):
+        assert value >= 0.0 and value <= 1.0
+
+        spike_interval = self.encoder.encode_value(value)
+        for t_spike_in_interval in spike_interval:
+            event_time = t0 + t_spike_in_interval
+            self._propagate_spike(from_neuron=neuron, t=event_time)
+
+    def apply_input_spike(self, neuron: ExplicitNeuron, t: float):
+        self._propagate_spike(from_neuron=neuron, t=t)
 
     def simulate(self, simulation_time: float):
         num_steps = int(simulation_time / self.dt)
@@ -95,15 +93,8 @@ class Simulator:
                 self._log_voltage_value(neuron=neuron, V=neuron.V, timestep=i)
 
                 if spike:
-                    self._log_spike_occurrence(neuron=neuron, t=t)
+                    self._propagate_spike(from_neuron=neuron, t=t)
                     neuron.reset()  # V becomes Vreset, ge=0, gf=0, gate=0
-                    for synapse in neuron.out_synapses:
-                        self.event_queue.add_event(
-                            time=t + synapse.delay,
-                            neuron=synapse.post_neuron,
-                            synapse_type=synapse.type,
-                            weight=synapse.weight,
-                        )
 
                 # After update and potential reset, check if it remains internally active for the next step
                 if neuron.ge != 0.0 or neuron.gf != 0.0 or neuron.gate != 0:
@@ -125,13 +116,16 @@ class Simulator:
     ) -> None:
         self.voltage_log[neuron.uid].append((V, timestep))
 
+    def _log_synaptic_event(self, syntype: str):
+        self.synapse_log[syntype] += 1
+
     def launch_visualization(self):
         vis_topology(self.net)
-        # plot_chronogram(
-        #     timesteps=self.timesteps,
-        #     voltage_log=self.voltage_log,
-        #     spike_log=self.spike_log,
-        # )
+        plot_chronogram(
+            timesteps=self.timesteps,
+            voltage_log=self.voltage_log,
+            spike_log=self.spike_log,
+        )
 
 
 def decode_output(sim: Simulator, reader: OutputReader) -> Optional[float]:

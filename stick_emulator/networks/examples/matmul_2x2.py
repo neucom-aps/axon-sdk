@@ -85,14 +85,14 @@ if __name__ == "__main__":
     enc = DataEncoder()
     sim = Simulator.init_with_plan(plan=plan, encoder=enc)
 
-    report_neuron_usage(plan.net)
-    report_spike_estimation(plan.net)
+    # report_neuron_usage(plan.net)
+    # report_spike_estimation(plan.net)
     
-    # os.environ["VIS"] = "1"
-    # sim.simulate(simulation_time=6000)
+    os.environ["VIS"] = "1"
+    sim.simulate(simulation_time=3000)
 
-    # output = decode_output(sim=sim, reader=plan.output_reader)
+    output = decode_output(sim=sim, reader=plan.output_reader)
 
-    # num_spikes = count_spikes(sim)
+    num_spikes = count_spikes(sim)
 
-    # print('hi')
+    print('hi')

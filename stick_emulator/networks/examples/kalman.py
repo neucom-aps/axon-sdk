@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from stick_emulator.compilation import Scalar, draw_comp_graph
-from stick_emulator.compilation import report_neuron_usage, report_spike_estimation, compile_computation, ExecutionPlan
+from stick_emulator.compilation import report_neuron_usage, report_spike_estimation, report_energy_and_latency_estimation, compile_computation, ExecutionPlan
 
 
 def mul_mat(a, b):
@@ -171,5 +171,6 @@ if __name__ == "__main__":
 
     report_neuron_usage(plan.net)
     report_spike_estimation(plan.net)
+    report_energy_and_latency_estimation(plan.net)
 
 
