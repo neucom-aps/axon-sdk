@@ -25,7 +25,7 @@ class SignFlipperNetwork(SpikingNetworkModule):
         self.inp_plus = self.add_neuron(Vt=Vt, tf=tf, tm=tm, neuron_name='inp_plus')
         self.inp_minus = self.add_neuron(Vt=Vt, tf=tf, tm=tm, neuron_name='inp_minus')
         self.outp_plus = self.add_neuron(Vt=Vt, tf=tf, tm=tm, neuron_name='outp_plus')
-        self.outp_minus = self.add_neuron(Vt=Vt, tf=tf, tm=tm, neuron_name='outp_plus')
+        self.outp_minus = self.add_neuron(Vt=Vt, tf=tf, tm=tm, neuron_name='outp_minus')
 
         self.connect_neurons(self.inp_plus, self.outp_minus, "V", we, Tsyn)
         self.connect_neurons(self.inp_minus, self.outp_plus, "V", we, Tsyn)

@@ -14,7 +14,7 @@ class AbstractNeuron:
         Vreset=0.0,
         neuron_name: Optional[str] = None,
         parent_mod_id: Optional[str] = None,
-        additional_info: Optional[str] = None,
+        additional_info: Optional[str] = None
     ):
         """
         Initialize the neuron with given parameters.
@@ -102,11 +102,9 @@ class ExplicitNeuron(AbstractNeuron):
         Vreset: float = 0.0,
         neuron_name: Optional[str] = None,
         parent_mod_id: Optional[str] = None,
-        additional_info: Optional[str] = None,
+        additional_info: Optional[str] = None
     ):
-        super().__init__(
-            Vt, tm, tf, Vreset, neuron_name, parent_mod_id, additional_info
-        )
+        super().__init__(Vt, tm, tf, Vreset, neuron_name, parent_mod_id, additional_info)
         self.spike_times: list[float] = []
         self.out_synapses: list[Synapse] = []
 

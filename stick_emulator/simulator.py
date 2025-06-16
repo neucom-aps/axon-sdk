@@ -5,7 +5,11 @@ from stick_emulator.primitives import (
     ExplicitNeuron,
 )
 from stick_emulator.visualization import vis_topology, plot_chronogram
+from stick_emulator.compilation import ExecutionPlan
+from .compilation.compiler import OutputReader
 import os
+
+from typing import Self, Optional
 
 
 class Simulator:
@@ -17,13 +21,24 @@ class Simulator:
         self.encoder = encoder
         self.dt = dt
         self.timesteps: list[float] = []
-        # Cache the neurons in the network to avoid continouous list comprehension
-        self._cached_neurons: list[ExplicitNeuron] = self.net.neurons
         self.spike_log: dict[str, list[float]] = {}
         self.voltage_log: dict[str, list[tuple]] = {}
-        for neuron in self._cached_neurons:
+        for neuron in self.net.neurons:
             self.spike_log[neuron.uid] = []
             self.voltage_log[neuron.uid] = []
+
+    @classmethod
+    def init_with_plan(
+        cls, plan: ExecutionPlan, encoder: DataEncoder, dt: float = 0.001
+    ) -> Self:
+        new_instance = cls(net=plan.net, encoder=encoder, dt=dt)
+
+        for trigger in plan.input_triggers:
+            new_instance.apply_input_value(
+                trigger.normalized_value, trigger.trigger_neuron
+            )
+
+        return new_instance
 
     def apply_input_value(self, value: float, neuron: ExplicitNeuron, t0: float = 0):
         assert value >= 0.0 and value <= 1.0
@@ -98,7 +113,10 @@ class Simulator:
             self.launch_visualization()
 
     def _log_spike_occurrence(self, neuron: ExplicitNeuron, t: float) -> None:
-        self.spike_log[neuron.uid].append(t)
+        if neuron.uid in self.spike_log:
+            self.spike_log[neuron.uid].append(t)
+        else:
+            self.spike_log[neuron.uid] = [t]
 
     def _log_voltage_value(
         self, neuron: ExplicitNeuron, V: float, timestep: float
@@ -112,3 +130,32 @@ class Simulator:
             voltage_log=self.voltage_log,
             spike_log=self.spike_log,
         )
+
+
+def decode_output(sim: Simulator, reader: OutputReader) -> Optional[float]:
+    spikes_plus = sim.spike_log.get(reader.read_neuron_plus.uid, [])
+    spikes_minus = sim.spike_log.get(reader.read_neuron_minus.uid, [])
+
+    decoded_value = None
+
+    if len(spikes_plus) > 0 and len(spikes_minus) > 0:
+        raise ValueError("Wrong state: produced spikes in '+' and '-' neurons")
+    if len(spikes_plus) and len(spikes_plus) == 2:
+        intv = spikes_plus[1] - spikes_plus[0]
+        decoded_value = reader.normalization * sim.encoder.decode_interval(intv)
+    elif len(spikes_plus) and len(spikes_plus) != 2:
+        raise ValueError("Wrong state: neuron '+' received more than 2 spikes")
+    elif len(spikes_minus) and len(spikes_minus) == 2:
+        intv = spikes_minus[1] - spikes_minus[0]
+        decoded_value = -1 * reader.normalization * sim.encoder.decode_interval(intv)
+    elif len(spikes_minus) and len(spikes_minus) != 2:
+        raise ValueError("Wrong state: neuron '-' received more than 2 spikes")
+
+    return decoded_value
+
+
+def count_spikes(sim: Simulator) -> int:
+    count = 0
+    for neuron_spikes in sim.spike_log.values():
+        count += len(neuron_spikes)
+    return count

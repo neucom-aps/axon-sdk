@@ -2,7 +2,6 @@ from stick_emulator.primitives import (
     SpikingNetworkModule,
     DataEncoder,
 )
-from stick_emulator.simulator import Simulator
 from stick_emulator.networks import SubtractorNetwork, SynchronizerNetwork
 
 from typing import Optional
@@ -186,6 +185,7 @@ def decode_spike_interval(spikes, encoder):
 
 
 if __name__ == "__main__":
+    from stick_emulator.simulator import Simulator
     inputs = [0.5, 0.5]
     coeffs = [1.0, 1.0]
 
