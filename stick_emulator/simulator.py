@@ -21,11 +21,9 @@ class Simulator:
         self.encoder = encoder
         self.dt = dt
         self.timesteps: list[float] = []
-        # Cache the neurons in the network to avoid continouous list comprehension
-        self._cached_neurons: list[ExplicitNeuron] = self.net.neurons
         self.spike_log: dict[str, list[float]] = {}
         self.voltage_log: dict[str, list[tuple]] = {}
-        for neuron in self._cached_neurons:
+        for neuron in self.net.neurons:
             self.spike_log[neuron.uid] = []
             self.voltage_log[neuron.uid] = []
 
@@ -127,11 +125,11 @@ class Simulator:
 
     def launch_visualization(self):
         vis_topology(self.net)
-        # plot_chronogram(
-        #     timesteps=self.timesteps,
-        #     voltage_log=self.voltage_log,
-        #     spike_log=self.spike_log,
-        # )
+        plot_chronogram(
+            timesteps=self.timesteps,
+            voltage_log=self.voltage_log,
+            spike_log=self.spike_log,
+        )
 
 
 def decode_output(sim: Simulator, reader: OutputReader) -> Optional[float]:
@@ -151,7 +149,7 @@ def decode_output(sim: Simulator, reader: OutputReader) -> Optional[float]:
         intv = spikes_minus[1] - spikes_minus[0]
         decoded_value = -1 * reader.normalization * sim.encoder.decode_interval(intv)
     elif len(spikes_minus) and len(spikes_minus) != 2:
-        raise ValueError("Wrong state: neuron '+' received more than 2 spikes")
+        raise ValueError("Wrong state: neuron '-' received more than 2 spikes")
 
     return decoded_value
 

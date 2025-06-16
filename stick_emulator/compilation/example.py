@@ -1,7 +1,7 @@
 from stick_emulator.primitives import DataEncoder
 from stick_emulator.simulator import Simulator
 
-from stick_emulator.compilation import Scalar, draw_comp_graph, compile_computation
+from stick_emulator.compilation import Scalar, compile_computation
 
 
 if __name__ == "__main__":
@@ -10,18 +10,18 @@ if __name__ == "__main__":
     y = Scalar(3.0)
     z = Scalar(4.0)
 
-    out = x - y
+    out = (x + y) * z
 
-    # draw_comp_graph(out)
+    out.draw_comp_graph(outfile='basic_computation_graph')
 
     # 2. Compile
     norm = 100
-    execPlan = compile_computation(root=out, norm=norm, timeout=600)
+    execPlan = compile_computation(root=out, max_range=norm)
 
     # 3. Simulate
     enc = DataEncoder()
-    sim = Simulator(execPlan.net, enc)
-    sim.simulatePlan(execPlan, dt=0.0005)
+    sim = Simulator.init_with_plan(execPlan, enc)
+    sim.simulate(simulation_time=600)
 
     # 4. Readout
     spikes_plus = sim.spike_log.get(execPlan.output_reader.read_neuron_plus.uid, [])
