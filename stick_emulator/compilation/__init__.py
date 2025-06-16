@@ -1,2 +1,2 @@
-from .scalar import Scalar, draw_comp_graph
+from .scalar import Scalar
 from .compiler import compile_computation, ExecutionPlan
