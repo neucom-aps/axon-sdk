@@ -4,70 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d08d082d-c0a7-41c4-921a-501b2fbf8d88" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/axon_sdk/networks/connecting/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/axon_sdk/networks/memory/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/setup.cfg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/main.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/main.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/compilation/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/compilation/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/compilation/compiler.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/compilation/compiler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/compilation/example.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/compilation/example.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/compilation/scalar.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/compilation/scalar.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/connecting/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/build.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/connecting/synchronizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/connecting/synchronizer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/examples/lorentz_attractor.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/lorentz_attractor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/functional/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/functional/adder.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/adder.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/functional/divider.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/divider.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/functional/exponential.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/exponential.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/functional/integrator.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/integrator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/functional/linear_combinator.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/linear_combinator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/functional/multiplier.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/multiplier.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/functional/natural_log.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/natural_log.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/functional/scalar_multiplier.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/scalar_multiplier.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/functional/signed_multipler_norm.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/signed_multipler_norm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/functional/signed_multiplier.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/signed_multiplier.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/functional/signflip.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/signflip.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/functional/subtractor.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/subtractor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/memory/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/memory/constant.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/memory/constant.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/memory/inverting_memory.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/memory/inverting_memory.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/memory/memory.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/memory/memory.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/memory/signed_constant.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/memory/signed_constant.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/memory/signed_memory.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/memory/signed_memory.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/primitives/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/primitives/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/primitives/elements.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/primitives/elements.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/primitives/encoders.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/primitives/encoders.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/primitives/events.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/primitives/events.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/primitives/helpers.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/primitives/helpers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/primitives/networks.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/primitives/networks.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/simulator.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/simulator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/tests/test_constant.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_constant.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/tests/test_divider.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_divider.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/tests/test_exponential.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_exponential.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/tests/test_inverting_memory.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_inverting_memory.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/tests/test_lincombination.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_lincombination.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/tests/test_log.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_log.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/tests/test_memory.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_memory.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/tests/test_mul.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_mul.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/tests/test_primitives.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_primitives.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/tests/test_signed_memory.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_signed_memory.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/tests/test_signed_mul.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_signed_mul.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/tests/test_sub.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_sub.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/tests/test_synchronizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_synchronizer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/visualization/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/visualization/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/visualization/chronogram.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/visualization/chronogram.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/visualization/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/visualization/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/visualization/js-libs/d3.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/visualization/js-libs/d3.min.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/visualization/js-libs/dagre-d3.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/visualization/js-libs/dagre-d3.min.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/visualization/js-libs/dagre.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/visualization/js-libs/dagre.min.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/visualization/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/visualization/server.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/visualization/topovis.js" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/visualization/topovis.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stick_emulator/visualization/topovis.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/visualization/topovis.py" afterDir="false" />
-    </list>
+    <list default="true" id="d08d082d-c0a7-41c4-921a-501b2fbf8d88" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -229,7 +166,7 @@
       <option name="presentableId" value="Default" />
       <updated>1749942533301</updated>
       <workItem from="1749942540777" duration="6612000" />
-      <workItem from="1750451371804" duration="960000" />
+      <workItem from="1750451371804" duration="1350000" />
     </task>
     <servers />
   </component>
