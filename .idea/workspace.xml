@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="d08d082d-c0a7-41c4-921a-501b2fbf8d88" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/axon_sdk/networks/connecting/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/axon_sdk/networks/memory/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/setup.cfg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/main.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/main.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/compilation/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/compilation/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/compilation/compiler.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/compilation/compiler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/compilation/example.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/compilation/example.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/compilation/scalar.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/compilation/scalar.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/connecting/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/build.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/connecting/synchronizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/connecting/synchronizer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/examples/lorentz_attractor.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/lorentz_attractor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/functional/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/functional/adder.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/adder.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/functional/divider.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/divider.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/functional/exponential.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/exponential.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/functional/integrator.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/integrator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/functional/linear_combinator.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/linear_combinator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/functional/multiplier.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/multiplier.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/functional/natural_log.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/natural_log.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/functional/scalar_multiplier.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/scalar_multiplier.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/functional/signed_multipler_norm.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/signed_multipler_norm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/functional/signed_multiplier.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/signed_multiplier.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/functional/signflip.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/signflip.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/functional/subtractor.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/subtractor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/memory/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/memory/constant.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/memory/constant.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/memory/inverting_memory.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/memory/inverting_memory.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/memory/memory.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/memory/memory.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/memory/signed_constant.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/memory/signed_constant.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/networks/memory/signed_memory.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/memory/signed_memory.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/primitives/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/primitives/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/primitives/elements.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/primitives/elements.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/primitives/encoders.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/primitives/encoders.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/primitives/events.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/primitives/events.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/primitives/helpers.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/primitives/helpers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/primitives/networks.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/primitives/networks.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/simulator.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/simulator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/tests/test_constant.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_constant.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/tests/test_divider.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_divider.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/tests/test_exponential.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_exponential.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/tests/test_inverting_memory.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_inverting_memory.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/tests/test_lincombination.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_lincombination.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/tests/test_log.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_log.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/tests/test_memory.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_memory.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/tests/test_mul.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_mul.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/tests/test_primitives.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_primitives.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/tests/test_signed_memory.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_signed_memory.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/tests/test_signed_mul.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_signed_mul.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/tests/test_sub.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_sub.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/tests/test_synchronizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_synchronizer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/visualization/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/visualization/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/visualization/chronogram.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/visualization/chronogram.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/visualization/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/visualization/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/visualization/js-libs/d3.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/visualization/js-libs/d3.min.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/visualization/js-libs/dagre-d3.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/visualization/js-libs/dagre-d3.min.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/visualization/js-libs/dagre.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/visualization/js-libs/dagre.min.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/visualization/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/visualization/server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/visualization/topovis.js" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/visualization/topovis.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stick_emulator/visualization/topovis.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/visualization/topovis.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2yWFeFC4S9qK1QFTHMdvLhSAzSd" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Dmitr\Documents\neuro\stick-emulator" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.divider">
+    <configuration name="adder" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="stick-emulator" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/stick_emulator/networks/functional" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/stick_emulator/networks/functional/adder.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="divider" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="stick-emulator" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/stick_emulator/networks/functional" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/stick_emulator/networks/functional/divider.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="integrator" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="stick-emulator" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/stick_emulator/networks/functional" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/stick_emulator/networks/functional/integrator.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="linear_combinator" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="stick-emulator" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/stick_emulator/networks/functional" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/stick_emulator/networks/functional/linear_combinator.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="synchronizer" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="stick-emulator" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/stick_emulator/networks/connecting" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/stick_emulator/networks/connecting/synchronizer.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.divider" />
+        <item itemvalue="Python.synchronizer" />
+        <item itemvalue="Python.integrator" />
+        <item itemvalue="Python.linear_combinator" />
+        <item itemvalue="Python.adder" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="d08d082d-c0a7-41c4-921a-501b2fbf8d88" name="Changes" comment="" />
+      <created>1749942533301</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1749942533301</updated>
+      <workItem from="1749942540777" duration="6612000" />
+      <workItem from="1750451371804" duration="960000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/stick_emulator$simulator.coverage" NAME="simulator Coverage Results" MODIFIED="1749942913350" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/stick_emulator" />
+    <SUITE FILE_PATH="coverage/stick_emulator$synchronizer.coverage" NAME="synchronizer Coverage Results" MODIFIED="1749944554059" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/stick_emulator/networks/connecting" />
+    <SUITE FILE_PATH="coverage/stick_emulator$adder.coverage" NAME="adder Coverage Results" MODIFIED="1749943049730" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/stick_emulator/networks/functional" />
+    <SUITE FILE_PATH="coverage/stick_emulator$divider.coverage" NAME="divider Coverage Results" MODIFIED="1750051415011" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/stick_emulator/networks/functional" />
+    <SUITE FILE_PATH="coverage/stick_emulator$linear_combinator.coverage" NAME="linear_combinator Coverage Results" MODIFIED="1749944012090" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/stick_emulator/networks/functional" />
+    <SUITE FILE_PATH="coverage/stick_emulator$integrator.coverage" NAME="integrator Coverage Results" MODIFIED="1749944087159" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/stick_emulator/networks/functional" />
+  </component>
+</project>
