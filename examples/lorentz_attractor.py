@@ -1,8 +1,23 @@
-from primitives import SpikingNetworkModule, ExplicitNeuron, DataEncoder
-from signed_multiplier import SignedMultiplierNetwork
-from integrator_network import IntegratorNetwork
-from linear_comb_network import LinearCombinationNetwork
-from synchronizer_network import SynchronizerNetwork
+# Copyright (C) 2025  Neucom Aps
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+from axon_sdk.primitives import SpikingNetworkModule, ExplicitNeuron, DataEncoder
+from axon_sdk.networks.functional.signed_multiplier import SignedMultiplierNetwork
+from axon_sdk.networks.functional.integrator import IntegratorNetwork
+from axon_sdk.networks.functional.linear_combinator import LinearCombinatorNetwork
+from axon_sdk.networks.connecting.synchronizer import SynchronizerNetwork
 
 class LorentzAttractor(SpikingNetworkModule):
     def __init__(self, encoder: DataEncoder, sigma: float, rho: float, beta: float, prefix: str = '') -> None:
