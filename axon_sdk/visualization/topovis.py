@@ -1,10 +1,10 @@
-from stick_emulator.primitives import (
+from axon_sdk.primitives import (
     SpikingNetworkModule,
     ExplicitNeuron,
     Synapse,
 )
 
-from stick_emulator.visualization.server import start_server
+from axon_sdk.visualization.server import start_server
 
 
 def generate_mapping_neuron_to_net(
