@@ -15,6 +15,7 @@ jobs:
       run:
         working-directory: ${{ github.workspace }}
 
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -23,6 +24,12 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: "3.11"
+
+      - name: Confirm working directory
+        run: pwd
+
+      - name: Show all pyproject.toml locations
+        run: find . -name pyproject.toml
 
       - name: Show pyproject.toml
         run: cat pyproject.toml
