@@ -116,7 +116,7 @@ class SignedMultiplierNormNetwork(SpikingNetworkModule):
 
 
 if __name__ == "__main__":
-    from stick_emulator.simulator import Simulator
+    from axon_sdk.simulator import Simulator
 
     norm = 100
 

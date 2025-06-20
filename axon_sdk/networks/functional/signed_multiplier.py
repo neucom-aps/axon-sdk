@@ -90,7 +90,7 @@ class SignedMultiplierNetwork(SpikingNetworkModule):
 
 
 if __name__ == "__main__":
-    from stick_emulator.simulator import Simulator
+    from axon_sdk.simulator import Simulator
 
     encoder = DataEncoder(Tmin=10.0, Tcod=100.0)
     net = SignedMultiplierNetwork(encoder, module_name='signmul_net')

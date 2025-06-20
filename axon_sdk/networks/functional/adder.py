@@ -20,7 +20,7 @@ class AdderNetwork(LinearCombinatorNetwork):
 
 
 if __name__ == "__main__":
-    from stick_emulator.simulator import Simulator
+    from axon_sdk.simulator import Simulator
     inp1 = 0.2
     inp2 = -0.4
 

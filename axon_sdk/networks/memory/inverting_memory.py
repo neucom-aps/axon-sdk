@@ -43,7 +43,7 @@ class InvertingMemoryNetwork(SpikingNetworkModule):
 
 
 if __name__ == "__main__":
-    from stick_emulator import Simulator
+    from axon_sdk import Simulator
 
     val = 0.6
     encoder = DataEncoder()

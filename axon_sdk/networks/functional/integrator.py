@@ -113,7 +113,7 @@ class IntegratorNetwork(SpikingNetworkModule):
 
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
-    from stick_emulator import Simulator
+    from axon_sdk import Simulator
 
     encoder = DataEncoder(Tmin=10.0, Tcod=100.0)
     x0 = 0.3

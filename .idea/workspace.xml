@@ -23,7 +23,6 @@
       <change beforePath="$PROJECT_DIR$/axon_sdk/networks/memory/memory.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/memory/memory.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/axon_sdk/networks/memory/signed_constant.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/memory/signed_constant.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/axon_sdk/networks/memory/signed_memory.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/memory/signed_memory.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/axon_sdk/simulator.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/simulator.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -186,7 +185,7 @@
       <option name="presentableId" value="Default" />
       <updated>1749942533301</updated>
       <workItem from="1749942540777" duration="6612000" />
-      <workItem from="1750451371804" duration="3942000" />
+      <workItem from="1750451371804" duration="4427000" />
     </task>
     <servers />
   </component>

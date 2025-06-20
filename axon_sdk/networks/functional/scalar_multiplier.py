@@ -61,7 +61,7 @@ class ScalarMultiplierNetwork(SpikingNetworkModule):
 
 
 if __name__ == "__main__":
-    from stick_emulator import Simulator
+    from axon_sdk import Simulator
     
     factor = 100
     val = 0.0042  ## make sure that val x scale < 1

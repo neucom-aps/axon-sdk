@@ -73,7 +73,7 @@ class SignedMemoryNetwork(SpikingNetworkModule):
 
 
 if __name__ == "__main__":
-    from stick_emulator import Simulator
+    from axon_sdk import Simulator
 
     encoder = DataEncoder()
     net = SignedMemoryNetwork(encoder)

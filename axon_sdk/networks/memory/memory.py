@@ -71,7 +71,7 @@ class MemoryNetwork(SpikingNetworkModule):
 
 
 if __name__ == "__main__":
-    from stick_emulator import Simulator
+    from axon_sdk import Simulator
 
     val = 0.1234 # test input value
     encoder = DataEncoder(Tcod=100)

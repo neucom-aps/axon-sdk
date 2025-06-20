@@ -32,7 +32,7 @@ class ConstantNetwork(SpikingNetworkModule):
 
 
 if __name__ == "__main__":
-    from stick_emulator import Simulator
+    from axon_sdk import Simulator
 
     encoder = DataEncoder()
     value = 0  # Constant value between 0–1

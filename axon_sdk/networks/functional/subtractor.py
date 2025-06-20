@@ -90,7 +90,7 @@ class SubtractorNetwork(SpikingNetworkModule):
 
 
 if __name__ == "__main__":
-    from stick_emulator import Simulator
+    from axon_sdk.simulator import Simulator
 
     encoder = DataEncoder(Tmin=10.0, Tcod=100.0)
     net = SubtractorNetwork(encoder, module_name='sub')

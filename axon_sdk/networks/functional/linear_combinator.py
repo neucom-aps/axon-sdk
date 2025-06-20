@@ -185,7 +185,7 @@ def decode_spike_interval(spikes, encoder):
 
 
 if __name__ == "__main__":
-    from stick_emulator.simulator import Simulator
+    from axon_sdk.simulator import Simulator
     inputs = [0.5, 0.5]
     coeffs = [1.0, 1.0]
 

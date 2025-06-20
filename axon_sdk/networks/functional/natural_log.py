@@ -68,7 +68,7 @@ def decode_logarithm(output_interval, encoder: DataEncoder, tf: float):
 
 if __name__ == "__main__":
     import math
-    from stick_emulator import Simulator
+    from axon_sdk import Simulator
 
     encoder = DataEncoder(Tmin=10.0, Tcod=100.0)
     lognet = LogNetwork(encoder, module_name="lognet")
