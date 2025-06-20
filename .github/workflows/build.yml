@@ -20,6 +20,9 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Show pyproject.toml
+        run: cat pyproject.toml
+
       - name: Install build tools
         run: |
           python -m pip install --upgrade pip
