@@ -5,8 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d08d082d-c0a7-41c4-921a-501b2fbf8d88" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_constant.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_constant.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_divider.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_divider.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_exponential.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_exponential.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_inverting_memory.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_inverting_memory.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_lincombination.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_lincombination.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_log.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_log.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_memory.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_memory.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_mul.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_mul.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_primitives.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_primitives.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_signed_memory.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_signed_memory.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_signed_mul.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_signed_mul.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_sub.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_sub.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_synchronizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_synchronizer.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -169,7 +180,7 @@
       <option name="presentableId" value="Default" />
       <updated>1749942533301</updated>
       <workItem from="1749942540777" duration="6612000" />
-      <workItem from="1750451371804" duration="3051000" />
+      <workItem from="1750451371804" duration="3468000" />
     </task>
     <servers />
   </component>

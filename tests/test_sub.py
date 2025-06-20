@@ -1,8 +1,8 @@
 import pytest
 
-from stick_emulator.networks import SubtractorNetwork
-from stick_emulator.primitives import DataEncoder
-from stick_emulator.simulator import Simulator
+from axon_sdk.networks import SubtractorNetwork
+from axon_sdk.primitives import DataEncoder
+from axon_sdk.simulator import Simulator
 
 
 def subtract(encoder, val1, val2) -> float:

@@ -1,7 +1,7 @@
 import pytest
-from stick_emulator.networks import ExponentialNetwork
-from stick_emulator.primitives import DataEncoder
-from stick_emulator import Simulator
+from axon_sdk.networks import ExponentialNetwork
+from axon_sdk.primitives import DataEncoder
+from axon_sdk import Simulator
 import math
 
 

@@ -1,7 +1,7 @@
 import pytest
-from stick_emulator.networks.memory.signed_memory import SignedMemoryNetwork
-from stick_emulator.primitives import DataEncoder
-from stick_emulator import Simulator
+from axon_sdk.networks.memory.signed_memory import SignedMemoryNetwork
+from axon_sdk.primitives import DataEncoder
+from axon_sdk import Simulator
 
 
 def encode_and_recall(input_value, is_positive, encoder):

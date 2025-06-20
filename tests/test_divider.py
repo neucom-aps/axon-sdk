@@ -1,8 +1,8 @@
 import pytest
 
-from stick_emulator.networks import DivNetwork
-from stick_emulator.primitives import DataEncoder
-from stick_emulator.simulator import Simulator
+from axon_sdk.networks import DivNetwork
+from axon_sdk.primitives import DataEncoder
+from axon_sdk.simulator import Simulator
 
 
 # x1 <= x2 (x1 must be smaller or equal than x2)
