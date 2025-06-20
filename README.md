@@ -1,10 +1,10 @@
-# STICK emulator
+# Axon-SDK
 
 Python package to emulate the networks implemented in [STICK](https://arxiv.org/abs/1507.06222) (Spike Time Interval Computation Kernel)
 
 ## Installation
 ```
-cd stick-emulator
+cd axon-sdk
 pip install -e .
 pip install -r requirements.txt
 ```
