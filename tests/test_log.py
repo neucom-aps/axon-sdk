@@ -1,7 +1,7 @@
 import pytest
-from stick_emulator.networks import LogNetwork
-from stick_emulator.primitives import DataEncoder
-from stick_emulator import Simulator
+from axon_sdk.networks import LogNetwork
+from axon_sdk.primitives import DataEncoder
+from axon_sdk import Simulator
 
 
 def expected_log_output_delay(x: float, encoder: DataEncoder, tf: float):

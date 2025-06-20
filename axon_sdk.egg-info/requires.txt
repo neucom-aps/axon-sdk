@@ -1,0 +1,9 @@
+numpy
+matplotlib
+
+[test]
+pre-commit
+pytest-cov
+ruff
+optax
+mypy

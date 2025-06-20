@@ -1,8 +1,8 @@
 import pytest
 
-from stick_emulator.networks import LinearCombinatorNetwork
-from stick_emulator.primitives import DataEncoder
-from stick_emulator.simulator import Simulator
+from axon_sdk.networks import LinearCombinatorNetwork
+from axon_sdk.primitives import DataEncoder
+from axon_sdk.simulator import Simulator
 
 
 @pytest.mark.parametrize(

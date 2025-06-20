@@ -1,5 +1,5 @@
 import pytest
-from stick_emulator.primitives import SpikingNetworkModule, ExplicitNeuron
+from axon_sdk.primitives import SpikingNetworkModule, ExplicitNeuron
 
 
 def test_basic_module():
