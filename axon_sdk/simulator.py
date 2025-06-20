@@ -1,11 +1,11 @@
-from stick_emulator.primitives import (
+from axon_sdk.primitives import (
     SpikingNetworkModule,
     DataEncoder,
     SpikeEventQueue,
     ExplicitNeuron,
 )
-from stick_emulator.visualization import vis_topology, plot_chronogram
-from stick_emulator.compilation import ExecutionPlan
+from axon_sdk.visualization import vis_topology, plot_chronogram
+from axon_sdk.compilation import ExecutionPlan
 from .compilation.compiler import OutputReader
 import os
 

@@ -1,4 +1,4 @@
-from stick_emulator.primitives import SpikingNetworkModule, DataEncoder
+from axon_sdk.primitives import SpikingNetworkModule, DataEncoder
 
 from typing import Optional
 

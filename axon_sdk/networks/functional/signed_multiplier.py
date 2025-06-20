@@ -1,8 +1,8 @@
-from stick_emulator.primitives import (
+from axon_sdk.primitives import (
     SpikingNetworkModule,
     DataEncoder,
 )
-from stick_emulator.networks import MultiplierNetwork
+from axon_sdk.networks import MultiplierNetwork
 from typing import Optional
 
 

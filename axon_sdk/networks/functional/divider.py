@@ -1,5 +1,5 @@
-from stick_emulator.networks import SubtractorNetwork, ExponentialNetwork
-from stick_emulator.primitives import DataEncoder, SpikingNetworkModule
+from axon_sdk.networks import SubtractorNetwork, ExponentialNetwork
+from axon_sdk.primitives import DataEncoder, SpikingNetworkModule
 
 from typing import Optional
 

@@ -1,7 +1,7 @@
-from stick_emulator.primitives import DataEncoder
-from stick_emulator.simulator import Simulator
+from axon_sdk.primitives import DataEncoder
+from axon_sdk.simulator import Simulator
 
-from stick_emulator.compilation import Scalar, compile_computation
+from axon_sdk.compilation import Scalar, compile_computation
 
 
 if __name__ == "__main__":

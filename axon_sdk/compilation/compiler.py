@@ -1,5 +1,5 @@
-from stick_emulator.primitives import SpikingNetworkModule, ExplicitNeuron, DataEncoder
-from stick_emulator.networks import (
+from axon_sdk.primitives import SpikingNetworkModule, ExplicitNeuron, DataEncoder
+from axon_sdk.networks import (
     SignedMultiplierNormNetwork,
     AdderNetwork,
     SignFlipperNetwork,
