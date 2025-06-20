@@ -13,7 +13,7 @@ license = { text = "Apache-2.0" }
 authors = [
     { name = "Dmitri Lyalikov", email = "dmitri@existential-ai.com" },
     { name = "Francesco Sheiban", email = "fs@existential-ai.com" },
-    { name = "Inigo Lara", email = "inigo@existential-ai.com" },
+    { name = "Inigo Lara", email = "inigo@existential-ai.com" }
 ]
 
 dependencies = [
