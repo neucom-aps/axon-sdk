@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          path: .
 
       - name: Set up Python
         uses: actions/setup-python@v4
