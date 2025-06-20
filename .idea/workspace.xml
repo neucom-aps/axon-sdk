@@ -5,24 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d08d082d-c0a7-41c4-921a-501b2fbf8d88" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/axon_sdk/networks/connecting/synchronizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/connecting/synchronizer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/axon_sdk/networks/functional/adder.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/adder.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/axon_sdk/networks/functional/divider.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/divider.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/axon_sdk/networks/functional/exponential.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/exponential.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/axon_sdk/networks/functional/integrator.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/integrator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/axon_sdk/networks/functional/linear_combinator.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/linear_combinator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/axon_sdk/networks/functional/multiplier.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/multiplier.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/axon_sdk/networks/functional/natural_log.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/natural_log.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/axon_sdk/networks/functional/scalar_multiplier.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/scalar_multiplier.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/axon_sdk/networks/functional/signed_multipler_norm.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/signed_multipler_norm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/axon_sdk/networks/functional/signed_multiplier.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/signed_multiplier.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/axon_sdk/networks/functional/signflip.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/signflip.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/axon_sdk/networks/functional/subtractor.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/functional/subtractor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/axon_sdk/networks/memory/constant.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/memory/constant.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/axon_sdk/networks/memory/inverting_memory.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/memory/inverting_memory.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/axon_sdk/networks/memory/memory.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/memory/memory.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/axon_sdk/networks/memory/signed_constant.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/memory/signed_constant.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/axon_sdk/networks/memory/signed_memory.py" beforeDir="false" afterPath="$PROJECT_DIR$/axon_sdk/networks/memory/signed_memory.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/axon_sdk.egg-info/PKG-INFO" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/axon_sdk.egg-info/SOURCES.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/axon_sdk.egg-info/dependency_links.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/axon_sdk.egg-info/requires.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/axon_sdk.egg-info/top_level.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/axon_sdk-0.0.1-py3-none-any.whl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/axon_sdk-0.0.1.tar.gz" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -185,7 +174,7 @@
       <option name="presentableId" value="Default" />
       <updated>1749942533301</updated>
       <workItem from="1749942540777" duration="6612000" />
-      <workItem from="1750451371804" duration="4427000" />
+      <workItem from="1750451371804" duration="4776000" />
     </task>
     <servers />
   </component>
