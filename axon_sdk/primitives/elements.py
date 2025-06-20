@@ -1,4 +1,5 @@
-# Copyright (C) 2025  Neucom Aps
+# Axon SDK — A simulation framework for spike-timing-based neural computation using the STICK model.
+# Copyright (C) 2024–2025 Neucom ApS
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
