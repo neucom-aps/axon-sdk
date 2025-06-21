@@ -45,9 +45,28 @@ from typing import Self, Optional
 
 
 class Simulator:
+    """
+    Core simulation engine for executing STICK spiking neural networks.
+
+    Attributes:
+        net (SpikingNetworkModule): The spiking neural network to simulate.
+        encoder (DataEncoder): Object for converting values to spike intervals and back.
+        dt (float): Simulation time resolution in seconds.
+        spike_log (dict[str, list[float]]): Records spike times per neuron UID.
+        voltage_log (dict[str, list[tuple]]): Records membrane voltages over time.
+        event_queue (SpikeEventQueue): Queue of scheduled synaptic events.
+    """
     def __init__(
         self, net: SpikingNetworkModule, encoder: DataEncoder, dt: float = 0.001
     ) -> None:
+        """
+        Initialize a Simulator instance.
+
+        Args:
+            net (SpikingNetworkModule): The spiking network to simulate.
+            encoder (DataEncoder): The encoder for converting values to spike timings.
+            dt (float, optional): Simulation timestep. Defaults to 1 ms.
+        """
         self.net = net
         self.event_queue = SpikeEventQueue()
         self.encoder = encoder
@@ -63,6 +82,17 @@ class Simulator:
     def init_with_plan(
         cls, plan: ExecutionPlan, encoder: DataEncoder, dt: float = 0.001
     ) -> Self:
+        """
+        Construct a simulator using an execution plan.
+
+        Args:
+            plan (ExecutionPlan): Precompiled network with input triggers.
+            encoder (DataEncoder): Encoder used to encode input values.
+            dt (float, optional): Timestep in seconds. Defaults to 0.001.
+
+        Returns:
+            Simulator: Initialized simulator instance.
+        """
         new_instance = cls(net=plan.net, encoder=encoder, dt=dt)
 
         for trigger in plan.input_triggers:
@@ -73,6 +103,14 @@ class Simulator:
         return new_instance
 
     def apply_input_value(self, value: float, neuron: ExplicitNeuron, t0: float = 0):
+        """
+        Apply a normalized value as spike interval input to a given neuron.
+
+        Args:
+            value (float): Value in [0, 1] to encode and inject.
+            neuron (ExplicitNeuron): Target neuron for injection.
+            t0 (float, optional): Time offset for input spike injection. Defaults to 0.
+        """
         assert value >= 0.0 and value <= 1.0
 
         spike_interval = self.encoder.encode_value(value)
@@ -88,6 +126,13 @@ class Simulator:
                 )
 
     def apply_input_spike(self, neuron: ExplicitNeuron, t: float):
+        """
+        Apply a single spike input to a neuron at a specified time.
+
+        Args:
+            neuron (ExplicitNeuron): Target neuron to spike.
+            t (float): Time at which spike occurs.
+        """
         self._log_spike_occurrence(neuron, t)
         for synapse in neuron.out_synapses:
             self.event_queue.add_event(
@@ -155,6 +200,13 @@ class Simulator:
             self.launch_visualization()
 
     def _log_spike_occurrence(self, neuron: ExplicitNeuron, t: float) -> None:
+        """
+        Internal method to record a spike event for a neuron.
+
+        Args:
+            neuron (ExplicitNeuron): Neuron that spiked.
+            t (float): Time of spike event.
+        """
         if neuron.uid in self.spike_log:
             self.spike_log[neuron.uid].append(t)
         else:
@@ -163,9 +215,22 @@ class Simulator:
     def _log_voltage_value(
         self, neuron: ExplicitNeuron, V: float, timestep: float
     ) -> None:
+        """
+        Internal method to log the voltage of a neuron at a given timestep.
+
+        Args:
+            neuron (ExplicitNeuron): The neuron to log.
+            V (float): Membrane voltage.
+            timestep (float): Simulation step index.
+        """
         self.voltage_log[neuron.uid].append((V, timestep))
 
     def launch_visualization(self):
+        """
+        Launch interactive topology and chronogram visualizations of the simulation.
+
+        Requires `VIS=1` in environment variables.
+        """
         vis_topology(self.net)
         plot_chronogram(
             timesteps=self.timesteps,
@@ -175,6 +240,19 @@ class Simulator:
 
 
 def decode_output(sim: Simulator, reader: OutputReader) -> Optional[float]:
+    """
+    Decode the final signed output value from two STICK neurons after simulation.
+
+    Args:
+        sim (Simulator): Simulator instance with spike log.
+        reader (OutputReader): Decoder object with read neuron handles and normalization.
+
+    Returns:
+        Optional[float]: The decoded signed value, or `None` if no output was produced.
+
+    Raises:
+        ValueError: If more than 2 spikes or invalid combinations are detected.
+    """
     spikes_plus = sim.spike_log.get(reader.read_neuron_plus.uid, [])
     spikes_minus = sim.spike_log.get(reader.read_neuron_minus.uid, [])
 
@@ -197,6 +275,15 @@ def decode_output(sim: Simulator, reader: OutputReader) -> Optional[float]:
 
 
 def count_spikes(sim: Simulator) -> int:
+    """
+    Count the total number of spikes emitted by all neurons in a simulation.
+
+    Args:
+        sim (Simulator): Simulator instance.
+
+    Returns:
+        int: Total number of spikes across all neurons.
+    """
     count = 0
     for neuron_spikes in sim.spike_log.values():
         count += len(neuron_spikes)
