@@ -34,8 +34,8 @@ jobs:
           pip install sphinx
 
       - name: Build Sphinx API docs
-        working-directory: docs/api
-        run: sphinx-build -b html . _build/html
+        run: |
+          sphinx-build -b html docs/api docs/src/api
 
       - name: Download mdBook
         run: |
@@ -44,11 +44,6 @@ jobs:
 
       - name: Build mdBook
         run: bin/mdbook build
-
-      - name: Combine outputs
-        run: |
-          mkdir -p book/api
-          cp -r docs/api/_build/html/* book/api/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

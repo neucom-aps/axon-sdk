@@ -27,6 +27,8 @@
   - [Extending the Simulator](developer/extending.md)
   - [Adding New Modules](developer/new-modules.md)
 
+- [API Reference](api/index.html)
+
 - [References](references/math.md)
   - [Papers and Prior Art](references/papers.md)
   - [Glossary](references/glossary.md)
