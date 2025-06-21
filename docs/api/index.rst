@@ -1,15 +1,8 @@
-axon_sdk
-========
-
-.. automodule:: axon_sdk
-   :members:
-   :undoc-members:
-   :show-inheritance:
+API Reference
+=============
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
+   :caption: Axon SDK Modules
 
-   axon_sdk.compilation
-   axon_sdk.networks
-   axon_sdk.primitives
-   axon_sdk.visualization
+   modules

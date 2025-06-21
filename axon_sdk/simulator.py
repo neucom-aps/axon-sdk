@@ -14,6 +14,22 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+"""
+Simulator
+=========
+
+This module defines the main `Simulator` class for executing spiking neural networks built with the STICK model.
+It provides methods for input application, event propagation, spike/voltage logging, and value decoding.
+
+Key components:
+- `Simulator`: core class for managing simulation execution.
+- `decode_output`: utility to read a signed value from STICK output neurons.
+- `count_spikes`: utility to count total emitted spikes in a simulation.
+
+The simulator works in discrete time with configurable timestep `dt`, executing all synaptic and neuron dynamics via
+event-based updates and logging internal state.
+"""
+
 from axon_sdk.primitives import (
     SpikingNetworkModule,
     DataEncoder,
@@ -82,6 +98,16 @@ class Simulator:
             )
 
     def simulate(self, simulation_time: float):
+        """
+        Run the network simulation for a given total duration.
+
+        Args:
+            simulation_time (float): Total simulation duration in seconds.
+
+        Logs:
+            - Spike times in `self.spike_log`
+            - Voltage traces in `self.voltage_log`
+        """
         num_steps = int(simulation_time / self.dt)
         self.timesteps = [(i + 1) * self.dt for i in range(num_steps)]
         # Set to track neurons with non-zero ge, gf, or gate at the end of a timestep
