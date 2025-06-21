@@ -1,11 +1,15 @@
-Axon SDK API Reference
-======================
+axon_sdk
+========
 
-Welcome to the API documentation for the Axon SDK. This documentation is automatically generated from the source code.
+.. automodule:: axon_sdk
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Modules
-   :glob:
+   :maxdepth: 1
 
-   modules
+   axon_sdk.compilation
+   axon_sdk.networks
+   axon_sdk.primitives
+   axon_sdk.visualization
