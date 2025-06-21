@@ -30,7 +30,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # -- Options for HTML output -------------------------------------------------
 
 html_theme = 'alabaster'  # or 'sphinx_rtd_theme', 'furo', etc.
-html_static_path = ['_static']
+#html_static_path = ['_static']
 
 # -- Autodoc settings --------------------------------------------------------
 
