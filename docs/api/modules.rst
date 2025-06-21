@@ -1,7 +1,13 @@
 axon_sdk
-========
+=========
+
+.. automodule:: axon_sdk
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 .. toctree::
-   :maxdepth: 4
-
-   axon_sdk
+   axon_sdk.compilation
+   axon_sdk.networks
+   axon_sdk.primitives
+   axon_sdk.visualization
