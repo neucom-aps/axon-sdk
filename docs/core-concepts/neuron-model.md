@@ -124,7 +124,92 @@ Units are in milliseconds or millivolts, matching real-time symbolic processing 
 - **Composable**: Modular design supports hierarchical circuits
 - **Hardware-Compatible**: Ported to digital integrate-and-fire cores like ADA
 
+
+
+# Neuron Model Animation
+
+![Neuron](../figs/neural-dynamics.gif)
+This animation demonstrates how a single STICK neuron responds over time to different synaptic inputs. Each input type (`V`, `ge`, `gf`, `gate`) produces distinct changes in membrane dynamics. The neuron emits a spike when its membrane potential `V(t)` reaches the threshold `Vt = 10.0 mV`, after which it resets.
+
 ---
+
+##  Synapse Events Timeline
+
+| Time (ms) | Type    | Value | Description |
+|-----------|---------|-------|-------------|
+| `t = 20`  | `V`     | 10.0  | Instantaneously pushes `V` to threshold: triggers immediate spike |
+| `t = 60`  | `ge`    | 2.0   | Applies constant integration current: slow, linear voltage increase |
+| `t = 100` | `gf`    | 2.5   | Adds fast-decaying input, gated via `gate = 1` at same time |
+| `t = 160` | `V`     | 2.0   | Small, instant boost to `V` |
+| `t = 200` | `gate`  | -1.0  | Disables exponential decay pathway by zeroing the gate signal |
+
+---
+
+##  Event-by-Event Explanation
+
+###  `t = 20 ms — V(10.0)`
+- A **V-synapse** adds +10.0 mV to `V` instantly.
+- Since `Vt = 10.0`, this causes **immediate spike**.
+- The neuron resets: `V → 0`, `ge, gf, gate → 0`.
+
+**Effect**: Demonstrates a direct spike trigger via instantaneous voltage jump.
+
+---
+
+###  `t = 60 ms — ge(2.0)`
+- A **ge-synapse** applies constant input current.
+- Voltage rises **linearly** over time.
+- Alone, this isn't sufficient to reach `Vt`, so no spike occurs yet.
+
+**Effect**: Shows the smooth effect of continuous integration from ge-type input.
+
+---
+
+###  `t = 100 ms — gf(2.5)` and `gate(1.0)`
+- A **gf-synapse** delivers fast-decaying input current.
+- A **gate-synapse** opens the gate (`gate = 1`), activating `gf` dynamics.
+- Voltage rises **nonlinearly** as `gf` initially dominates, then decays.
+- Combined effect from earlier `ge` and `gf` **causes a spike** shortly after.
+
+**Effect**: Demonstrates exponential integration (gf) gated for a temporary burst.
+
+---
+
+###  `t = 160 ms — V(2.0)`
+- A small **V-synapse** bump of +2.0 mV occurs.
+- This is **not enough** to cause a spike, but it shifts `V` upward instantly.
+
+**Effect**: Shows subthreshold perturbation from a V-type synapse.
+
+---
+
+###  `t = 200 ms — gate(-1.0)`
+- The **gate is closed** (`gate = 0`), disabling `gf` decay term.
+- Any remaining `gf` is no longer integrated into `V`.
+
+**Effect**: Demonstrates control logic: `gf` is disabled, computation halts.
+
+---
+
+##  Summary of Synapse Effects
+
+| Synapse Type | Behavior |
+|--------------|----------|
+| `V`          | Instantaneous jump in membrane potential `V` |
+| `ge`         | Slow, steady increase in `V` over time |
+| `gf + gate`  | Fast, nonlinear voltage rise due to exponential dynamics |
+| `gate`       | Controls whether `gf` affects the neuron at all |
+
+---
+
+##  Spike Dynamics
+
+When `V ≥ Vt`, the neuron:
+- Spikes
+- Logs spike time
+- Resets all internal state to baseline
+
+You can see these spikes as **red dots** at the threshold line in the animation.
 
 ##  References
 
