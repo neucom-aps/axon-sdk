@@ -4,7 +4,7 @@
 It provides a modular, event-driven framework for developing symbolic, time-coded spiking algorithms for control, computation and embedded neuromorphic applications. 
 
 >  Inspired by the precision of biological time-based encoding.  
->  Built for simulation, education, and experimentation.
+>  Built for simulation, extension, and deployment.
 
 ## Features
 -  **Composable network primitives** (neurons, synapses, event queues)
