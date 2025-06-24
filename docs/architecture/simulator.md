@@ -44,8 +44,9 @@ The simulator proceeds in `dt`-sized increments for a specified duration:
    Each affected neuron is numerically integrated using:
 ```python
     V += (ge + gate * gf) * dt / tau_m
-    ```
-    where `tau_m` is the membrane time constant.    
+```
+    
+where `tau_m` is the membrane time constant.    
 
 
 
@@ -58,9 +59,8 @@ If `V ≥ Vt`, the neuron spikes:
 5. **Activity Tracking**  
 Neurons with non-zero `ge`, `gf`, or `gate` are marked active for the next step.
 
----
 
-## 🎚 4. Configuration Knobs
+## 4. Configuration Knobs
 
 | Parameter | Description | Default |
 |----------|-------------|---------|
@@ -71,9 +71,8 @@ Neurons with non-zero `ge`, `gf`, or `gate` are marked active for the next step.
 
 These settings are defined at the simulator or encoder level depending on purpose.
 
----
 
-## 🔌 5. Inputs & Injection
+##  5. Inputs & Injection
 
 ### `apply_input_value(value, neuron, t0=0)`
 Injects a scalar `value ∈ [0, 1]` into a neuron via interval-coded spike pair.
@@ -81,9 +80,8 @@ Injects a scalar `value ∈ [0, 1]` into a neuron via interval-coded spike pair.
 ### `apply_input_spike(neuron, t)`
 Injects a single spike into a neuron at exact time `t`.
 
----
 
-## 📤 6. Output Decoding
+## 6. Output Decoding
 
 To read results from signed STICK outputs:
 
@@ -96,7 +94,7 @@ Decodes interval between two spikes on either the + or − output neuron
 
 Returns a signed scalar in [−1, 1] (scaled by `reader.normalization`)
 
-## 7. Loggin and Visualization
+## 7. Logging and Visualization
 The simulator maintains:
 * `spike_log`: Maps neuron UIDs to spike timestamps with: {neuron_uid: [t0, t1, ...]}
 * `voltage_log`: Maps neuron UIDs to their membrane voltages at each timestep with: {neuron_uid: [V0, V1, ...]}
