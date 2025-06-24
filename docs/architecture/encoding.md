@@ -16,15 +16,15 @@ In STICK-based networks, numerical values are encoded not in voltage amplitude o
 
 ##  2. Encoding Equation
 
-A normalized value \( x \in [0, 1] \) is encoded as a spike interval:
+A normalized value \( x \n [0, 1] \) is encoded as a spike interval:
 
 ```math
-\Delta t = T_{min} + x \cdot T_{cod}
+Δt = Tmin + x * Tcod
 ```
 where:
-- \( T_{min} \) is the minimum interval (e.g., 1 ms
-- \( T_{cod} \) is the coding range (e.g., 100 ms)
-- \( \Delta t \) is the resulting inter-spike interval (ISI)
+- \( Tmin \) is the minimum interval (e.g., 1 ms
+- \( Tcod \) is the coding range (e.g., 100 ms)
+- \( dt \) is the resulting inter-spike interval (ISI)
 
 ### Example:
 ```python
@@ -33,9 +33,11 @@ where:
 
 ## Decoding Equation
 To decode a spike interval back into a value:
-```math
-x = \frac{\Delta t - T_{min}}{T_{cod}}
+```python
+x = (interval - Tmin) / Tcod
 ```
+where:
+- `interval` is the time difference between two spikes.
 This is the inverse of the encoder.
 
 
