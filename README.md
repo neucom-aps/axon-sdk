@@ -1,6 +1,6 @@
 # Axon-SDK
 
-**Axon SDK** is a python simulation toolkit for buildng and executing spiking neural networks based on the [STICK model](https://arxiv.org/abs/1507.06222) (Spike Time Interval Computation Kernel).
+**Axon SDK** is a python toolkit for buildng and simulating spiking neural networks based on the [STICK framework](https://arxiv.org/abs/1507.06222) (Spike Time Interval Computation Kernel).
 It provides a modular, event-driven framework for developing symbolic, time-coded spiking algorithms for control, computation and embedded neuromorphic applications. 
 
 >  Inspired by the precision of biological time-based encoding.  
