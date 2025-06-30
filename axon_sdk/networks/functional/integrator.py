@@ -1,11 +1,5 @@
-from axon_sdk.primitives import (
-    SpikingNetworkModule,
-    DataEncoder,
-)
-from axon_sdk.networks import (
-    SignedConstantNetwork,
-    LinearCombinatorNetwork,
-)
+from axon_sdk.primitives import SpikingNetworkModule, DataEncoder
+from axon_sdk.networks import SignedConstantNetwork, LinearCombinatorNetwork
 
 
 class IntegratorNetwork(SpikingNetworkModule):

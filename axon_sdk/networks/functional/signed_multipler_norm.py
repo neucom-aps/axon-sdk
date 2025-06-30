@@ -9,10 +9,10 @@ from typing import Optional
 class SignedMultiplierNormNetwork(SpikingNetworkModule):
     """
     Module composed of a signed multiplier followed by a scalar multiplier.
-    
+
     Given two input values x1 and x2 in the range [0,1] and a factor in the range [0,100],
     the output is:
-    
+
     output = (x1 * x2) * factor
 
     > IMPORTANT: It's the user's responsability to guarantee that (x1 * x2) * factor < 1.
@@ -29,7 +29,10 @@ class SignedMultiplierNormNetwork(SpikingNetworkModule):
 
     Denormalizing the output by multiplying by 100 will yield a result in the original range
     """
-    def __init__(self, encoder: DataEncoder, factor: float, module_name: Optional[str] = None) -> None:
+
+    def __init__(
+        self, encoder: DataEncoder, factor: float, module_name: Optional[str] = None
+    ) -> None:
         super().__init__(module_name)
         self.encoder = encoder
 
@@ -44,31 +47,21 @@ class SignedMultiplierNormNetwork(SpikingNetworkModule):
         wi = -Vt
 
         # Create multiplier network
-        self.mn = MultiplierNetwork(encoder, module_name='mul_net')
+        self.mn = MultiplierNetwork(encoder, module_name="mul_net")
         self.add_subnetwork(self.mn)
 
-        self.scmn = ScalarMultiplierNetwork(factor=factor, encoder=encoder, module_name='scalar_mul')
+        self.scmn = ScalarMultiplierNetwork(
+            factor=factor, encoder=encoder, module_name="scalar_mul"
+        )
         self.add_subnetwork(self.scmn)
 
-        self.input1_plus = self.add_neuron(
-            Vt, tm, tf, neuron_name="input1_plus"
-        )
-        self.input1_minus = self.add_neuron(
-            Vt, tm, tf, neuron_name="input1_minus"
-        )
-        self.input2_plus = self.add_neuron(
-            Vt, tm, tf, neuron_name="input2_plus"
-        )
-        self.input2_minus = self.add_neuron(
-            Vt, tm, tf, neuron_name="input2_minus"
-        )
+        self.input1_plus = self.add_neuron(Vt, tm, tf, neuron_name="input1_plus")
+        self.input1_minus = self.add_neuron(Vt, tm, tf, neuron_name="input1_minus")
+        self.input2_plus = self.add_neuron(Vt, tm, tf, neuron_name="input2_plus")
+        self.input2_minus = self.add_neuron(Vt, tm, tf, neuron_name="input2_minus")
 
-        self.output_plus = self.add_neuron(
-            Vt, tm, tf, neuron_name="output_plus"
-        )
-        self.output_minus = self.add_neuron(
-            Vt, tm, tf, neuron_name="output_minus"
-        )
+        self.output_plus = self.add_neuron(Vt, tm, tf, neuron_name="output_plus")
+        self.output_minus = self.add_neuron(Vt, tm, tf, neuron_name="output_minus")
 
         self.sign1 = self.add_neuron(Vt, tm, tf, neuron_name="sign1")
         self.sign2 = self.add_neuron(Vt, tm, tf, neuron_name="sign2")
@@ -121,12 +114,12 @@ if __name__ == "__main__":
     norm = 100
 
     encoder = DataEncoder(Tmin=10.0, Tcod=150.0)
-    net = SignedMultiplierNormNetwork(encoder, factor=norm, module_name='signmul_net')
+    net = SignedMultiplierNormNetwork(encoder, factor=norm, module_name="signmul_net")
     sim = Simulator(net, encoder, dt=0.0005)
 
     x1 = 42.32
     x2 = 2.15
-    
+
     true_product = x1 * x2
 
     val1 = x1 / norm
@@ -162,7 +155,6 @@ if __name__ == "__main__":
         print(f"❌ Output spike missing or incomplete")
         raise ValueError
 
-
     print(f"✅ Input: {x1} × {x2}")
     print(f"✅ Expected: {true_product:.4f}")
     print(f"✅ Output spike interval: {interval:.3f} ms")
@@ -172,6 +164,3 @@ if __name__ == "__main__":
     print("multiplier decoded val")
     spikes = sim.spike_log.get(net.mn.output.uid, [])
     print(encoder.decode_interval(spikes[1] - spikes[0]))
-
-        
-

@@ -2,6 +2,7 @@ from axon_sdk.primitives import SpikingNetworkModule, DataEncoder
 
 from typing import Optional
 
+
 class SignFlipperNetwork(SpikingNetworkModule):
     def __init__(self, encoder: DataEncoder, module_name: Optional[str] = None):
         super().__init__(module_name)
@@ -22,10 +23,10 @@ class SignFlipperNetwork(SpikingNetworkModule):
         wacc_bar = Vt * tm / encoder.Tcod
         gmult = Vt * tm / tf
 
-        self.inp_plus = self.add_neuron(Vt=Vt, tf=tf, tm=tm, neuron_name='inp_plus')
-        self.inp_minus = self.add_neuron(Vt=Vt, tf=tf, tm=tm, neuron_name='inp_minus')
-        self.outp_plus = self.add_neuron(Vt=Vt, tf=tf, tm=tm, neuron_name='outp_plus')
-        self.outp_minus = self.add_neuron(Vt=Vt, tf=tf, tm=tm, neuron_name='outp_minus')
+        self.inp_plus = self.add_neuron(Vt=Vt, tf=tf, tm=tm, neuron_name="inp_plus")
+        self.inp_minus = self.add_neuron(Vt=Vt, tf=tf, tm=tm, neuron_name="inp_minus")
+        self.outp_plus = self.add_neuron(Vt=Vt, tf=tf, tm=tm, neuron_name="outp_plus")
+        self.outp_minus = self.add_neuron(Vt=Vt, tf=tf, tm=tm, neuron_name="outp_minus")
 
         self.connect_neurons(self.inp_plus, self.outp_minus, "V", we, Tsyn)
         self.connect_neurons(self.inp_minus, self.outp_plus, "V", we, Tsyn)
@@ -35,7 +36,7 @@ if __name__ == "__main__":
     from axon_sdk.simulator import Simulator
 
     enc = DataEncoder()
-    net = SignFlipperNetwork(encoder=enc, module_name='sign_flip_net')
+    net = SignFlipperNetwork(encoder=enc, module_name="sign_flip_net")
     sim = Simulator(net, enc, dt=0.001)
 
     value = +0.5

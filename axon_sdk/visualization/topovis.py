@@ -1,10 +1,8 @@
-from axon_sdk.primitives import (
-    SpikingNetworkModule,
-    ExplicitNeuron,
-    Synapse,
-)
+from axon_sdk.primitives import SpikingNetworkModule
+from axon_sdk.primitives import ExplicitNeuron
 
-from axon_sdk.visualization.server import start_server
+from .server import start_server
+from ..primitives.elements import Synapse
 
 
 def generate_mapping_neuron_to_net(

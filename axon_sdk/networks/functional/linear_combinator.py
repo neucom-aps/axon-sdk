@@ -1,7 +1,4 @@
-from axon_sdk.primitives import (
-    SpikingNetworkModule,
-    DataEncoder,
-)
+from axon_sdk.primitives import SpikingNetworkModule, DataEncoder
 from axon_sdk.networks import SubtractorNetwork, SynchronizerNetwork
 
 from typing import Optional
@@ -186,6 +183,7 @@ def decode_spike_interval(spikes, encoder):
 
 if __name__ == "__main__":
     from axon_sdk.simulator import Simulator
+
     inputs = [0.5, 0.5]
     coeffs = [1.0, 1.0]
 

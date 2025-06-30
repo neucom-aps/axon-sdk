@@ -8,12 +8,12 @@ version = "0.0.1"
 description = "Axon SDK: Spike Timing Interval Computation Kernel Simulation Environment"
 readme = "README.md"
 requires-python = ">=3.11"
-license = { text = "AGPL-3.0-or-later" }
+license = { text = "GPL-3.0-or-later" }
 
 authors = [
     { name = "Dmitri Lyalikov", email = "dmitri@existential-ai.com" },
     { name = "Francesco Sheiban", email = "fs@existential-ai.com" },
-    { name = "Inigo Lara", email = "inigo@existential-ai.com" }
+    { name = "Iñigo Lara", email = "inigo@existential-ai.com" }
 ]
 
 dependencies = [

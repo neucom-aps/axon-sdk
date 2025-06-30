@@ -62,7 +62,7 @@ class ScalarMultiplierNetwork(SpikingNetworkModule):
 
 if __name__ == "__main__":
     from axon_sdk import Simulator
-    
+
     factor = 100
     val = 0.0042  ## make sure that val x scale < 1
     assert (
@@ -70,7 +70,9 @@ if __name__ == "__main__":
     ), "val * scale must be smaller than 1.0, since that's the max. STICK range"
 
     enc = DataEncoder(Tcod=150)
-    rescaler_net = ScalarMultiplierNetwork(factor=factor, encoder=enc, module_name="rescaler")
+    rescaler_net = ScalarMultiplierNetwork(
+        factor=factor, encoder=enc, module_name="rescaler"
+    )
     sim = Simulator(rescaler_net, enc)
 
     sim.apply_input_value(value=val, neuron=rescaler_net.input, t0=0)

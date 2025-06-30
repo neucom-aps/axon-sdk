@@ -31,14 +31,11 @@ If you're building symbolic SNNs for embedded inference, control, or cryptograph
 
 ## Requirements
 
-Axon is built in Python and depends on:
+Axon SDK is built in Python and depends on:
 
-- Python ≥ 3.8
+- Python ≥ 3.11
 - NumPy
-- NetworkX
-- TQDM
 - Matplotlib (for visual debugging)
-- PyVCD (optional, for waveform output)
 
 To simulate hardware behavior with Verilator (optional for advanced use):
 

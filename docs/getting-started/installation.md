@@ -10,8 +10,6 @@ A streamlined guide to get you up and running quickly with the Python-based STIC
 - **pip**
 - **Recommended packages** (auto-installed):
   - numpy
-  - networkx
-  - tqdm
   - matplotlib
 ---
 

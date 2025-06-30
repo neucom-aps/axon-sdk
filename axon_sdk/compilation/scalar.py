@@ -1,7 +1,5 @@
 from enum import Enum, auto
 
-from typing import Self
-
 
 class OpType(Enum):
     Load = (auto(), "load")
@@ -28,49 +26,49 @@ class Scalar:
         self.prev = prev
         self.op = op
 
-    def __add__(self, other) -> 'Scalar':  # self + other
-        assert can_proceed(other), f'Wrong datatype for {other}'
+    def __add__(self, other) -> "Scalar":  # self + other
+        assert can_proceed(other), f"Wrong datatype for {other}"
         other = other if isinstance(other, Scalar) else Scalar(other)
         out = Scalar(self.data + other.data, (self, other), OpType.Add)
         return out
 
-    def __mul__(self, other) -> 'Scalar':  # self * other
-        assert can_proceed(other), f'Wrong datatype for {other}'
+    def __mul__(self, other) -> "Scalar":  # self * other
+        assert can_proceed(other), f"Wrong datatype for {other}"
         other = other if isinstance(other, Scalar) else Scalar(other)
         out = Scalar(self.data * other.data, (self, other), OpType.Mul)
         return out
 
-    def __pow__(self) -> 'Scalar':
-        raise Exception('Op not supported yet')
+    def __pow__(self) -> "Scalar":
+        raise Exception("Op not supported yet")
 
-    def __truediv__(self, other) -> 'Scalar':  # self / other
-        assert can_proceed(other), f'Wrong datatype for {other}'
+    def __truediv__(self, other) -> "Scalar":  # self / other
+        assert can_proceed(other), f"Wrong datatype for {other}"
         other = other if isinstance(other, Scalar) else Scalar(other)
         out = Scalar(self.data / other.data, (self, other), OpType.Div)
         return out
 
-    def __neg__(self) -> 'Scalar':  # -self
+    def __neg__(self) -> "Scalar":  # -self
         out = Scalar(-1 * self.data, (self,), OpType.Neg)
         return out
 
-    def __radd__(self, other) -> 'Scalar':  # other + self
-        assert can_proceed(other), f'Wrong datatype for {other}'
+    def __radd__(self, other) -> "Scalar":  # other + self
+        assert can_proceed(other), f"Wrong datatype for {other}"
         return self + other
 
-    def __sub__(self, other) -> 'Scalar':  # self - other
-        assert can_proceed(other), f'Wrong datatype for {other}'
+    def __sub__(self, other) -> "Scalar":  # self - other
+        assert can_proceed(other), f"Wrong datatype for {other}"
         return self + (-other)
 
-    def __rsub__(self, other) -> 'Scalar':  # other - self
-        assert can_proceed(other), f'Wrong datatype for {other}'
+    def __rsub__(self, other) -> "Scalar":  # other - self
+        assert can_proceed(other), f"Wrong datatype for {other}"
         return other + (-self)
 
-    def __rmul__(self, other) -> 'Scalar':  # other * self
-        assert can_proceed(other), f'Wrong datatype for {other}'
+    def __rmul__(self, other) -> "Scalar":  # other * self
+        assert can_proceed(other), f"Wrong datatype for {other}"
         return self * other
 
-    def __rtruediv__(self, other) -> 'Scalar':  # other / self
-        assert can_proceed(other), f'Wrong datatype for {other}'
+    def __rtruediv__(self, other) -> "Scalar":  # other / self
+        assert can_proceed(other), f"Wrong datatype for {other}"
         return other / self
 
     def __repr__(self) -> str:
@@ -132,6 +130,7 @@ def trace(root) -> tuple[list[Scalar], list[tuple[Scalar, Scalar]]]:
 
     build(root)
     return nodes, edges
+
 
 def can_proceed(value) -> bool:
     if isinstance(value, int):

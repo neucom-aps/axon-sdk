@@ -83,7 +83,9 @@ if __name__ == "__main__":
     last_spike_time = sim.spike_log.get(lognet.last.uid, [None])[-1]
 
     print(f"Input value: {val}, log result: {math.log(val)}")
-    print(f"Expected delay (log({val})): {expected_log_output_delay(val, encoder, lognet.tf):.3f} ms")
+    print(
+        f"Expected delay (log({val})): {expected_log_output_delay(val, encoder, lognet.tf):.3f} ms"
+    )
 
     if len(output_spikes) >= 2:
         interval = output_spikes[1] - output_spikes[0]

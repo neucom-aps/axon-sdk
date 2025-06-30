@@ -17,12 +17,15 @@ event-based updates and logging internal state.
 from axon_sdk.primitives import (
     SpikingNetworkModule,
     DataEncoder,
-    SpikeEventQueue,
-    ExplicitNeuron,
 )
-from axon_sdk.visualization import vis_topology, plot_chronogram
 from axon_sdk.compilation import ExecutionPlan
+from axon_sdk.primitives import ExplicitNeuron
+
+from .visualization.chronogram import plot_chronogram
+from .visualization.topovis import vis_topology
 from .compilation.compiler import OutputReader
+from .primitives.events import SpikeEventQueue
+
 import os
 
 from typing import Self, Optional
@@ -40,6 +43,7 @@ class Simulator:
         voltage_log (dict[str, list[tuple]]): Records membrane voltages over time.
         event_queue (SpikeEventQueue): Queue of scheduled synaptic events.
     """
+
     def __init__(
         self, net: SpikingNetworkModule, encoder: DataEncoder, dt: float = 0.001
     ) -> None:

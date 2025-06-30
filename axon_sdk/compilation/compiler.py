@@ -1,4 +1,4 @@
-from axon_sdk.primitives import SpikingNetworkModule, ExplicitNeuron, DataEncoder
+from axon_sdk.primitives import SpikingNetworkModule, DataEncoder, ExplicitNeuron
 from axon_sdk.networks import (
     SignedMultiplierNormNetwork,
     AdderNetwork,

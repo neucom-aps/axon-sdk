@@ -1,7 +1,4 @@
-from axon_sdk.primitives import (
-    SpikingNetworkModule,
-    DataEncoder,
-)
+from axon_sdk.primitives import SpikingNetworkModule, DataEncoder
 
 
 class SubtractorNetwork(SpikingNetworkModule):
@@ -93,7 +90,7 @@ if __name__ == "__main__":
     from axon_sdk.simulator import Simulator
 
     encoder = DataEncoder(Tmin=10.0, Tcod=100.0)
-    net = SubtractorNetwork(encoder, module_name='sub')
+    net = SubtractorNetwork(encoder, module_name="sub")
     sim = Simulator(net, encoder, dt=0.01)
 
     x1 = 0.73

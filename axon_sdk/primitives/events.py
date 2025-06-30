@@ -10,7 +10,7 @@ Classes:
 """
 
 import heapq
-from .elements import ExplicitNeuron
+from axon_sdk.primitives import ExplicitNeuron
 
 
 class SpikeEvent:

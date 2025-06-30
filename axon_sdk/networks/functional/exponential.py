@@ -1,7 +1,4 @@
-from axon_sdk.primitives import (
-    SpikingNetworkModule,
-    DataEncoder,
-)
+from axon_sdk.primitives import SpikingNetworkModule, DataEncoder
 import math
 
 from typing import Optional
