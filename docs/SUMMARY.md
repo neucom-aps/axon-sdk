@@ -2,9 +2,9 @@
 
 - [Introduction](introduction.md)
 
-- [Getting Started](getting-started/installation.md)
-  - [Quick Start Guide](getting-started/quickstart.md)
-  - [Project Structure](getting-started/structure.md)
+- [Getting Started](getting-started/README.md)
+  - [Installation and contributing](getting-started/installation.md)
+  - [Quickstart](getting-started/quickstart.md)
 
 - [Core Concepts](core-concepts/interval-coding.md)
   - [Neuron Model](core-concepts/neuron-model.md)

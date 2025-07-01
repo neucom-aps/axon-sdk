@@ -6,7 +6,7 @@ src = "docs"
 title = "Axon SDK Documentation"
 
 [output.html]
-default-theme = "ayu"
+default-theme = "light"
 smart-punctuation = true
 git-repository-url = "https://github.com/existential-ai/axon-sdk.github.io/tree/axon-package"
 edit-url-template = "https://github.com/existential-ai/axon-sdk.github.io/tree/axon-package/{path}"
