@@ -75,3 +75,7 @@ If you use **Axon** in your research, please cite:
 Reach out if you need to use **Axon SDK** in your closed-source project to initiate a collaboration.
 
 ![Neucom Logo](figs/neucom_logo.png)
+
+<p align="right">
+  <img src="https://komarev.com/ghpvc/?username=neucom-docs-intro&color=orange&style=pixel&label=VISITOR+COUNT" alt=”tomkaX” />
+</p>

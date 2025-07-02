@@ -81,6 +81,9 @@ VIS=1 python simulate.py
 ## License
 **Axon SDK** is published under the GPLv3 license, which applies to all files in this repository.
 
+<p align="right">
+  <img src="https://komarev.com/ghpvc/?username=neucom-aps&color=orange&style=pixel&label=VISITOR+COUNT" alt=”tomkaX” />
+</p>
 
 
 
