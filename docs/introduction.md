@@ -1,82 +1,65 @@
 # Axon: The STICK Software Development Kit
 
-The brain encodes information using precise spike timing, not just rates or continuous activations. Inspired by this, **Axon** is a software framework for building, simulating, and compiling **symbolic spiking neural networks (SNNs)** using the **STICK (Spike Time Interval Computational Kernel)** model.
+The brain, a truly efficient computation machine, encodes and processes information using discrete spikes. Inspired by this, we've built **Axon**, a neuromorphic software framework for building, simulating, and compiling **spiking neural networks (SNNs)** for general-purpose computation. Axon allows to build complex computation by combining modular computation kernels, avoiding the challenge of having to train case-specific SNN while maintaining the sparsity of spike computing.
+
+Axon is an extension of **[STICK (Spike Time Interval Computational Kernel)](https://arxiv.org/abs/1507.06222)**.
 
 ![Axon Architecture](figs/Top-Architecture.png)
 
-Axon provides an end-to-end pipeline for deploying interval-coded SNNs to ultra-low-power neuromorphic hardware, such as the **ADA** chip. It is built for embedded deployment, yet flexible enough for rapid prototyping and evaluation on general-purpose CPUs.
+Axon provides an end-to-end pipeline for deploying interval-coded SNNs to ultra-low-power neuromorphic hardware. At Neucom we're building one of such chips and we're calling it **ADA**. ADA It is built for embedded deployment, yet flexible enough for rapid prototyping and quick iteration cycle.
 
-Axon includes:
+The Axon SDK includes:
 
 - A **Python-based simulator** for cycle-accurate emulation of interval-coded symbolic computation.
-- A **hardware-aware compiler** that translates modular spiking circuits into a compact binary model format.
-- A **runtime API (RT API)** to interface with the ADA coprocessor over TL-UL or SPI.
-- Tools for **resource reporting**, cycle estimation, and model profiling.
+- A **hardware-aware compiler** that translates Python-defined algorithms into spiking circuits, ready for simulation or deployment.
+- Tools for **resource reporting**, cycle estimation, and performance profiling of the deployed algorithms.
 
-If you're building symbolic SNNs for embedded inference, control, or cryptographic tasks, Axon bridges software models with neuromorphic execution.
+If you're building symbolic SNNs for embedded inference, control, or cryptographic tasks, Axon makes it easy to translate deterministic computations into spiking neural networks.
 
 ---
 
-## Axon Structure
+## Axon SDK structure
 
 | Component           | Description                                                                 |
 |---------------------|-----------------------------------------------------------------------------|
-| `axon.simulator`    | Spiking network simulator with support for STICK primitives and gating logic |
-| `axon.compiler`     | Converts network graphs into optimized model binaries for ADA execution     |
-| `axon.utils`        | Data loading, waveform generation, testbench scripting                      |
+| `axon_sdk.primitives`    | Base clases defining the low level components and engine used by the spiking networks|
+| `axon_sdk.networks`    | Library of modular spiking computation kernels |
+| `axon_sdk.simulator`    | Spiking network simulator to input spikes, simulate dynamics and read outputs |
+| `axon_sdk.compilation`     | Compiler for transforming high-level algorithms into spiking networks   |
 
 ---
 
-## Requirements
-
-Axon SDK is built in Python and depends on:
-
-- Python ≥ 3.11
-- NumPy
-- Matplotlib (for visual debugging)
-
-To simulate hardware behavior with Verilator (optional for advanced use):
-
-- Verilator ≥ 5.034
-- C++17 toolchain
-
----
-
-## Installation
-
-Install the SDK from source:
-
-```bash
-git clone https://github.com/neucom/axon.git
-cd axon
-pip install -e .
-```
-
-## Example: Multiplication Network
+## Example: Multiplication spiking-network
 ```python
-from axon.simulator import Simulator
-from axon.networks import MultiplierNetwork
-from axon.utils import encode_interval
+from axon_sdk.simulator import Simulator
+from axon_sdk.networks import MultiplierNetwork
 
-# Encode input spikes
-x1_spikes = encode_interval(0.4)
-x2_spikes = encode_interval(0.25)
+encoder = DataEncoder(Tmin=10.0, Tcod=100.0)
+net = MultiplierNetwork(encoder)
 
-# Build network
-net = MultiplierNetwork()
-sim = Simulator(net)
+val1 = 0.1
+val2 = 0.5
 
-# Inject spikes and simulate
-sim.inject(x1=x1_spikes, x2=x2_spikes)
-sim.run()
+sim = Simulator(net, encoder, dt=0.01)
 
-# View results
-sim.plot_chronogram()
+# Apply both input values
+sim.apply_input_value(val1, neuron=net.input1, t0=10)
+sim.apply_input_value(val2, neuron=net.input2, t0=10)
+
+# Simulate long enough to see output
+sim.simulate(simulation_time=400)
+
+spikes = sim.spike_log.get(net.output.uid, [])
+interval = spikes[1] - spikes[0]
+decoded_val = encoder.decode_interval(interval)
 ```
-
+```text
+decoded_val
+>> 0.05
+```
 
 ## Citation
-If you use Axon or ADA in your research, please cite:
+If you use **Axon** in your research, please cite:
 ```
 @misc{axon2025,
   title        = {Axon: A Software Development Kit for Symbolic Spiking Networks},
@@ -86,7 +69,9 @@ If you use Axon or ADA in your research, please cite:
 }
 ```
 
-## Contact
-If you’re working with Axon or STICK-based hardware and want to share your application, request features, or report issues, reach out via GitHub Issues or contact the Neucom team at `contact@neucom.ai`.
+## License
+**Axon SDK** is open-sourced under a **GPLv3 license**, preventing its inclusion in closed-source projects.
+
+Reach out if you need to use **Axon SDK** in your closed-source project to initiate a collaboration.
 
 ![Neucom Logo](figs/neucom_logo.png)

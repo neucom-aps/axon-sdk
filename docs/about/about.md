@@ -10,6 +10,7 @@
 
 **Axon SDK** is open-sourced under a **GPLv3** license, preventing its inclusion in closed-source projects.
 
-**Axon SDK** was developed by [Iñigo Lara](mailto:inigo@neucom.ai), [Francesco Sheiban](mailto:francesco@neucom.ai) and [Dmitri Lyalokov](mailto:dmitri@neucom.ai) and belongs to [Neucom APS](https://www.neucom.ai/), based in Copenhagen, Denmark.
+**Axon SDK** was developed by [Iñigo Lara](mailto:inigo@neucom.ai), [Francesco Sheiban](mailto:francesco@neucom.ai) and [Dmitri Lyalokov](mailto:dmitri@neucom.ai) and belongs to [Neucom APS](https://www.neucom.ai/). Neucom APS is based in Copenhagen, Denmark.
 
-For general inquiries, feel free to write us at `contact@neucom.ai`.
+## Contact
+If you’re working with Axon or STICK-based hardware and want to share your application, request features, or report issues, reach out via GitHub Issues or contact the Neucom team at `francesco@neucom.ai`.

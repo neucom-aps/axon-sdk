@@ -28,23 +28,25 @@ Then when you’re ready, make a merge request on Github the feature branch in y
 
 The documentation is based on **mdbook**.
 
-To build a live, locally-hosted HTML version of the docs, use the following commands:
+To build a live, locally-hosted HTML version of the docs, use the following commands (you'll need to install Rust and mdbook):
 
 ```bash
 cd axon-sdk
 mdbook serve --open
 ```
 
-The docs are built automatically as part of our CI/CD pipeline when a new commit arrives.
+The docs are built automatically as part of our CI/CD pipeline when a new commit arrives to `main`.
 
 ## Running the tests
 
 As part of the merge review process, we’ll check that all the unit tests pass. You can check this yourself (and probably should), by running the unit tests locally.
 
-To run all the unit tests for Rockpool, use pytest:
+To run all the unit tests for Axon SDK, use **pytest**:
 
 ```bash
 cd axon-sdk
 pytest tests
 ```
+
+The test are run automatically as part of our CI/CD pipeline in *every* branch.
 

@@ -8,10 +8,13 @@ cd axon-sdk
 pip install -e .
 ```
 
-**Axon SDK** requires `Python >=3.11` and the following dependencies:
-- numpy
-- matplotlib
-- pytest
+**Axon SDK** is built in Python and depends on:
+
+- Python ≥ 3.11
+- NumPy
+- Matplotlib
+- Pytest
+
 
 The dependencies can be installed using the requirements file:
 
