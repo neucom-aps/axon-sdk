@@ -1,7 +1,5 @@
 # Axon: The STICK Software Development Kit
 
-
-
 The brain encodes information using precise spike timing, not just rates or continuous activations. Inspired by this, **Axon** is a software framework for building, simulating, and compiling **symbolic spiking neural networks (SNNs)** using the **STICK (Spike Time Interval Computational Kernel)** model.
 
 ![Axon Architecture](figs/Top-Architecture.png)
@@ -55,7 +53,7 @@ pip install -e .
 ```
 
 ## Example: Multiplication Network
-```
+```python
 from axon.simulator import Simulator
 from axon.networks import MultiplierNetwork
 from axon.utils import encode_interval
@@ -89,6 +87,6 @@ If you use Axon or ADA in your research, please cite:
 ```
 
 ## Contact
-If you’re working with Axon or STICK-based hardware and want to share your application, request features, or report issues, reach out via GitHub Issues or contact the Neucom team at contact@neucom.ai.
+If you’re working with Axon or STICK-based hardware and want to share your application, request features, or report issues, reach out via GitHub Issues or contact the Neucom team at `contact@neucom.ai`.
 
 ![Neucom Logo](figs/neucom_logo.png)

@@ -2,33 +2,22 @@
 
 - [Introduction](introduction.md)
 
-- [Getting Started](getting-started/README.md)
-  - [Installation and contributing](getting-started/installation.md)
+- [Getting started](getting-started/README.md)
+  - [Installation](getting-started/installation.md)
   - [Quickstart](getting-started/quickstart.md)
 
-- [Core Concepts](core-concepts/interval-coding.md)
-  - [Neuron Model](core-concepts/neuron-model.md)
-  - [Synapse Types](core-concepts/synapse-types.md)
-  - [Network Composition](core-concepts/network-composition.md)
+- [Core concepts](core-concepts/README.md)
+  - [Neuron model](core-concepts/neuron-model.md)
+  - [Synapse types](core-concepts/synapse-types.md)
+  - [Encoder & decoder](core-concepts/encoding.md)
+  - [Network composition](core-concepts/network-composition.md)
+  - [Simulator engine](core-concepts/simulator.md)
+  - [Interval coding](core-concepts/interval-coding.md)
 
-- [Software Architecture](architecture/primitives.md)
-  - [Simulator Engine](architecture/simulator.md)
-  - [Encoder & Decoder](architecture/encoding.md)
-  - [Event Queue System](architecture/event-queue.md)
-  - [Visualization Tools](architecture/visualization.md)
+- [API reference](gen-api/index.html)
 
-- [Use Cases and Applications](examples/fir-filter.md)
+- [About](about/README.md)
+  - [About & contact](about/about.md)
+  - [Contributing](about/contributing.md)
+  - [References](about/references.md)
 
-- [Deployment](deployment/ada.md)
-  - [Exporting Spike Traces](deployment/spike-export.md)
-  - [Profiling and Debugging](deployment/profiling.md)
-
-- [Developer Guide](developer/style.md)
-  - [Extending the Simulator](developer/extending.md)
-  - [Adding New Modules](developer/new-modules.md)
-
-- [API Reference](gen-api/index.html)
-
-- [References](references/math.md)
-  - [Papers and Prior Art](references/papers.md)
-  - [Glossary](references/glossary.md)
