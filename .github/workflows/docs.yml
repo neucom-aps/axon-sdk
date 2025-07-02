@@ -1,8 +1,8 @@
-name: Deploy Pages
+name: Deploy Docs
 
 on:
   push:
-    branches: ["**"]
+    branches: ["main"]
   workflow_dispatch:
 
 permissions:
