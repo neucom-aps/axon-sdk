@@ -1,19 +1,19 @@
-# Axon-SDK
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/3c445fa2-ea61-4bb2-a625-af79d46751e6" alt="Sublime's custom image"/>
+</p>
 
-**Axon SDK** is a python toolkit for buildng and simulating spiking neural networks based on the [STICK framework](https://arxiv.org/abs/1507.06222) (Spike Time Interval Computation Kernel).
+**Axon SDK** is a Python toolkit for building and simulating Spiking Neural Networks (SNN) based on the [STICK framework](https://arxiv.org/abs/1507.06222) (Spike Time Interval Computation Kernel).
+
 It provides a modular, event-driven framework for developing symbolic, time-coded spiking algorithms for control, computation and embedded neuromorphic applications. 
 
->  Inspired by the precision of biological time-based encoding.  
->  Built for simulation, extension, and deployment.
-
 ## Features
--  **Composable network primitives** (neurons, synapses, event queues)
--  **Accurate timing-based simulation** of spike-interval coding
+-  **Library of SNN computation kernels**
+-  **Accurate simulation** of inter-spike-interval coding
 -  **Structured APIs** for network composition and module extension
 -  **Interactive visualization** of spike chronograms and topologies
 
 ## Installation
-```
+```bash
 cd axon-sdk
 pip install -e .
 pip install -r requirements.txt
@@ -23,61 +23,64 @@ pip install -r requirements.txt
 > 
 > `pip install -e . --config-settings editable_mode=compat`
 
+## Documentation and tutorials
+[neucom-aps.github.io/axon-sdk/](https://neucom-aps.github.io/axon-sdk/)
+
+
 ## Example of use
 
 1. Define your network
 
 ```python
-class class TestModule(SpikingNetworkModule):
-    def __init__(self, encoder, module_name):
-        super().__init__(module_name)
+class TestModule(SpikingNetworkModule):
+    def __init__(self, encoder):
+        super().__init__()
 
         Vt = 10.0
         tm = 100.0
         tf = 20.0
         Tsyn = 1.0
+        wacc = (Vt * tm) / encoder.Tmax
 
-        self.inp = self.add_neuron(Vt, tm, tf, Vreset=0, neuron_name='input')
-        self.outp = self.add_neuron(Vt, tm, tf, Vreset=0, neuron_name='output')
+        self.input = self.add_neuron(Vt, tm, tf, Vreset=0, neuron_name='input')
+        self.middle = self.add_neuron(Vt, tm, tf, Vreset=0, neuron_name='middle')
+        self.output = self.add_neuron(Vt, tm, tf, Vreset=0, neuron_name='output')
 
-        self.connect_neurons(self.inp, self.outp, "ge", weight=2*we, delay=Tsyn)
-        self.connect_neurons(self.inp, self.outp, "gf", weight=2*we, delay=Tsyn)
+        self.connect_neurons(self.input, self.middle, "ge", weight=wacc, delay=Tsyn)
+        self.connect_neurons(self.middle, self.output, "ge", weight=wacc, delay=Tsyn)
 ```
 
-2. Use the simulator on your network
+2. Simulate your network
 ```python
 # simulate.py
-encoder = DataEncoder()
-net = TestModule(encoder, 'testnet')
+encoder = DataEncoder(Tmin=10.0, Tcod=100.0)
+net = TestModule(encoder)
 
-inp_val = 0.6
 sim = Simulator(net, encoder, dt=0.01)
-sim.apply_input_value(inp_val, neuron=net.inp, t0=5)
+sim.apply_input_spike(neuron=net.input, t=5)
 sim.simulate(300)
 ```
 
-3. Run your network
-```bash
-python simulate.py
+3. Extract output spikes
+```python
+out_spikes = sim.sim.spike_log[net.outp.uid]
 ```
 
-## Network visualization
-Visualizations are available to help inspect and debug your network:
-- Topology visualization
-- Spike dynamics chronogram
-
-To trigger the visualizations, call your code with the environment variable `VIS=1`.
+4. Rerun your network and visualize a spike chronogram and network topology
 
 ```bash
 VIS=1 python simulate.py
 ```
-> **Note:**
-> If a module contains submodules, only the neurons (and synapses) of the submodule that interact with the neurons in the main module are displayed.
 
-**Example:** Visualizing a multiplier network
+**Spike chronogram**
+<img width="910" alt="Screenshot 2025-07-02 at 12 42 12" src="https://github.com/user-attachments/assets/29cf7489-5480-47a1-9465-116ab30e894a" />
 
-<img width="1430" alt="Screenshot 2025-05-01 at 16 39 11" src="https://github.com/user-attachments/assets/cf9e18c5-d496-4f9b-979d-15f02ba230dd" />
-<img width="1078" alt="Screenshot 2025-05-01 at 16 40 23" src="https://github.com/user-attachments/assets/192040a4-021b-488f-8c8f-fca75e039a08" />
+**Network topology**
+<img width="1265" alt="Screenshot 2025-07-02 at 12 42 28" src="https://github.com/user-attachments/assets/d49a6a10-0e06-4d77-a66c-eb282c960d50" />
+
+## License
+**Axon SDK** is published under the GPLv3 license, which applies to all files in this repository.
+
 
 
 
