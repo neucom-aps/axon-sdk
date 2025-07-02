@@ -66,7 +66,7 @@ sim.simulate(300)
 out_spikes = sim.sim.spike_log[net.outp.uid]
 ```
 
-4. Rerun your network and visualize a spike chronogram and network topology
+4. Rerun your network and visualize the spike chronogram and network topology
 
 ```bash
 VIS=1 python simulate.py
