@@ -1,4 +1,5 @@
 __pycache__/
+book/
 .DS_Store
 .python-version
 stick_emulator.egg-info/

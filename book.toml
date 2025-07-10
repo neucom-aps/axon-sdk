@@ -6,6 +6,7 @@ src = "docs"
 title = "Axon SDK Documentation"
 
 [output.html]
+mathjax-support = true
 default-theme = "light"
 smart-punctuation = true
 git-repository-url = "https://github.com/existential-ai/axon-sdk.github.io/tree/axon-package"

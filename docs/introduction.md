@@ -72,7 +72,7 @@ If you use **Axon** in your research, please cite:
 ## License
 **Axon SDK** is open-sourced under a **GPLv3 license**, preventing its inclusion in closed-source projects.
 
-Reach out if you need to use **Axon SDK** in your closed-source project to initiate a collaboration.
+Reach out to initiate a collaboration if you need to use **Axon SDK** in your closed-source project.
 
 ![Neucom Logo](figs/neucom_logo.png)
 

@@ -6,11 +6,14 @@
   - [Installation](getting-started/installation.md)
   - [Quickstart](getting-started/quickstart.md)
 
+- [Tutorials](tutorials/README.md)
+  - [Network composition](tutorials/net-composition.md)
+  - [Using the compiler](tutorials/compiler.md)
+  - [Defining custom modules](tutorials/custom-modules.md)
+
 - [Core concepts](core-concepts/README.md)
   - [Neuron model](core-concepts/neuron-model.md)
-  - [Synapse types](core-concepts/synapse-types.md)
   - [Encoder & decoder](core-concepts/encoding.md)
-  - [Network composition](core-concepts/network-composition.md)
   - [Simulator engine](core-concepts/simulator.md)
   - [Interval coding](core-concepts/interval-coding.md)
 
