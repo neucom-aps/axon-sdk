@@ -1,6 +1,6 @@
 # Quickstart
 
-This tutorial will showcases how to use Axon to build a Spiking Neural Network (SNN) capable of multiplying two signed numbers. In particular, it covers how to define the SNN, input values to it, simulate its execution and read out the output.
+This tutorial will showcases how to use Axon to build a Spiking Neural Network (SNN) that can **multiply two signed numbers**. In particular, it covers how to define the SNN, input values to it, simulate its execution and read out the output.
 
 
 ## Multiplier and encoder
@@ -38,9 +38,10 @@ interval = spikes[1] - spikes[0]
 value = enc.decode_interval(interval)
 ```
 ```text
->> spikes
+spikes
 >> (0, 30.0)
->> value
+
+value
 >> 0.2
 ```
 
@@ -73,7 +74,7 @@ interval = spikes[1] - spikes[0]
 output_val = encoder.decode_interval(interval)
 ```
 ```text
->> output_val
+output_val
 >> 0.2
 ```
 

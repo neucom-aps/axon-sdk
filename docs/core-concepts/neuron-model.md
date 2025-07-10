@@ -1,59 +1,53 @@
 # Neuron Model in Axon
 
-This document details the spiking neuron model used in Axon, which implements the STICK (Spike Time Interval Computational Kernel) computational paradigm. It emphasizes temporal coding, precise spike timing, and synaptic diversity for symbolic computation.
+This document details the spiking **neuron model** used in Axon, which implements the [STICK](https://arxiv.org/abs/1507.06222) computational paradigm. STICK uses temporal coding, precise spike timing, and synaptic diversity for symbolic and deterministic computation.
 
----
+> [STICK: Spike Time Interval Computational Kernel, A Framework for General Purpose Computation using Neurons, Precise Timing, Delays, and Synchrony](https://arxiv.org/abs/1507.06222).
 
-##  1. Overview
+##  Overview
 
-Axon simulates **event-driven, integrate-and-fire neurons** with:
-- **Millisecond-precision spike timing**
-- **Multiple synapse types** with distinct temporal effects
-- **Explicit gating** to modulate temporal dynamics
+Axon simulates event-driven, **integrate-and-fire neurons** with:
+- **Millisecond-precision** spike timing
+- Multiple **synapse types** with distinct temporal effects
+- Explicit **gating** to modulate temporal dynamics
 
 The base classes are:
 - `AbstractNeuron`: defines core membrane equations
 - `ExplicitNeuron`: tracks spike times and enables connectivity
 - `Synapse`: defines delayed, typed connections between neurons
 
----
+## Neuron Dynamics
 
-## 2. Neuron Dynamics
-
-Each neuron maintains four internal state variables:
+Each neuron maintains five internal state variables:
 
 | Variable | Description |
 |----------|-------------|
-| `V`      | Membrane potential (mV) |
+| `V`      | Membrane potential |
 | `ge`     | Persistent excitatory input (constant) |
 | `gf`     | Fast exponential input (gated) |
 | `gate`   | Binary gate controlling `gf` integration |
+| `Vt`      | Membrane potential threshold |
 
-The membrane potential evolves according to:
+The membrane potential evolves following the differential equation:
 
-```math
-\tau_m \frac{dV}{dt} = g_e + \text{gate} \cdot g_f
-``` 
-where:
-- `τm` is the membrane time constant
-- `g_e` is the persistent excitatory input
-- `g_f` is the fast decaying input, gated by `gate`
-The neuron spikes when `V` exceeds a threshold `Vt`, at which point it emits a spike and resets its state.
-After a spike, the neuron resets:
+\\[ \tau_m \frac{dV}{dt} = g_e + \text{gate} \cdot g_f \\]
+\\[ \frac{dg_e}{dt} = 0 \\]
+\\[ \tau_f \frac{dg_f}{dt} = -g_f \\]
 
+When the membrane potential surpasess a threshold, `V > Vt`, the neuron emits a spike and **resets**:
 
+```text
 V → Vreset
 ge → 0
 gf → 0
 gate → 0
+```
 
-This reset guarantees clean integration for subsequent intervals.
+Reset guarantees clean operation for subsequent intervals.
 
----
+##  Synapse Types
 
-##  4. Synapse Types
-
-Axon supports four biologically inspired synapse types:
+The neuron model supports four synapse types with a certain *weight* (`w`).
 
 | Type   | Effect                                  |
 |--------|------------------------------------------|
@@ -64,76 +58,50 @@ Axon supports four biologically inspired synapse types:
 
 Each synapse also includes a configurable delay, enabling precise temporal computation.
 
----
 
-##  5. Implementation Summary
+##  Numerical Parameters
 
-### Class: `AbstractNeuron`
-- Implements update logic for `ge`, `gf`, and `gate`
-- Defines `update_and_spike(dt)` for simulation cycles
-- Supports `receive_synaptic_event(type, weight)`
-
-### Class: `ExplicitNeuron`
-- Inherits from `AbstractNeuron`
-- Tracks:
-  - `spike_times[]`
-  - `out_synapses[]`
-- Implements `reset()` after spike emission
-
-### Class: `Synapse`
-- Defines:
-  - `pre_neuron`, `post_neuron`
-  - `weight`, `delay`, `type`
-- Used to construct event-driven spike queues with delay accuracy
-
----
-
-## 6. Temporal Coding & Integration
-
-This neuron model is designed for **interval-coded** values. Time intervals between spikes directly encode numeric values.
-
-Integration periods in neurons align with computation windows:
-
-- `ge`: accumulates static value during inter-spike interval
-- `gf` + `gate`: used for exponential/logarithmic timing
-- `V`: compares integrated potential to threshold for spike emission
-
-These dynamics enable symbolic operations such as memory, arithmetic, and differential equation solving.
-
----
-
-##  7. Numerical Parameters
-
-Typical parameter values used in Axon:
+**Typical neuron parameter** values used in Axon:
 
 | Parameter | Value    | Meaning                        |
 |-----------|----------|--------------------------------|
-| `Vt`      | 10.0 mV  | Spiking threshold              |
-| `Vreset`  | 0.0 mV   | Voltage after reset            |
-| `τm`      | 100.0 ms | Membrane integration constant  |
-| `τf`      | 20.0 ms  | Fast synaptic decay constant   |
+| `Vt`      | 10.0  | Spiking threshold              |
+| `Vreset`  | 0.0  | Voltage after reset            |
+| `τm`      | 100.0 | Membrane integration constant  |
+| `τf`      | 20.0  | Fast synaptic decay constant   |
 
-Units are in milliseconds or millivolts, matching real-time symbolic processing and neuromorphic feasibility.
+Units are in **milliseconds** and **millivolts**, matching real-time symbolic processing and neuromorphic feasibility.
 
----
 
-##  8. Benefits of This Model
+## Benefits of This Model
+
+This neuron model is designed for **interval-coded** values. Time **intervals between spikes** directly encode numeric values.
+
+The neuron model has dynamic behaviours that eenable symbolic operations such as memory, arithmetic, and differential equation solving. The dynamics of this neuron model forms a **Turing-complete** computation framework (for in depth information, refer to the [STICK paper](https://arxiv.org/abs/1507.06222)).
+
+This neuron model has the following characteristics:
 
 - **Compact**: Minimal neurons required for functional blocks
 - **Precise**: Accurate sub-millisecond spike-based encoding
 - **Composable**: Modular design supports hierarchical circuits
-- **Hardware-Compatible**: Ported to digital integrate-and-fire cores like ADA
+- **Hardware-Compatible**: Ported to digital integrate-and-fire cores
 
-
-
-# Neuron Model Animation
+## Neuron Model Animation
 
 ![Neuron](../figs/neural-dynamics.gif)
-This animation demonstrates how a single STICK neuron responds over time to different synaptic inputs. Each input type (`V`, `ge`, `gf`, `gate`) produces distinct changes in membrane dynamics. The neuron emits a spike when its membrane potential `V(t)` reaches the threshold `Vt = 10.0 mV`, after which it resets.
 
----
+This animation demonstrates how a single STICK neuron responds over time to different synaptic inputs. Each input type (`V`, `ge`, `gf`, `gate`) produces distinct changes in membrane dynamics. Synapse-type `ge` produces a linear increase of `V` and `gf` an exponential one.
 
-##  Synapse Events Timeline
+### Summary of Synapse Effects
+
+| Synapse Type | Behavior |
+|--------------|----------|
+| `V`          | Instantaneous jump in membrane potential `V` |
+| `ge`         | Slow, steady increase in `V` over time |
+| `gf + gate`  | Fast, nonlinear voltage rise due to exponential dynamics |
+| `gate`       | Controls whether `gf` affects the neuron at all |
+
+###  Event-by-event explanation
 
 | Time (ms) | Type    | Value | Description |
 |-----------|---------|-------|-------------|
@@ -145,9 +113,7 @@ This animation demonstrates how a single STICK neuron responds over time to diff
 
 ---
 
-##  Event-by-Event Explanation
-
-###  `t = 20 ms — V(10.0)`
+###  `t = 20 ms - V(10.0)`
 - A **V-synapse** adds +10.0 mV to `V` instantly.
 - Since `Vt = 10.0`, this causes **immediate spike**.
 - The neuron resets: `V → 0`, `ge, gf, gate → 0`.
@@ -181,40 +147,9 @@ This animation demonstrates how a single STICK neuron responds over time to diff
 
 **Effect**: Shows subthreshold perturbation from a V-type synapse.
 
----
 
 ###  `t = 200 ms — gate(-1.0)`
 - The **gate is closed** (`gate = 0`), disabling `gf` decay term.
 - Any remaining `gf` is no longer integrated into `V`.
 
 **Effect**: Demonstrates control logic: `gf` is disabled, computation halts.
-
----
-
-##  Summary of Synapse Effects
-
-| Synapse Type | Behavior |
-|--------------|----------|
-| `V`          | Instantaneous jump in membrane potential `V` |
-| `ge`         | Slow, steady increase in `V` over time |
-| `gf + gate`  | Fast, nonlinear voltage rise due to exponential dynamics |
-| `gate`       | Controls whether `gf` affects the neuron at all |
-
----
-
-##  Spike Dynamics
-
-When `V ≥ Vt`, the neuron:
-- Spikes
-- Logs spike time
-- Resets all internal state to baseline
-
-You can see these spikes as **red dots** at the threshold line in the animation.
-
-##  References
-
-- **Lagorce & Benosman (2015)**: *Spike Time Interval Computational Kernel*  
-- **Axon SDK Source**:  
-  - Neuron model: `axon/elements.py`  
-  - Event logic: `axon/events.py`  
-  - Simulator integration: `axon/simulator.py`
