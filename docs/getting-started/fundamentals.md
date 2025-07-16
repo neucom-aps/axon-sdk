@@ -12,5 +12,3 @@
 ## Spiking neurons
 
 Spiking neurons are the atomic concept of **Axon SDK**. A spiking neuron is a stateful component that will emit a spike when an internal buffer called *membrane potential* exceeds a threshold.
-
-Fundamentally, spiking
