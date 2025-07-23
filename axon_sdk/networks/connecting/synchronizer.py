@@ -75,10 +75,10 @@ if __name__ == "__main__":
             interval = spikes[1] - spikes[0]
             decoded = encoder.decode_interval(interval)
             print(
-                f"✅ Input[{i}] | Spike1 time: {spikes[0]:.3f} | Decoded value {decoded:.4f}"
+                f"Input[{i}] | Spike1 time: {spikes[0]:.3f} | Decoded value {decoded:.4f}"
             )
         else:
-            print(f"❌ Output[{i}] missing second spike: {spikes}")
+            print(f"Output[{i}] missing second spike: {spikes}")
 
     print("\n")
 
@@ -88,7 +88,7 @@ if __name__ == "__main__":
             interval = spikes[1] - spikes[0]
             decoded = encoder.decode_interval(interval)
             print(
-                f"✅ Output[{i}] | Spike1 time: {spikes[0]:.3f} | Decoded value {decoded:.4f}"
+                f"Output[{i}] | Spike1 time: {spikes[0]:.3f} | Decoded value {decoded:.4f}"
             )
         else:
-            print(f"❌ Output[{i}] missing second spike: {spikes}")
+            print(f"Output[{i}] missing second spike: {spikes}")
