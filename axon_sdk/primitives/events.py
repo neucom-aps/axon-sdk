@@ -1,28 +1,10 @@
-"""
-Spike Event Scheduling
-======================
-
-Defines event queue infrastructure for managing timed spike events in STICK-based spiking neural networks.
-
-Classes:
-    - SpikeEvent: Represents a scheduled synaptic event.
-    - SpikeEventQueue: Priority queue for time-ordered spike events.
-"""
-
 import heapq
-from axon_sdk.primitives import ExplicitNeuron
+from .elements import ExplicitNeuron
+
+import itertools
 
 
 class SpikeEvent:
-    """
-        Represents a scheduled synaptic event in the network.
-
-        Attributes:
-            time (float): Simulation time at which the event should occur.
-            affected_neuron (ExplicitNeuron): Neuron that receives the event.
-            synapse_type (str): Type of synaptic interaction (e.g., 'ge', 'gf', 'gate', 'V').
-            weight (float): Synaptic weight to apply during the event.
-    """
     def __init__(
         self,
         time: float,
@@ -30,44 +12,18 @@ class SpikeEvent:
         synapse_type: str,
         weight: float,
     ):
-        """
-        Initialize a spike event.
-
-        Args:
-            time (float): Time at which the event should trigger.
-            affected_neuron (ExplicitNeuron): Target neuron to receive the event.
-            synapse_type (str): Type of synapse activated.
-            weight (float): Synaptic weight applied.
-        """
         self.time = time
         self.affected_neuron = affected_neuron
         self.synapse_type = synapse_type
         self.weight = weight
 
     def __lt__(self, other):
-        """
-        Comparison operator to allow sorting events in a priority queue.
-
-        Args:
-            other (SpikeEvent): Another event to compare.
-
-        Returns:
-            bool: True if this event occurs earlier than `other`.
-        """
         # Needed since spike events will be used in a heap
         return self.time < other.time
 
 
 class SpikeEventQueue:
-    """
-    Priority queue for managing time-sorted spike events.
-
-    Implements event insertion and retrieval of events scheduled up to the current simulation time.
-    """
     def __init__(self):
-        """
-        Initialize an empty spike event queue.
-        """
         self.events: list[SpikeEvent] = []
 
     def add_event(
@@ -77,15 +33,6 @@ class SpikeEventQueue:
         synapse_type: str,
         weight: float,
     ):
-        """
-        Add a new spike event to the queue.
-
-        Args:
-            time (float): Scheduled time of the event.
-            neuron (ExplicitNeuron): Target neuron.
-            synapse_type (str): Synapse type.
-            weight (float): Weight of the synaptic input.
-        """
         event = SpikeEvent(
             time=time,
             affected_neuron=neuron,
@@ -95,16 +42,84 @@ class SpikeEventQueue:
         heapq.heappush(self.events, event)
 
     def pop_events(self, current_time) -> list[SpikeEvent]:
-        """
-        Pop all events scheduled to occur up to the current simulation time.
-
-        Args:
-            current_time (float): The current time in simulation.
-
-        Returns:
-            List[SpikeEvent]: List of events to apply at this timestep.
-        """
         events = []
         while self.events and self.events[0].time <= current_time:
             events.append(heapq.heappop(self.events))
         return events
+
+
+class UniqueEvent:
+    _counter = itertools.count()
+
+    def __init__(
+        self,
+        time: float,
+    ):
+        self.time = time
+        self.id = next(UniqueEvent._counter)
+
+    def __lt__(self, other):
+        # Needed events will be used in a heap
+        return self.time < other.time
+
+
+class SpikeHitEvent(UniqueEvent):
+    def __init__(
+        self,
+        t: float,
+        hitNeuron: ExplicitNeuron,
+        synapse_type: str,
+        weight: float,
+    ):
+        super().__init__(time=t)
+        self.hitNeuron = hitNeuron
+        self.synapse_type = synapse_type
+        self.weight = weight
+
+
+class NeuronResetEvent(UniqueEvent):
+    def __init__(self, t: float, resetNeuron: ExplicitNeuron):
+        super().__init__(time=t)
+        self.resetNeuron = resetNeuron
+
+
+class CancelableEventQueue:
+    """
+    The heap holds the ordered time of the events.
+    The mapping points a time to its corresponding events.
+    """
+
+    def __init__(self):
+        self._time_heap = []
+        self._events_at_time: dict[float, list[UniqueEvent]] = {}
+
+    def remove(self, event: UniqueEvent) -> None:
+        if (
+            event.time in self._events_at_time.keys()
+            and event in self._events_at_time[event.time]
+        ):
+            # Note that removing an event does NOT remove that time from the heap (to avoid having to re-heapify)
+            self._events_at_time[event.time].remove(event)
+
+    def add_event(self, event: UniqueEvent) -> UniqueEvent:
+        if event.time not in self._events_at_time.keys():
+            self._events_at_time[event.time] = []
+            heapq.heappush(self._time_heap, event.time)
+        self._events_at_time[event.time].append(event)
+        return event
+
+    def pop(self) -> list[UniqueEvent]:
+        if not self._time_heap:
+            raise IndexError("Pop from an empty priority queue")
+        events = []
+        while self._time_heap and len(events) == 0:
+            smallest_time = heapq.heappop(self._time_heap)
+            events = self._events_at_time[smallest_time]
+            del self._events_at_time[smallest_time]
+        return events
+
+    def __len__(self) -> int:
+        non_empty_times = [
+            l for l in self._time_heap if len(self._events_at_time[l]) != 0
+        ]
+        return len(non_empty_times)

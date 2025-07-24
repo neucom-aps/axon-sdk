@@ -99,7 +99,8 @@ class Simulator:
             neuron (ExplicitNeuron): Target neuron for injection.
             t0 (float, optional): Time offset for input spike injection. Defaults to 0.
         """
-        assert value >= 0.0 and value <= 1.0
+        if not (0.0 <= value <= 1.0):
+            raise ValueError("Input value must be between 0.0 and 1.0")
 
         spike_interval = self.encoder.encode_value(value)
         for t_spike_in_interval in spike_interval:
