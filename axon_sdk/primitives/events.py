@@ -1,9 +1,4 @@
 import heapq
-from axon_sdk.primitives import ExplicitNeuron
-
-import itertools
-
-import heapq
 from .elements import ExplicitNeuron
 
 import itertools
@@ -90,8 +85,8 @@ class NeuronResetEvent(UniqueEvent):
 
 class CancelableEventQueue:
     """
-    The heap holds the future events sorted by their occurring time.
-    The dict relates a future time to the events happening then.
+    The heap holds the ordered time of the events.
+    The mapping points a time to its corresponding events.
     """
 
     def __init__(self):
@@ -99,8 +94,11 @@ class CancelableEventQueue:
         self._events_at_time: dict[float, list[UniqueEvent]] = {}
 
     def remove(self, event: UniqueEvent) -> None:
-        if event in self._events_at_time[event.time]:
-            # Note that removing an event does NOT remove that time from the heap
+        if (
+            event.time in self._events_at_time.keys()
+            and event in self._events_at_time[event.time]
+        ):
+            # Note that removing an event does NOT remove that time from the heap (to avoid having to re-heapify)
             self._events_at_time[event.time].remove(event)
 
     def add_event(self, event: UniqueEvent) -> UniqueEvent:
@@ -117,6 +115,7 @@ class CancelableEventQueue:
         while self._time_heap and len(events) == 0:
             smallest_time = heapq.heappop(self._time_heap)
             events = self._events_at_time[smallest_time]
+            del self._events_at_time[smallest_time]
         return events
 
     def __len__(self) -> int:
