@@ -2,7 +2,7 @@ __pycache__/
 book/
 .DS_Store
 .python-version
-stick_emulator.egg-info/
+axon_sdk.egg-info/
 *.py[cod]
 *.pyo
 *.pyd
