@@ -13,11 +13,8 @@
 
 - [Core concepts](core-concepts/README.md)
   - [Neuron model](core-concepts/neuron-model.md)
-  - [Encoder & decoder](core-concepts/encoding.md)
-  - [Simulator engine](core-concepts/simulator.md)
   - [Interval coding](core-concepts/interval-coding.md)
-
-- [API reference](gen-api/index.html)
+  - [Simulator engine](core-concepts/simulator.md)
 
 - [About](about/README.md)
   - [About & contact](about/about.md)

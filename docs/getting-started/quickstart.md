@@ -1,28 +1,26 @@
 # Quickstart
 
-This tutorial will showcases how to use Axon to build a Spiking Neural Network (SNN) that can **multiply two signed numbers**. In particular, it covers how to define the SNN, input values to it, simulate its execution and read out the output.
+This tutorial will showcases how to use Axon to build a Spiking Neural Network (SNN) that can **multiply two signed decimal numbers**. In particular, it covers how to use a multiplication SNN module available in Axon, how input values to it, how simulate its execution, and how to read out and interpret the output.
 
 
 ## Multiplier and encoder
 
-The spiking neural networks (SNN) defined with **Axon SDK** are quite different from what's conventionally understood by spiking neural networks. They have 2 fundamental differences:
+The spiking neural networks (SNN) defined with **Axon SDK** are slightly different from what's conventionally understood by spiking neural networks (for example, in ML). They have two fundamental differences:
 
-- Axon's SNNs don't need to be trained.
-- Axon uses a pair of spikes to encode a value.
+- Axon's SNNs **don't need to be trained**.
+- Axon uses a **pair of spikes** to encode an individual **value**.
 
-Axon's SNNs are pre-defined networks of neurons and synapses that implement a certain computation - they are not a trainable SNN.
+The Axon SDK provides an already-made library of computational modules. These are SNNs implementing a specific and deterministic computation.
 
-One of such computations is a multiplication operation, which is available in Axon:
+One of such modules is a **multiplication network**:
 
 ```python
 from axon_sdk.networks import MultiplierNetwork
-
-multiplier_net = MultiplierNetwork(encoder)
 ```
 
 ![Multiplication SNN](../figs/mul_block.png)
 
-Axon abstracts the complexity of the underlying SNN into a modular interface that allows composing computation kernels to achieve larger operations.
+Axon abstracts the complexity of the underlying SNNs into a modular interface that allows composing computation kernels to achieve larger operations.
 
 The multiplier network requires an *encoder* to work. The encoder is the component that translates between arithmetic values and spike intervals.
 

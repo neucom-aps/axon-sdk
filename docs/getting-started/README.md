@@ -1,4 +1,4 @@
 # Getting Started
 
-- [Installation and contributing](installation.md)
+- [Installation](installation.md)
 - [Quickstart](quickstart.md)
