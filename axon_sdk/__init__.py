@@ -15,3 +15,4 @@ This SDK is part of the Neucom platform developed by Neucom ApS.
 
 
 from .simulator import Simulator, decode_output, count_spikes
+from .predictive_simulator import PredSimulator

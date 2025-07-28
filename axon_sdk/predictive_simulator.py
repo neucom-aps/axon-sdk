@@ -36,7 +36,9 @@ class PredSimulator:
             self._provisional_events[neuron.uid] = []
 
     def apply_input_value(self, value: float, neuron: ExplicitNeuron, t0: float = 0):
-        assert value >= 0.0 and value <= 1.0
+        if not (0.0 <= value <= 1.0):
+            raise ValueError("Input value must be between 0.0 and 1.0")
+
         spike_interval = self.encoder.encode_value(value)
         for t_spike_in_interval in spike_interval:
             self.apply_input_spike(neuron=neuron, t=t_spike_in_interval)
