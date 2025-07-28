@@ -54,12 +54,11 @@ def plot_chronogram(
         ax[i].spines["bottom"].set_visible(False)
         ax[i].spines["left"].set_visible(False)
 
-        ax[i].plot(timesteps, v_log, c='#2A868C')
+        ax[i].plot(timesteps, v_log, c="#2A868C")
 
         if item in spike_log:
             for spike in spike_log[item]:
-                ax[i].scatter(spike, 0, s=30, c='#2A868C')
-
+                ax[i].scatter(spike, 0, s=30, c="#2A868C")
 
     plt.legend()
     plt.show()

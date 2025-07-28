@@ -9,8 +9,11 @@ from axon_sdk.primitives import (
 )
 
 from axon_sdk.networks import InvertingMemoryNetwork
+from .visualization.chronogram import plot_chronogram
+from .visualization.topovis import vis_topology
 
 import math
+import os
 
 from typing import Optional
 
@@ -29,6 +32,9 @@ class PredSimulator:
 
         self.spike_log: dict[str, list[float]] = {}
         self.voltage_log: dict[str, list[tuple]] = {}
+
+        self._max_steps = int(500 / dt)  # Heuristic: in 500 timesteps, primitives spike
+        self.timesteps = [(i + 1) * self.dt for i in range(self._max_steps)]
 
         for neuron in self.net.neurons:
             self.spike_log[neuron.uid] = []
@@ -82,16 +88,14 @@ class PredSimulator:
         self._event_queue.add_event(reset_event)
         self._add_provisional_event_to(neuron=neuron, event=reset_event)
 
-    def _predict_spike_steps_fixed(
-        self, neuron: ExplicitNeuron, dt, max_steps=50000
-    ) -> Optional[float]:
+    def _predict_spike_steps_fixed(self, neuron: ExplicitNeuron, dt) -> Optional[float]:
         V0 = neuron.V
         ge = neuron.ge
         gf = neuron.gf if neuron.gate else 0.0
         tm = neuron.tm
         tf = neuron.tf
         Vt = neuron.Vt
-        lo, hi = 0, max_steps
+        lo, hi = 0, self._max_steps
         for _ in range(64):  # up to 2^16 resolution
             mid = (lo + hi) // 2
             t = mid * dt
@@ -101,7 +105,7 @@ class PredSimulator:
                 hi = mid
             else:
                 lo = mid + 1
-        return lo * dt if lo < max_steps else None
+        return lo * dt if lo < self._max_steps else None
 
     def simulate(self) -> None:
         while len(self._event_queue) > 0:
@@ -136,6 +140,17 @@ class PredSimulator:
                     )
                 else:
                     self._cancel_provisional_events_from(event.hitNeuron)
+
+        if os.getenv("VIS", "0") == "1":
+            self.launch_visualization()
+
+    def launch_visualization(self):
+        vis_topology(self.net)
+        plot_chronogram(
+            timesteps=self.timesteps,
+            voltage_log=self.voltage_log,
+            spike_log=self.spike_log,
+        )
 
 
 if __name__ == "__main__":
