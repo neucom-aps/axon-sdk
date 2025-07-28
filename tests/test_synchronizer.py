@@ -2,7 +2,7 @@ import pytest
 import logging
 from axon_sdk.networks import MemoryNetwork, SynchronizerNetwork
 from axon_sdk.primitives import DataEncoder
-from axon_sdk import Simulator
+from axon_sdk import Simulator, PredSimulator
 
 LOGGER = logging.getLogger(__name__)
 
@@ -36,29 +36,23 @@ def test_sync_neuron_connections():
     assert len(syncnet.sync.out_synapses) == 2
 
 
-def test_input_output_timing(N=3, values=[0.1, 0.4, 0.7]):
+def test_input_output_timing():
+    N = 3
+    values = [0.1, 0.4, 0.7]
     encoder = DataEncoder(Tcod=100)
     syncnet = SynchronizerNetwork(encoder, N=N)
 
-    # Set up simulator
     sim = Simulator(net=syncnet, encoder=encoder, dt=0.01)
-
-    t0 = 10  # Time to begin encoding spikes
+    
+    t0 = 10
     deltas = [0, 20, 40]
 
-    # Apply inputs at different times
     for i, (delta, val) in enumerate(zip(deltas, values)):
-        sim.apply_input_value(
-            value=val, neuron=syncnet.input_neurons[i], t0=t0 + delta
-        )
+        sim.apply_input_value(value=val, neuron=syncnet.input_neurons[i], t0=t0 + delta)
 
-    # Run simulation for enough time to capture output
     sim.simulate(simulation_time=400)
-
-    # Collect spike times to ensure synchronisation
     sync_out_spikes = []
 
-    # Collect and decode outputs
     for i, out_neuron in enumerate(syncnet.output_neurons):
         spikes = sim.spike_log.get(out_neuron.uid, [])
         if len(spikes) >= 2:
@@ -76,31 +70,22 @@ def test_input_output_timing(N=3, values=[0.1, 0.4, 0.7]):
     assert len(set(sync_out_spikes)) == 1
 
 
-def test_synchronizer_network_with_custom_encoder_parameters(
-    N=6, values=[0.3, 0.6, 0.1, 0.5, 0.4, 0.45]
-):
+def test_synchronizer_network_with_custom_encoder_parameters():
+    N = 6
+    values = [0.3, 0.6, 0.1, 0.5, 0.4, 0.45]
     custom_encoder = DataEncoder(Tmin=5, Tcod=100)
     syncnet = SynchronizerNetwork(custom_encoder, N=N)
-
-    # Set up simulator
     sim = Simulator(net=syncnet, encoder=custom_encoder, dt=0.01)
 
-    t0 = 5  # Time to begin encoding spikes
+    t0 = 5
     deltas = [0, 8, 17, 5, 34, 23]
 
-    # Apply inputs using simulator-provided method
     for i, (delta, val) in enumerate(zip(deltas, values)):
-        sim.apply_input_value(
-            value=val, neuron=syncnet.input_neurons[i], t0=t0 + delta
-        )
+        sim.apply_input_value(value=val, neuron=syncnet.input_neurons[i], t0=t0 + delta)
 
-    # Run simulation for enough time to capture output
     sim.simulate(simulation_time=400)
-
-    # Collect spike times to ensure synchronisation
     sync_out_spikes = []
 
-    # Collect and decode outputs
     for i, out_neuron in enumerate(syncnet.output_neurons):
         spikes = sim.spike_log.get(out_neuron.uid, [])
         if len(spikes) >= 2:
@@ -122,18 +107,82 @@ def test_synchronizer_network_with_no_inputs(N=2):
     encoder = DataEncoder(Tcod=100)
     syncnet = SynchronizerNetwork(encoder, N=N)
 
-    # Set up simulator
     sim = Simulator(net=syncnet, encoder=encoder, dt=0.01)
-
-    # Run simulation for enough time to capture output
     sim.simulate(simulation_time=400)
 
     for neuron in syncnet.output_neurons:
         spikes = sim.spike_log.get(neuron.uid, [])
-        assert (
-            len(spikes) == 0
-        ), f"Output[{neuron.name}] should not have any spikes"
+        assert len(spikes) == 0, f"Output[{neuron.name}] should not have any spikes"
 
 
-if __name__ == "__main__":
-    pytest.main()
+# ------------------ With predictive simulator ------------------
+
+
+def test_pred_input_output_timing():
+    N = 3
+    values = [0.1, 0.4, 0.7]
+    encoder = DataEncoder(Tcod=100)
+    syncnet = SynchronizerNetwork(encoder, N=N)
+
+    sim = PredSimulator(net=syncnet, encoder=encoder, dt=0.01)
+
+    t0 = 10
+    deltas = [0, 20, 40]
+
+    for i, (delta, val) in enumerate(zip(deltas, values)):
+        sim.apply_input_value(value=val, neuron=syncnet.input_neurons[i], t0=t0 + delta)
+
+    sim.simulate()
+    sync_out_spikes = []
+
+    for i, out_neuron in enumerate(syncnet.output_neurons):
+        spikes = sim.spike_log.get(out_neuron.uid, [])
+        if len(spikes) >= 2:
+            interval = spikes[1] - spikes[0]
+            sync_out_spikes.append(spikes[0])
+            decoded_value = encoder.decode_interval(interval)
+            expected_value = values[i]
+            assert decoded_value == pytest.approx(expected_value, abs=1e-2)
+        else:
+            pytest.fail(f"Output[{i}] missing second spike: {spikes}")
+
+    assert len(set(sync_out_spikes)) == 1
+
+
+def test_pred_synchronizer_with_custom_encoder():
+    N = 6
+    values = [0.3, 0.6, 0.1, 0.5, 0.4, 0.45]
+    custom_encoder = DataEncoder(Tmin=5, Tcod=100)
+    syncnet = SynchronizerNetwork(custom_encoder, N=N)
+    sim = PredSimulator(net=syncnet, encoder=custom_encoder, dt=0.01)
+    t0 = 5
+    deltas = [0, 8, 17, 5, 34, 23]
+
+    for i, (delta, val) in enumerate(zip(deltas, values)):
+        sim.apply_input_value(value=val, neuron=syncnet.input_neurons[i], t0=t0 + delta)
+
+    sim.simulate()
+    sync_out_spikes = []
+
+    for i, out_neuron in enumerate(syncnet.output_neurons):
+        spikes = sim.spike_log.get(out_neuron.uid, [])
+        if len(spikes) >= 2:
+            interval = spikes[1] - spikes[0]
+            sync_out_spikes.append(spikes[0])
+            decoded_value = custom_encoder.decode_interval(interval)
+            expected_value = values[i]
+            assert decoded_value == pytest.approx(expected_value, abs=1e-2)
+        else:
+            pytest.fail(f"Output[{i}] missing second spike: {spikes}")
+
+    assert len(set(sync_out_spikes)) == 1
+
+
+def test_pred_synchronizer_network_with_no_inputs(N=2):
+    encoder = DataEncoder(Tcod=100)
+    syncnet = SynchronizerNetwork(encoder, N=N)
+    sim = PredSimulator(net=syncnet, encoder=encoder, dt=0.01)
+    sim.simulate()
+    for neuron in syncnet.output_neurons:
+        spikes = sim.spike_log.get(neuron.uid, [])
+        assert len(spikes) == 0
