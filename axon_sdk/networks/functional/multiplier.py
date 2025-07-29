@@ -12,7 +12,7 @@ class MultiplierNetwork(SpikingNetworkModule):
         Vt = 10.0
         tm = 100.0
         tf = 20.0
-        Tsyn = 1.0
+        Tsyn = 50.0
         Tmin = encoder.Tmin
 
         we = Vt
@@ -66,22 +66,43 @@ class MultiplierNetwork(SpikingNetworkModule):
 
 if __name__ == "__main__":
     from axon_sdk.simulator import Simulator
+    import json
 
     encoder = DataEncoder(Tmin=10.0, Tcod=100.0)
     net = MultiplierNetwork(encoder)
 
-    val1 = 0.1
-    val2 = 0.5
+    data = {}
+    data['all_neurons'] = [
+        {net.input1.uid: 'input'},
+        {net.input2.uid: 'input'},
+        {net.first1.uid: 'interm'},
+        {net.last1.uid: 'interm'},
+        {net.acc_log1.uid: 'interm'},
+        {net.first2.uid: 'interm'},
+        {net.last2.uid: 'interm'},
+        {net.acc_log2.uid: 'interm'},
+        {net.sync.uid: 'interm'},
+        {net.acc_exp.uid: 'interm'},
+        {net.output.uid: 'output'},
+    ]
+    for neu in net.neurons:
+        data[neu.uid] = [{syn.post_neuron.uid: syn.delay} for syn in neu.out_synapses]
+    json_output = json.dumps(data, indent=4)
+    with open('topology.json', 'w') as json_file:
+        json_file.write(json_output)
+
+    val1 = 0.9
+    val2 = 0.8
     true_product = val1 * val2
 
     sim = Simulator(net, encoder, dt=0.01)
 
     # Apply both input values
-    sim.apply_input_value(val1, neuron=net.input1, t0=10)
+    sim.apply_input_value(val1, neuron=net.input1, t0=30)
     sim.apply_input_value(val2, neuron=net.input2, t0=10)
 
     # Simulate long enough to see output
-    sim.simulate(simulation_time=400)
+    sim.simulate(simulation_time=600)
 
     spikes = sim.spike_log.get(net.output.uid, [])
 
@@ -95,3 +116,14 @@ if __name__ == "__main__":
         print(f"✅ Error: {abs(decoded - true_product):.4f}")
     else:
         print(f"❌ Output spike missing or incomplete: {spikes}")
+
+
+    # Export spikes
+    spikes_all = {}
+
+    for neu in net.neurons:
+        spk = sim.spike_log.get(neu.uid, [])
+        spikes_all[neu.uid] = spk
+    json_output = json.dumps(spikes_all, indent=4)
+    with open('spikes.json', 'w') as json_file:
+        json_file.write(json_output)
