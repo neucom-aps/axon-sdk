@@ -58,6 +58,31 @@ if V > Vt:
     gate → 0
 ```
 
+## Neuron Model Animation
+
+This animation demonstrates the evolution of an individual neuron under different synaptic inputs (`V`, `ge`, `gf`, `gate`):
+
+![Neuron](../figs/neuron_dynamics.gif)
+
+| Synapse Type | Behavior |
+|--------------|----------|
+| `V`          | Instantaneous jump in membrane potential `V`, potentially emitting spike |
+| `ge`         | Slow, steady increase in `V` over time |
+| `gf + gate`  | Fast, nonlinear voltage rise due to exponential dynamics |
+| `gate`       | Controls whether `gf` affects the neuron at all |
+
+
+###  Event-by-event explanation of the animation
+
+| Time (ms) | Type    | Value | Description |
+|-----------|---------|-------|-------------|
+| `t = 10`  | `V`     | 3.0  | Instantaneous pushes of `V`, membrane potential
+| `t = 25`  | `ge`    | 6.0   | Applies constant integration current: slow, linear voltage increase |
+| `t = 40` | `gf`    | 16.0   | Adds fast-decaying input, gated via `gate = 1` at same time |
+| `t = 40` | `gate`     | 1.0   | Enables `gf` affecting neuron dynamics |
+| `t = 85` | `spike`     | -   | Neuron emits a spike and resets its state |
+
+
 ##  Synapse Types
 
 The neuron model has 4 synapse types. Each of them affects one of the 4 internal state variables of the neuron receiving the synapse. Synapses have a certain **weight (`w`)**:
@@ -90,74 +115,6 @@ By default, Axon uses the following **numeric values** for the neuron parameters
 | `tf`      | 20.0  | Fast synaptic decay constant   |
 
 Units are **milliseconds** for time values and **millivolts** for membrane potential values.
-
-## Neuron Model Animation
-
-This animation demonstrates the evolution over time of an individual neuron when hit by the different input synapses (`V`, `ge`, `gf`, `gate`):
-
-![Neuron](../figs/neural-dynamics.gif)
-
-Synapse-type `ge` produces a linear increase in `V`. Synapse-type `gf`, an exponential increase.
-
-| Synapse Type | Behavior |
-|--------------|----------|
-| `V`          | Instantaneous jump in membrane potential `V`, potentially emitting spike |
-| `ge`         | Slow, steady increase in `V` over time |
-| `gf + gate`  | Fast, nonlinear voltage rise due to exponential dynamics |
-| `gate`       | Controls whether `gf` affects the neuron at all |
-
-###  Event-by-event explanation of the animation
-
-| Time (ms) | Type    | Value | Description |
-|-----------|---------|-------|-------------|
-| `t = 20`  | `V`     | 10.0 (`=Vt`)  | Instantaneously pushes `V` to threshold, triggering a spike |
-| `t = 60`  | `ge`    | 2.0   | Applies constant integration current: slow, linear voltage increase |
-| `t = 100` | `gf`    | 2.5   | Adds fast-decaying input, gated via `gate = 1` at same time |
-| `t = 160` | `V`     | 2.0   | Small, instant boost to `V` |
-| `t = 200` | `gate`  | -1.0  | Disables exponential decay pathway by zeroing the gate signal |
-
----
-
-###  `t = 20 ms - V(10.0)`
-- A **V-synapse** adds +10.0 mV to `V` instantly.
-- Since `Vt = 10.0`, this causes **immediate spike**.
-- The neuron resets: `V → 0`, `ge, gf, gate → 0`.
-
-**Effect**: Demonstrates a direct spike trigger via instantaneous voltage jump.
-
----
-
-###  `t = 60 ms — ge(2.0)`
-- A **ge-synapse** applies constant input current.
-- Voltage rises **linearly** over time.
-- Alone, this isn't sufficient to reach `Vt`, so no spike occurs yet.
-
-**Effect**: Shows the smooth effect of continuous integration from ge-type input.
-
----
-
-###  `t = 100 ms — gf(2.5)` and `gate(1.0)`
-- A **gf-synapse** delivers fast-decaying input current.
-- A **gate-synapse** opens the gate (`gate = 1`), activating `gf` dynamics.
-- Voltage rises **nonlinearly** as `gf` initially dominates, then decays.
-- Combined effect from earlier `ge` and `gf` **causes a spike** shortly after.
-
-**Effect**: Demonstrates exponential integration (gf) gated for a temporary burst.
-
----
-
-###  `t = 160 ms — V(2.0)`
-- A small **V-synapse** bump of +2.0 mV occurs.
-- This is **not enough** to cause a spike, but it shifts `V` upward instantly.
-
-**Effect**: Shows subthreshold perturbation from a V-type synapse.
-
-
-###  `t = 200 ms — gate(-1.0)`
-- The **gate is closed** (`gate = 0`), disabling `gf` decay term.
-- Any remaining `gf` is no longer integrated into `V`.
-
-**Effect**: Demonstrates control logic: `gf` is disabled, computation halts.
 
 ## Benefits of This Model
 
