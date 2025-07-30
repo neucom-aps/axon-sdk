@@ -6,6 +6,8 @@ Axon is an extension of **[STICK (Spike Time Interval Computational Kernel)](htt
 
 ![Axon Architecture](figs/Top-Architecture.png)
 
+> The code is open-source on [Gihub > Axon SDK](https://github.com/neucom-aps/axon-sdk)
+
 Axon provides an end-to-end pipeline for deploying deterministic algorithms as interval-coded SNNs to ultra-low-power neuromorphic hardware.
 
 At [Neucom](https://neucom.ai), we're building one of such **neuromorphic chips** and we're calling it **ADA**. ADA aims to marry together the low-power consumption of FPGAs and ASICS while keeping the flexibility and ease of use of microcontrollers.
