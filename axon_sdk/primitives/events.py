@@ -76,11 +76,10 @@ class SpikeHitEvent(UniqueEvent):
         self.synapse_type = synapse_type
         self.weight = weight
 
-
-class NeuronResetEvent(UniqueEvent):
-    def __init__(self, t: float, resetNeuron: ExplicitNeuron):
+class PredictedSpikeEvent(UniqueEvent):
+    def __init__(self, t: float, neuron: ExplicitNeuron):
         super().__init__(time=t)
-        self.resetNeuron = resetNeuron
+        self.neuron = neuron
 
 
 class CancelableEventQueue:
