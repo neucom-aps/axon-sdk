@@ -3,7 +3,6 @@ import pytest
 from axon_sdk.primitives import (
     CancelableEventQueue,
     SpikeHitEvent,
-    NeuronResetEvent,
     ExplicitNeuron
 )
 

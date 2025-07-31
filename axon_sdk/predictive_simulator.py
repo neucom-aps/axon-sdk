@@ -4,8 +4,7 @@ from axon_sdk.primitives import (
     SpikingNetworkModule,
     CancelableEventQueue,
     SpikeHitEvent,
-    NeuronResetEvent,
-    UniqueEvent,
+    PredictedSpikeEvent,
 )
 
 from axon_sdk.networks import InvertingMemoryNetwork
@@ -28,7 +27,7 @@ class PredSimulator:
 
         # Predictive simulation engine
         self._event_queue = CancelableEventQueue()
-        self._provisional_events: dict[str, list[UniqueEvent]] = {}
+        self._possible_spike_events_for: dict[str, Optional[PredictedSpikeEvent]] = {}
 
         self.spike_log: dict[str, list[float]] = {}
         self.voltage_log: dict[str, list[tuple]] = {}
@@ -39,9 +38,11 @@ class PredSimulator:
         for neuron in self.net.neurons:
             self.spike_log[neuron.uid] = []
             self.voltage_log[neuron.uid] = []
-            self._provisional_events[neuron.uid] = []
+            self._possible_spike_events_for[neuron.uid] = None
 
-    def apply_input_value(self, value: float, neuron: ExplicitNeuron, t0: float = 0):
+    def apply_input_value(
+        self, value: float, neuron: ExplicitNeuron, t0: float = 0
+    ) -> None:
         if not (0.0 <= value <= 1.0):
             raise ValueError("Input value must be between 0.0 and 1.0")
 
@@ -49,9 +50,8 @@ class PredSimulator:
         for t_spike_in_interval in spike_interval:
             self.apply_input_spike(neuron=neuron, t=t_spike_in_interval)
 
-    def apply_input_spike(self, neuron: ExplicitNeuron, t: float):
-        # Artifically forcing a spike is done by simulating the arrival
-        # of a V-type spike to the neuron
+    def apply_input_spike(self, neuron: ExplicitNeuron, t: float) -> None:
+        # Forcing a spike is done by simulating the arrival of a V-type spike
         Vt = neuron.Vt
         spike_event = SpikeHitEvent(t=t, hitNeuron=neuron, synapse_type="V", weight=Vt)
         self._event_queue.add_event(spike_event)
@@ -59,20 +59,20 @@ class PredSimulator:
     def _log_spike_occurrence(self, neuron: ExplicitNeuron, t: float) -> None:
         self.spike_log[neuron.uid].append(t)
 
-    def _cancel_provisional_events_from(self, neuron: ExplicitNeuron) -> None:
-        prov_events = self._provisional_events[neuron.uid]
-        for event in prov_events:
-            self._event_queue.remove(event)
+    def _enqueue_possible_spike_event(
+        self, t0: float, neuron: ExplicitNeuron
+    ) -> PredictedSpikeEvent:
+        possible_spike = PredictedSpikeEvent(t=t0, neuron=neuron)
+        self._event_queue.add_event(possible_spike)
+        return possible_spike
 
-    def _remove_provisional_events_from(self, neuron: ExplicitNeuron) -> None:
-        self._provisional_events[neuron.uid] = []
+    def _dequeue_possible_spike_event_for(self, neuron: ExplicitNeuron) -> None:
+        possible_event = self._possible_spike_events_for[neuron.uid]
+        if possible_event is not None:
+            assert isinstance(possible_event, PredictedSpikeEvent)
+            self._event_queue.remove(possible_event)
 
-    def _add_provisional_event_to(
-        self, neuron: ExplicitNeuron, event: UniqueEvent
-    ) -> None:
-        self._provisional_events[neuron.uid].append(event)
-
-    def _propagate_spikes(self, t0: float, neuron: ExplicitNeuron):
+    def _propagate_spikes_from(self, t0: float, neuron: ExplicitNeuron):
         for syn in neuron.out_synapses:
             spike_event = SpikeHitEvent(
                 t=t0 + syn.delay,
@@ -81,12 +81,6 @@ class PredSimulator:
                 weight=syn.weight,
             )
             self._event_queue.add_event(spike_event)
-            self._add_provisional_event_to(neuron=neuron, event=spike_event)
-
-    def _query_reset_event(self, t0: float, neuron: ExplicitNeuron):
-        reset_event = NeuronResetEvent(t=t0, resetNeuron=neuron)
-        self._event_queue.add_event(reset_event)
-        self._add_provisional_event_to(neuron=neuron, event=reset_event)
 
     def _predict_spike_steps_fixed(self, neuron: ExplicitNeuron, dt) -> Optional[float]:
         V0 = neuron.V
@@ -110,17 +104,20 @@ class PredSimulator:
     def simulate(self) -> None:
         while len(self._event_queue) > 0:
             next_events = self._event_queue.pop()
-            reset_events = [e for e in next_events if isinstance(e, NeuronResetEvent)]
+            spike_events = [
+                e for e in next_events if isinstance(e, PredictedSpikeEvent)
+            ]
             spike_hit_events = [e for e in next_events if isinstance(e, SpikeHitEvent)]
 
-            for event in reset_events:
-                self._remove_provisional_events_from(event.resetNeuron)
-                event.resetNeuron.reset()
-                # When a reset event completes it means the neuron actually spiked
-                self._log_spike_occurrence(neuron=event.resetNeuron, t=event.time)
+            for event in spike_events:
+                event.neuron.reset()
+                self._propagate_spikes_from(t0=event.time, neuron=event.neuron)
+                self._possible_spike_events_for[event.neuron.uid] = None
+                self._log_spike_occurrence(neuron=event.neuron, t=event.time)
 
             for event in spike_hit_events:
-                self._cancel_provisional_events_from(event.hitNeuron)
+                self._dequeue_possible_spike_event_for(event.hitNeuron)
+                self._possible_spike_events_for[event.hitNeuron.uid] = None
                 event.hitNeuron.receive_synaptic_event_pred(
                     synapse_type=event.synapse_type, weight=event.weight, t0=event.time
                 )
@@ -132,14 +129,10 @@ class PredSimulator:
                 )
 
                 if new_spike_time is not None:
-                    self._query_reset_event(
+                    new_event = self._enqueue_possible_spike_event(
                         t0=event.time + new_spike_time, neuron=event.hitNeuron
                     )
-                    self._propagate_spikes(
-                        t0=event.time + new_spike_time, neuron=event.hitNeuron
-                    )
-                else:
-                    self._cancel_provisional_events_from(event.hitNeuron)
+                    self._possible_spike_events_for[event.hitNeuron.uid] = new_event
 
         if os.getenv("VIS", "0") == "1":
             self.launch_visualization()
