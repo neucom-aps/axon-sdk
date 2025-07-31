@@ -103,11 +103,9 @@ class PredSimulator:
 
     def simulate(self) -> None:
         while len(self._event_queue) > 0:
-            next_events = self._event_queue.pop()
-            spike_events = [
-                e for e in next_events if isinstance(e, PredictedSpikeEvent)
-            ]
-            spike_hit_events = [e for e in next_events if isinstance(e, SpikeHitEvent)]
+            next_evts = self._event_queue.pop()
+            spike_events = [e for e in next_evts if isinstance(e, PredictedSpikeEvent)]
+            spike_hit_events = [e for e in next_evts if isinstance(e, SpikeHitEvent)]
 
             for event in spike_events:
                 event.neuron.reset()
