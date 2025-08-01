@@ -1,0 +1,159 @@
+from axon_sdk.primitives import (
+    DataEncoder,
+    ExplicitNeuron,
+    SpikingNetworkModule,
+    CancelableEventQueue,
+    SpikeHitEvent,
+    PredictedSpikeEvent,
+)
+
+from axon_sdk.networks import InvertingMemoryNetwork
+from .visualization.chronogram import plot_chronogram
+from .visualization.topovis import vis_topology
+
+import math
+import os
+
+from typing import Optional
+
+
+class PredSimulator:
+    def __init__(
+        self, net: SpikingNetworkModule, encoder: DataEncoder, dt: float = 0.01
+    ) -> None:
+        self.net = net
+        self.encoder = encoder
+        self.dt = dt
+
+        # Predictive simulation engine
+        self._event_queue = CancelableEventQueue()
+        self._possible_spike_events_for: dict[str, Optional[PredictedSpikeEvent]] = {}
+
+        self.spike_log: dict[str, list[float]] = {}
+        self.voltage_log: dict[str, list[tuple]] = {}
+
+        self._max_steps = int(500 / dt)  # Heuristic: in 500 timesteps, primitives spike
+        self.timesteps = [(i + 1) * self.dt for i in range(self._max_steps)]
+
+        for neuron in self.net.neurons:
+            self.spike_log[neuron.uid] = []
+            self.voltage_log[neuron.uid] = []
+            self._possible_spike_events_for[neuron.uid] = None
+
+    def apply_input_value(
+        self, value: float, neuron: ExplicitNeuron, t0: float = 0
+    ) -> None:
+        if not (0.0 <= value <= 1.0):
+            raise ValueError("Input value must be between 0.0 and 1.0")
+
+        spike_interval = self.encoder.encode_value(value)
+        for t_spike_in_interval in spike_interval:
+            self.apply_input_spike(neuron=neuron, t=t_spike_in_interval)
+
+    def apply_input_spike(self, neuron: ExplicitNeuron, t: float) -> None:
+        # Forcing a spike is done by simulating the arrival of a V-type spike
+        Vt = neuron.Vt
+        spike_event = SpikeHitEvent(t=t, hitNeuron=neuron, synapse_type="V", weight=Vt)
+        self._event_queue.add_event(spike_event)
+
+    def _log_spike_occurrence(self, neuron: ExplicitNeuron, t: float) -> None:
+        self.spike_log[neuron.uid].append(t)
+
+    def _enqueue_possible_spike_event(
+        self, t0: float, neuron: ExplicitNeuron
+    ) -> PredictedSpikeEvent:
+        possible_spike = PredictedSpikeEvent(t=t0, neuron=neuron)
+        self._event_queue.add_event(possible_spike)
+        return possible_spike
+
+    def _dequeue_possible_spike_event_for(self, neuron: ExplicitNeuron) -> None:
+        possible_event = self._possible_spike_events_for[neuron.uid]
+        if possible_event is not None:
+            assert isinstance(possible_event, PredictedSpikeEvent)
+            self._event_queue.remove(possible_event)
+
+    def _propagate_spikes_from(self, t0: float, neuron: ExplicitNeuron):
+        for syn in neuron.out_synapses:
+            spike_event = SpikeHitEvent(
+                t=t0 + syn.delay,
+                hitNeuron=syn.post_neuron,
+                synapse_type=syn.type,
+                weight=syn.weight,
+            )
+            self._event_queue.add_event(spike_event)
+
+    def _predict_spike_steps_fixed(self, neuron: ExplicitNeuron, dt) -> Optional[float]:
+        V0 = neuron.V
+        ge = neuron.ge
+        gf = neuron.gf if neuron.gate else 0.0
+        tm = neuron.tm
+        tf = neuron.tf
+        Vt = neuron.Vt
+        lo, hi = 0, self._max_steps
+        for _ in range(64):  # up to 2^16 resolution
+            mid = (lo + hi) // 2
+            t = mid * dt
+            exp_decay = 1 - math.exp(-t / tf)
+            V = V0 + (ge / tm) * t + (neuron.gate * gf * tf / tm) * exp_decay
+            if V >= Vt:
+                hi = mid
+            else:
+                lo = mid + 1
+        return lo * dt if lo < self._max_steps else None
+
+    def simulate(self) -> None:
+        while len(self._event_queue) > 0:
+            next_evts = self._event_queue.pop()
+            spike_events = [e for e in next_evts if isinstance(e, PredictedSpikeEvent)]
+            spike_hit_events = [e for e in next_evts if isinstance(e, SpikeHitEvent)]
+
+            for event in spike_events:
+                event.neuron.reset()
+                self._propagate_spikes_from(t0=event.time, neuron=event.neuron)
+                self._possible_spike_events_for[event.neuron.uid] = None
+                self._log_spike_occurrence(neuron=event.neuron, t=event.time)
+
+            for event in spike_hit_events:
+                self._dequeue_possible_spike_event_for(event.hitNeuron)
+                self._possible_spike_events_for[event.hitNeuron.uid] = None
+                event.hitNeuron.receive_synaptic_event_pred(
+                    synapse_type=event.synapse_type, weight=event.weight, t0=event.time
+                )
+                # Might repeatedly recalculate the new spike time if several spikes
+                # hit the neuron at the same timestep, but that's unlikely
+                # and event if it happens, not so computationally costly
+                new_spike_time = self._predict_spike_steps_fixed(
+                    neuron=event.hitNeuron, dt=self.dt
+                )
+
+                if new_spike_time is not None:
+                    new_event = self._enqueue_possible_spike_event(
+                        t0=event.time + new_spike_time, neuron=event.hitNeuron
+                    )
+                    self._possible_spike_events_for[event.hitNeuron.uid] = new_event
+
+        if os.getenv("VIS", "0") == "1":
+            self.launch_visualization()
+
+    def launch_visualization(self):
+        vis_topology(self.net)
+        plot_chronogram(
+            timesteps=self.timesteps,
+            voltage_log=self.voltage_log,
+            spike_log=self.spike_log,
+        )
+
+
+if __name__ == "__main__":
+    val = 0.6
+    encoder = DataEncoder()
+    imn = InvertingMemoryNetwork(encoder, module_name="invmem")
+    sim = PredSimulator(imn, encoder)
+    sim.apply_input_value(value=val, neuron=imn.input, t0=0)
+    sim.apply_input_spike(neuron=imn.recall, t=200)
+    sim.simulate()
+
+    output_spikes = sim.spike_log[imn.output.uid]
+    out_val = encoder.decode_interval(output_spikes[1] - output_spikes[0])
+    print(f"Input val: {val}")
+    print(f"Inverted val (1-val): {out_val}")

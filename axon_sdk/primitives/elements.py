@@ -1,35 +1,10 @@
-"""
-Neuron and Synapse Primitives
-=============================
-
-Defines core primitives for STICK-based spiking networks:
-    - `AbstractNeuron`: A base class implementing neuron dynamics and synaptic event integration.
-    - `ExplicitNeuron`: A concrete subclass with spike tracking and output synapses.
-    - `Synapse`: Represents a connection between two neurons with a type, weight, and delay.
-"""
-
 from .helpers import flatten_nested_list
-
 from typing import Optional
+
+import math
 
 
 class AbstractNeuron:
-    """
-    Base class for neurons in the STICK model.
-
-    Implements gated synaptic integration and threshold-based spike logic.
-
-    Attributes:
-        Vt (float): Spike threshold voltage.
-        Vreset (float): Voltage after reset.
-        tm (float): Membrane time constant.
-        tf (float): Time constant for 'gf' decay.
-        V (float): Membrane potential.
-        ge (float): Excitatory conductance.
-        gf (float): Gated conductance.
-        gate (float): Gating input level.
-        uid (str): Unique identifier for neuron.
-    """
     _instance_count = 0
 
     def __init__(
@@ -43,16 +18,13 @@ class AbstractNeuron:
         additional_info: Optional[str] = None
     ):
         """
-        Initialize a neuron with specified model parameters.
+        Initialize the neuron with given parameters.
 
-        Args:
-            Vt (float): Threshold voltage for spiking.
-            tm (float): Membrane time constant.
-            tf (float): Synaptic decay time constant.
-            Vreset (float, optional): Voltage after spike reset. Defaults to 0.0.
-            neuron_name (str, optional): Human-readable name for tracing.
-            parent_mod_id (str, optional): Module ID this neuron belongs to.
-            additional_info (str, optional): Debugging or display metadata.
+        Parameters:
+        Vt (float): Spike threshold voltage (mV).
+        Vreset (float): Reset voltage after spike (mV).
+        tm (float): Membrane time constant (ms).
+        tf (float): Time constant for exponential synapses (ms).
         """
         self.Vt = Vt
         self.Vreset = Vreset
@@ -77,21 +49,17 @@ class AbstractNeuron:
 
     @property
     def uid(self) -> str:
-        """
-        Returns:
-            str: Unique identifier of this neuron instance.
-        """
         return self._uid
 
     def update_and_spike(self, dt) -> tuple[float, bool]:
         """
-        Update the neuron's membrane potential and internal state.
+        Update the state of the neuron by one timestep.
 
-        Args:
-            dt (float): Time increment in milliseconds.
+        Parameters:
+        dt (float): The simulation timestep (ms).
 
         Returns:
-            tuple[float, bool]: (Updated voltage, Spike flag).
+        bool: True if the neuron spikes, False otherwise.
         """
         spike = False
         # Update membrane potential based on the differential equations provided
@@ -108,14 +76,11 @@ class AbstractNeuron:
 
     def receive_synaptic_event(self, synapse_type, weight):
         """
-        Apply a synaptic event to update internal state variables.
+        Update neuron state based on incoming synaptic event.
 
-        Args:
-            synapse_type (str): Type of synapse ('V', 'ge', 'gf', 'gate').
-            weight (float): Synaptic weight.
-
-        Raises:
-            ValueError: If synapse type is not recognized.
+        Parameters:
+        synapse_type (str): Type of synapse ('V', 'ge', 'gf', 'gate').
+        weight (float): Synaptic weight to modify neuron state.
         """
         if synapse_type == "V":
             self.V += weight
@@ -130,13 +95,6 @@ class AbstractNeuron:
 
 
 class ExplicitNeuron(AbstractNeuron):
-    """
-    A fully defined neuron used in simulations with connection and spike history.
-
-    Attributes:
-        spike_times (list[float]): Timestamps of all emitted spikes.
-        out_synapses (list[Synapse]): Outgoing synapses from this neuron.
-    """
     def __init__(
         self,
         Vt: float,
@@ -147,44 +105,50 @@ class ExplicitNeuron(AbstractNeuron):
         parent_mod_id: Optional[str] = None,
         additional_info: Optional[str] = None
     ):
-        """
-        Initialize an explicit neuron with connectivity and logging.
-
-        Args:
-            Vt (float): Spike threshold voltage.
-            tm (float): Membrane time constant.
-            tf (float): Synaptic decay time constant.
-            Vreset (float, optional): Reset voltage after spiking.
-            neuron_name (str, optional): Optional neuron label.
-            parent_mod_id (str, optional): ID of parent module.
-            additional_info (str, optional): Extra display/debugging metadata.
-        """
         super().__init__(Vt, tm, tf, Vreset, neuron_name, parent_mod_id, additional_info)
         self.spike_times: list[float] = []
         self.out_synapses: list[Synapse] = []
 
+        self._last_synapse_time: float = 0
+        self.log_V = [(self.V, 0)]
+        self.log_ge = [(self.ge, 0)]
+        self.log_gf = [(self.ge, 0)]
+
     def reset(self):
-        """
-        Reset internal neuron state after a spike.
-        """
         self.V = self.Vreset
         self.ge = 0
         self.gf = 0
         self.gate = 0
 
+    def _fast_forward(self, interval: float) -> tuple[float, float]:
+        decay = math.exp(-interval / self.tf)
+        new_V = self.V + (self.ge / self.tm) * interval
+        new_gf = self.gf * decay
+        if self.gate != 0:
+            new_V += (self.gf * self.tf / self.tm) * (1 - decay)
+
+        return new_V, new_gf
+
+    def receive_synaptic_event_pred(self, synapse_type, weight, t0) -> None:
+        if t0 != self._last_synapse_time:
+            self.V, self.gf = self._fast_forward(t0 - self._last_synapse_time)
+            self.log_V.append((self.V, t0))
+            self.log_ge.append((self.ge, t0))
+            self._last_synapse_time = t0
+
+        if synapse_type == "V":
+            self.V += weight
+        elif synapse_type == "ge":
+            self.ge += weight
+        elif synapse_type == "gf":
+            self.gf += weight
+        elif synapse_type == "gate":
+            self.gate += weight
+        else:
+            raise ValueError("Unknown synapse type")
+
 
 class Synapse:
-    """
-    A synaptic connection between two neurons in the network.
-
-    Attributes:
-        pre_neuron (ExplicitNeuron): Source neuron.
-        post_neuron (ExplicitNeuron): Destination neuron.
-        type (str): Synapse type ('V', 'ge', 'gf', or 'gate').
-        weight (float): Synaptic weight.
-        delay (float): Transmission delay in milliseconds.
-        uid (str): Unique synapse ID.
-    """
     _instance_count = 0
 
     def __init__(
@@ -195,16 +159,6 @@ class Synapse:
         delay: float,
         synapse_type: str,
     ):
-        """
-        Initialize a synapse between two neurons.
-
-        Args:
-            pre_neuron (ExplicitNeuron): Presynaptic neuron.
-            post_neuron (ExplicitNeuron): Postsynaptic neuron.
-            weight (float): Synaptic weight to apply.
-            delay (float): Delay in ms before effect is applied.
-            synapse_type (str): Type of synaptic influence.
-        """
         self.pre_neuron = pre_neuron
         self.post_neuron = post_neuron
         self.type = synapse_type
@@ -216,8 +170,4 @@ class Synapse:
 
     @property
     def uid(self) -> str:
-        """
-        Returns:
-            str: Unique identifier for this synapse.
-        """
         return self._uid

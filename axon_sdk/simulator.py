@@ -99,7 +99,8 @@ class Simulator:
             neuron (ExplicitNeuron): Target neuron for injection.
             t0 (float, optional): Time offset for input spike injection. Defaults to 0.
         """
-        assert value >= 0.0 and value <= 1.0
+        if not (0.0 <= value <= 1.0):
+            raise ValueError("Input value must be between 0.0 and 1.0")
 
         spike_interval = self.encoder.encode_value(value)
         for t_spike_in_interval in spike_interval:
@@ -164,12 +165,11 @@ class Simulator:
 
             for neuron in neurons_to_simulate:
                 (V_after_update, spike) = neuron.update_and_spike(self.dt)
-                # neuron.V is now V_after_update
-                self._log_voltage_value(neuron=neuron, V=neuron.V, timestep=i)
 
                 if spike:
                     self._log_spike_occurrence(neuron=neuron, t=t)
                     neuron.reset()  # V becomes Vreset, ge=0, gf=0, gate=0
+                    V_after_update = neuron.Vreset
                     for synapse in neuron.out_synapses:
                         self.event_queue.add_event(
                             time=t + synapse.delay,
@@ -177,7 +177,9 @@ class Simulator:
                             synapse_type=synapse.type,
                             weight=synapse.weight,
                         )
-
+                    
+                self._log_voltage_value(neuron=neuron, V=V_after_update, timestep=i)
+                
                 # After update and potential reset, check if it remains internally active for the next step
                 if neuron.ge != 0.0 or neuron.gf != 0.0 or neuron.gate != 0:
                     newly_active_state_neurons.add(neuron)
