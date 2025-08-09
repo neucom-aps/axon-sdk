@@ -13,6 +13,7 @@ from .visualization.topovis import vis_topology
 
 import math
 import os
+import cProfile, pstats, io
 
 from typing import Optional
 
@@ -33,7 +34,6 @@ class PredSimulator:
         self.voltage_log: dict[str, list[tuple]] = {}
 
         self._max_steps = int(500 / dt)  # Heuristic: in 500 timesteps, primitives spike
-        self.timesteps = [(i + 1) * self.dt for i in range(self._max_steps)]
 
         for neuron in self.net.neurons:
             self.spike_log[neuron.uid] = []
@@ -137,18 +137,17 @@ class PredSimulator:
 
     def launch_visualization(self):
         vis_topology(self.net)
+        self.timesteps = [(i + 1) * self.dt for i in range(self._max_steps)]
         plot_chronogram(
             timesteps=self.timesteps,
             voltage_log=self.voltage_log,
             spike_log=self.spike_log,
         )
-
-
-if __name__ == "__main__":
+def run():
     val = 0.6
     encoder = DataEncoder()
     imn = InvertingMemoryNetwork(encoder, module_name="invmem")
-    sim = PredSimulator(imn, encoder)
+    sim = PredSimulator(imn, encoder, dt=0.0001)
     sim.apply_input_value(value=val, neuron=imn.input, t0=0)
     sim.apply_input_spike(neuron=imn.recall, t=200)
     sim.simulate()
@@ -157,3 +156,12 @@ if __name__ == "__main__":
     out_val = encoder.decode_interval(output_spikes[1] - output_spikes[0])
     print(f"Input val: {val}")
     print(f"Inverted val (1-val): {out_val}")
+
+if __name__ == "__main__":
+    pr = cProfile.Profile()
+    pr.enable()
+    run()
+    pr.disable()
+    s = io.StringIO()
+    pstats.Stats(pr, stream=s).strip_dirs().sort_stats("tottime").print_stats(50)
+    print(s.getvalue())
