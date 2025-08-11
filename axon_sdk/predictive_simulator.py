@@ -24,6 +24,7 @@ class PredSimulator:
         self.net = net
         self.encoder = encoder
         self.dt = dt
+        self.finished = False
 
         # Predictive simulation engine
         self._event_queue = CancelableEventQueue()
@@ -39,6 +40,9 @@ class PredSimulator:
             self.spike_log[neuron.uid] = []
             self.voltage_log[neuron.uid] = []
             self._possible_spike_events_for[neuron.uid] = None
+
+        self._processed_synapses_log: dict[str, int]
+        self._processed_synapses_log = {"V": 0, "ge": 0, "gf": 0, "gm": 0, "gate": 0}
 
     def apply_input_value(
         self, value: float, neuron: ExplicitNeuron, t0: float = 0
@@ -58,6 +62,9 @@ class PredSimulator:
 
     def _log_spike_occurrence(self, neuron: ExplicitNeuron, t: float) -> None:
         self.spike_log[neuron.uid].append(t)
+
+    def _log_predicition_routine_run(self, syn_type: str) -> None:
+        self._processed_synapses_log[syn_type] += 1
 
     def _enqueue_possible_spike_event(
         self, t0: float, neuron: ExplicitNeuron
@@ -102,6 +109,9 @@ class PredSimulator:
         return lo * dt if lo < self._max_steps else None
 
     def simulate(self) -> None:
+        if self.finished is True:
+            raise ValueError("Trying to rerun already executed simulation")
+
         while len(self._event_queue) > 0:
             next_evts = self._event_queue.pop()
             spike_events = [e for e in next_evts if isinstance(e, PredictedSpikeEvent)]
@@ -125,12 +135,15 @@ class PredSimulator:
                 new_spike_time = self._predict_spike_steps_fixed(
                     neuron=event.hitNeuron, dt=self.dt
                 )
+                self._log_predicition_routine_run(event.synapse_type)
 
                 if new_spike_time is not None:
                     new_event = self._enqueue_possible_spike_event(
                         t0=event.time + new_spike_time, neuron=event.hitNeuron
                     )
                     self._possible_spike_events_for[event.hitNeuron.uid] = new_event
+
+        self.finished = True
 
         if os.getenv("VIS", "0") == "1":
             self.launch_visualization()
