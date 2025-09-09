@@ -62,6 +62,7 @@ class Simulator:
         self.timesteps: list[float] = []
         self.spike_log: dict[str, list[float]] = {}
         self.voltage_log: dict[str, list[tuple]] = {}
+        self.processed_syn_per_type = {'V': 0, 'ge':0, 'gf':0, 'gate':0}
         for neuron in self.net.neurons:
             self.spike_log[neuron.uid] = []
             self.voltage_log[neuron.uid] = []
@@ -156,6 +157,7 @@ class Simulator:
                 event.affected_neuron.receive_synaptic_event(
                     event.synapse_type, event.weight
                 )
+                self.processed_syn_per_type[event.synapse_type] += 1
                 currently_affected_neurons.add(event.affected_neuron)
 
             # Collect all neurons that should be simulated
