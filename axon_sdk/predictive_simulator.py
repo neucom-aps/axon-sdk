@@ -13,7 +13,6 @@ from .visualization.topovis import vis_topology
 
 import math
 import os
-import cProfile, pstats, io
 
 from typing import Optional
 
@@ -137,13 +136,15 @@ class PredSimulator:
 
     def launch_visualization(self):
         vis_topology(self.net)
-        self.timesteps = [(i + 1) * self.dt for i in range(self._max_steps)]
+        timesteps = [(i + 1) * self.dt for i in range(self._max_steps)]
         plot_chronogram(
-            timesteps=self.timesteps,
+            timesteps=timesteps,
             voltage_log=self.voltage_log,
             spike_log=self.spike_log,
         )
-def run():
+
+
+if __name__ == "__main__":
     val = 0.6
     encoder = DataEncoder()
     imn = InvertingMemoryNetwork(encoder, module_name="invmem")
@@ -156,12 +157,3 @@ def run():
     out_val = encoder.decode_interval(output_spikes[1] - output_spikes[0])
     print(f"Input val: {val}")
     print(f"Inverted val (1-val): {out_val}")
-
-if __name__ == "__main__":
-    pr = cProfile.Profile()
-    pr.enable()
-    run()
-    pr.disable()
-    s = io.StringIO()
-    pstats.Stats(pr, stream=s).strip_dirs().sort_stats("tottime").print_stats(50)
-    print(s.getvalue())
