@@ -21,7 +21,7 @@ def benchmark_simulation(sim: PredSimulator) -> None:
     print("--------------------------------------------------")
     print("\n")
 
-    report_neuron_usage(sim.net)
+    report_neuron_usage(sim.net, print_depth=0)
     report_spike_usage_for_simulation(sim)
     report_energy_and_latency_for_simulation(sim)
 
@@ -73,15 +73,15 @@ def _module_to_total_spikes(mod: SpikingNetworkModule) -> int:
 def _module_to_spikes(mod: SpikingNetworkModule) -> dict[str, int]:
     # Maps each module to the count of processed spikes within each module
     if isinstance(mod, InjectorNetwork):
-        return {"V": 0, "ge": 0, "gf": 0, "gate": 0}
+        return {"V": 0, "ge": 0, "gf": 0, "gm": 0}
     elif isinstance(mod, SignFlipperNetwork):
-        return {"V": 2, "ge": 0, "gf": 0, "gate": 0}
+        return {"V": 2, "ge": 0, "gf": 0, "gm": 0}
     elif isinstance(mod, SignedMultiplierNormNetwork):
-        return {"V": 42, "ge": 9, "gf": 3, "gate": 4}
+        return {"V": 42, "ge": 9, "gf": 3, "gm": 4}
     elif isinstance(mod, AdderNetwork):
-        return {"V": 76, "ge": 16, "gf": 0, "gate": 0}
+        return {"V": 76, "ge": 16, "gf": 0, "gm": 0}
     elif isinstance(mod, DivNetwork):
-        return {"V": 48, "ge": 5, "gf": 3, "gate": 4}
+        return {"V": 48, "ge": 5, "gf": 3, "gm": 4}
     else:
         raise ValueError(f"Unknown number of spikes for module {mod}")
 
@@ -137,16 +137,16 @@ def report_energy_and_latency_estimation_for_net(net: SpikingNetworkModule) -> N
     v_spikes = 0
     ge_spikes = 0
     gf_spikes = 0
-    gate_spikes = 0
+    gm_spikes = 0
 
     for subnet in net.subnetworks:
         v_spikes += _module_to_spikes(subnet)["V"]
         ge_spikes += _module_to_spikes(subnet)["ge"]
         gf_spikes += _module_to_spikes(subnet)["gf"]
-        gate_spikes += _module_to_spikes(subnet)["gate"]
+        gm_spikes += _module_to_spikes(subnet)["gm"]
 
     print("------ ENERGY & LATENCY REPORT (ESTIMATION) ------")
-    _report_energy_and_latency(v_spikes, ge_spikes, gf_spikes, gm_spikes=gate_spikes)
+    _report_energy_and_latency(v_spikes, ge_spikes, gf_spikes, gm_spikes)
 
 
 def report_energy_and_latency_for_simulation(sim: PredSimulator) -> None:
@@ -175,6 +175,13 @@ def _report_energy_and_latency(
 
     energy_estimat = estimate_power_and_energy(perf=perf, clock_speed_mhz=200)
 
+    print("-------")
+    print(f"Predictive logic report:")
+    print(f"V-type updates: {v_spikes}")
+    print(f"ge-type updates: {ge_spikes}")
+    print(f"gf-type updates: {gf_spikes}")
+    print(f"gm-type updates: {gm_spikes}")
+    print("-------")
     print(f"Latency per iteration: {perf['time_seconds']} s")
     print(f"Energy per iteration:  {energy_estimat['E_total']}")
     print(f"Power:                 {energy_estimat['P_total']}")
