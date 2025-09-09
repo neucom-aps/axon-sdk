@@ -1,10 +1,3 @@
-"""
-Utilities
-=========
-
-Common helper functions used throughout the Axon SDK.
-"""
-
 def flatten_nested_list(nested_list: list) -> list:
     """
         Recursively flattens an arbitrarily nested list into a single flat list.

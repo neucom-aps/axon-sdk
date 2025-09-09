@@ -27,7 +27,7 @@ pip install -r requirements.txt
 [neucom-aps.github.io/axon-sdk/](https://neucom-aps.github.io/axon-sdk/)
 
 
-## Example of use
+## Example: Define custom network
 
 1. Define your network
 
@@ -66,17 +66,35 @@ sim.simulate(300)
 out_spikes = sim.sim.spike_log[net.outp.uid]
 ```
 
-4. Rerun your network and visualize the spike chronogram and network topology
+## Example: Use predefined computation networks
+We provide a library of predefined computation modules:
 
-```bash
-VIS=1 python simulate.py
+```python
+from axon_sdk.networks import MultiplierNetwork
+from axon_sdk.primitives import DataEncoder
+from axon_sdk.simulator import Simulator
+
+encoder = DataEncoder(Tmin=10.0, Tcod=100.0)
+net = MultiplierNetwork(encoder)
+
+spikes = encoder.encode_value(0.2)
+interval = spikes[1] - spikes[0]
+value = encoder.decode_interval(interval)
+
+sim = Simulator(net, encoder, dt=0.01)
+sim.apply_input_value(0.9, neuron=net.input1)
+sim.apply_input_value(0.8, neuron=net.input2)
+sim.simulate(simulation_time=400)
+spikes = sim.spike_log.get(net.output.uid, [])
+interval = spikes[1] - spikes[0]
 ```
 
-**Spike chronogram**
-<img width="910" alt="Screenshot 2025-07-02 at 12 42 12" src="https://github.com/user-attachments/assets/29cf7489-5480-47a1-9465-116ab30e894a" />
+```python
+output_val = encoder.decode_interval(interval)
+>> 0.72
+```
 
-**Network topology**
-<img width="1265" alt="Screenshot 2025-07-02 at 12 42 28" src="https://github.com/user-attachments/assets/d49a6a10-0e06-4d77-a66c-eb282c960d50" />
+![mul-snn-linkedin](https://github.com/user-attachments/assets/d99117f9-fe1a-4237-9f81-b1feaf0ed329)
 
 ## License
 **Axon SDK** is published under the GPLv3 license, which applies to all files in this repository.
