@@ -76,7 +76,7 @@ output_val
 >> 0.2
 ```
 
-
-
 Instead of using spiking rates to encode values which encode values over many spikes, Axon uses inter-spike intervals. The delay betweekn a couple of spikes encodes a value. This makes Axon extremely spike sparse, hence optimizing for energy consumption (when deploying spiking neural networks to hardware, processing each spike has an energy cost)
+
+![Multiplication network animation](../figs/mul_animation.gif)
 
