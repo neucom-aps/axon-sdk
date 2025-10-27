@@ -22,28 +22,18 @@ class SignedMultiplierNetwork(SpikingNetworkModule):
         wi = -Vt
 
         # Create multiplier network
-        self.mn = MultiplierNetwork(encoder, module_name='mul_net')
+        self.mn = MultiplierNetwork(encoder, module_name="mul_net")
         self.add_subnetwork(self.mn)
 
-        self.input1_plus = self.add_neuron(
-            Vt, tm, tf, neuron_name="input1_plus"
-        )
-        self.input1_minus = self.add_neuron(
-            Vt, tm, tf, neuron_name="input1_minus"
-        )
-        self.input2_plus = self.add_neuron(
-            Vt, tm, tf, neuron_name="input2_plus"
-        )
-        self.input2_minus = self.add_neuron(
-            Vt, tm, tf, neuron_name="input2_minus"
-        )
+        self.input1_plus = self.add_neuron(Vt, tm, tf, neuron_name="input1_plus")
+        self.input1_minus = self.add_neuron(Vt, tm, tf, neuron_name="input1_minus")
+        self.input2_plus = self.add_neuron(Vt, tm, tf, neuron_name="input2_plus")
+        self.input2_minus = self.add_neuron(Vt, tm, tf, neuron_name="input2_minus")
 
-        self.output_plus = self.add_neuron(
-            Vt, tm, tf, neuron_name="output_plus"
-        )
-        self.output_minus = self.add_neuron(
-            Vt, tm, tf, neuron_name="output_minus"
-        )
+        self.output_plus = self.add_neuron(Vt, tm, tf, neuron_name="output_plus")
+        self.output_minus = self.add_neuron(Vt, tm, tf, neuron_name="output_minus")
+
+        self.zero_neuron = self.add_neuron(Vt, tm, tf, neuron_name="zero")
 
         self.sign1 = self.add_neuron(Vt, tm, tf, neuron_name="sign1")
         self.sign2 = self.add_neuron(Vt, tm, tf, neuron_name="sign2")
@@ -88,25 +78,47 @@ class SignedMultiplierNetwork(SpikingNetworkModule):
         self.connect_neurons(self.sign3, self.output_plus, "V", 2 * wi, Tsyn)
         self.connect_neurons(self.sign4, self.output_minus, "V", 2 * wi, Tsyn)
 
+        # if zero_neuron didn't receive spikes from the output in 250 timesteps, it
+        # triggers the output neuron with two spikes encoding the value 0
+        max_prop_delay = 250
+        self.connect_neurons(
+            self.input1_plus, self.zero_neuron, "V", Vt / 4, max_prop_delay
+        )
+        self.connect_neurons(
+            self.input1_minus, self.zero_neuron, "V", Vt / 4, max_prop_delay
+        )
+        self.connect_neurons(
+            self.input2_plus, self.zero_neuron, "V", Vt / 4, max_prop_delay
+        )
+        self.connect_neurons(
+            self.input2_minus, self.zero_neuron, "V", Vt / 4, max_prop_delay
+        )
+
+        self.connect_neurons(self.output_plus, self.zero_neuron, "V", -Vt / 2, Tsyn)
+        self.connect_neurons(self.output_minus, self.zero_neuron, "V", -Vt / 2, Tsyn)
+
+        self.connect_neurons(self.zero_neuron, self.output_plus, "V", Vt, Tsyn)
+        self.connect_neurons(self.zero_neuron, self.output_plus, "V", Vt, Tsyn + Tmin)
+
 
 if __name__ == "__main__":
     from axon_sdk.simulator import Simulator
 
     encoder = DataEncoder(Tmin=10.0, Tcod=100.0)
-    net = SignedMultiplierNetwork(encoder, module_name='signmul_net')
+    net = SignedMultiplierNetwork(encoder, module_name="signmul_net")
     sim = Simulator(net, encoder, dt=0.01)
 
-    val1 = 0.01
+    val1 = 0.0
     val2 = 0.01
     true_product = val1 * val2
 
     # Apply both input values
-    if val1 > 0:
+    if val1 >= 0:
         sim.apply_input_value(abs(val1), neuron=net.input1_plus, t0=0)
     else:
         sim.apply_input_value(abs(val1), neuron=net.input1_minus, t0=0)
 
-    if val2 > 0:
+    if val2 >= 0:
         sim.apply_input_value(abs(val2), neuron=net.input2_plus, t0=0)
     else:
         sim.apply_input_value(abs(val2), neuron=net.input2_minus, t0=0)
@@ -130,11 +142,8 @@ if __name__ == "__main__":
         print(f"❌ Output spike missing or incomplete")
         raise ValueError
 
-
     print(f"✅ Input: {val1} × {val2}")
     print(f"✅ Expected: {true_product:.4f}")
     print(f"✅ Output spike interval: {interval:.3f} ms")
     print(f"✅ Decoded value: {decoded_val:.4f}")
     print(f"✅ Error: {abs(decoded_val - true_product):.4f}")
-        
-

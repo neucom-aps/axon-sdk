@@ -26,6 +26,7 @@ class MultiplierNetwork(SpikingNetworkModule):
         self.first1 = self.add_neuron(Vt, tm, tf, neuron_name="first1")
         self.last1 = self.add_neuron(Vt, tm, tf, neuron_name="last1")
         self.acc_log1 = self.add_neuron(Vt, tm, tf, neuron_name="acc_log1")
+        self.zero_neuron = self.add_neuron(Vt, tm, tf, neuron_name="zero")
 
         self.first2 = self.add_neuron(Vt, tm, tf, neuron_name="first2")
         self.last2 = self.add_neuron(Vt, tm, tf, neuron_name="last2")
@@ -62,6 +63,17 @@ class MultiplierNetwork(SpikingNetworkModule):
         self.connect_neurons(self.sync, self.acc_exp, "gf", gmult, 3 * Tsyn)
 
         self.connect_neurons(self.acc_exp, self.output, "V", we, Tmin + Tsyn)
+
+        # if zero_neuron didn't receive spikes from the output in 250 timesteps, it
+        # triggers the output neuron with two spikes encoding the value 0
+        max_prop_delay = 250
+        self.connect_neurons(self.input1, self.zero_neuron, "V", Vt/4, max_prop_delay)
+        self.connect_neurons(self.input2, self.zero_neuron, "V", Vt/4, max_prop_delay)
+
+        self.connect_neurons(self.output, self.zero_neuron, "V", -Vt/2, Tsyn)
+
+        self.connect_neurons(self.zero_neuron, self.output, "V", Vt, Tsyn)
+        self.connect_neurons(self.zero_neuron, self.output, "V", Vt, Tsyn+Tmin)
 
 
 if __name__ == "__main__":
