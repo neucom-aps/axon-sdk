@@ -66,7 +66,7 @@ class MultiplierNetwork(SpikingNetworkModule):
 
         # if zero_neuron didn't receive spikes from the output in 250 timesteps, it
         # triggers the output neuron with two spikes encoding the value 0
-        max_prop_delay = 250
+        max_prop_delay = 350
         self.connect_neurons(self.input1, self.zero_neuron, "V", Vt/4, max_prop_delay)
         self.connect_neurons(self.input2, self.zero_neuron, "V", Vt/4, max_prop_delay)
 
