@@ -53,10 +53,10 @@ class ScalarMultiplierNetwork(SpikingNetworkModule):
 
         self.connect_neurons(self.acc2, self.output, "V", we, Tsyn + Tmin)
         self.connect_neurons(
-            self.acc, self.acc2, "ge", wacc, 2 * Tsyn
+            self.acc, self.acc2, "ge", wacc, Tsyn
         )  # 'ready' triggers 'recall' directly
         self.connect_neurons(
-            self.acc, self.output, "V", we, 3 * Tsyn
+            self.acc, self.output, "V", we, 2 * Tsyn
         )  # 'ready' triggers 'recall' directly; missing Tsyn in the original memory net in STICK paper
 
 
